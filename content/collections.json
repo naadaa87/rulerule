@@ -1,0 +1,158 @@
+{
+  "popular": [
+    "halli-galli",
+    "rummikub",
+    "davinci-code",
+    "splendor",
+    "yutnori",
+    "codenames",
+    "dixit",
+    "avalon",
+    "jenga",
+    "uno",
+    "just-one",
+    "catan"
+  ],
+  "collections": [
+    {
+      "slug": "two-players",
+      "title": "둘이서 할 때",
+      "lead": "연인, 부부, 친구 둘이 마주 앉아 하기 좋은 게임이에요.",
+      "games": [
+        "patchwork",
+        "othello",
+        "davinci-code",
+        "azul",
+        "splendor",
+        "quoridor",
+        "carcassonne",
+        "blokus",
+        "hanabi",
+        "omok",
+        "janggi",
+        "umul-gonu"
+      ]
+    },
+    {
+      "slug": "first-meeting",
+      "title": "처음 만난 사이라면",
+      "lead": "규칙이 짧고 말을 자연스럽게 주고받게 되는 게임이에요. 서로 이름을 외우기 전에도 할 수 있어요.",
+      "games": [
+        "just-one",
+        "dixit",
+        "telestrations",
+        "liar-game",
+        "codenames",
+        "the-mind",
+        "halli-galli",
+        "dobble"
+      ]
+    },
+    {
+      "slug": "with-kids",
+      "title": "아이와 함께",
+      "lead": "네 살부터 초등학생까지, 아이가 직접 이길 수도 있는 게임이에요.",
+      "tip": "아이와 할 때는 첫 판을 연습 판으로 하고, 테이블 모드의 **누가 먼저**로 순서를 정하면 다툼이 줄어요.",
+      "games": [
+        "chicken-chacha",
+        "pop-up-pirate",
+        "halli-galli",
+        "dobble",
+        "jenga",
+        "blokus",
+        "uno",
+        "umul-gonu",
+        "gonggi",
+        "ttakji"
+      ]
+    },
+    {
+      "slug": "holiday",
+      "title": "명절에 3대가 함께",
+      "lead": "할머니, 할아버지와 손주가 한자리에서 할 수 있는 놀이를 모았어요.",
+      "tip": "윷놀이는 시작 전에 **우리 집 규칙 정하기**로 빽도와 낙을 정해 두세요.",
+      "games": [
+        "yutnori",
+        "tuho",
+        "gonggi",
+        "jegichagi",
+        "ttakji",
+        "omok",
+        "janggi",
+        "rummikub",
+        "halli-galli",
+        "jenga"
+      ]
+    },
+    {
+      "slug": "big-group",
+      "title": "6명 넘게 모였을 때",
+      "lead": "사람이 많을수록 더 재미있어지는 게임이에요.",
+      "games": [
+        "mafia",
+        "avalon",
+        "liar-game",
+        "telestrations",
+        "codenames",
+        "6-nimmt",
+        "dalmuti",
+        "dixit",
+        "just-one",
+        "dobble"
+      ]
+    },
+    {
+      "slug": "party-room",
+      "title": "파티룸에서 분위기 띄울 때",
+      "lead": "설명은 짧고 웃음은 큰 게임이에요. 생일, 모임, 뒤풀이 자리에 잘 맞아요.",
+      "tip": "벌칙을 정할 때는 모두가 웃을 수 있는 가벼운 것으로 해요.",
+      "games": [
+        "halli-galli",
+        "jenga",
+        "liar-game",
+        "mafia",
+        "pop-up-pirate",
+        "telestrations",
+        "coup",
+        "the-mind",
+        "dalmuti",
+        "uno"
+      ]
+    },
+    {
+      "slug": "quick",
+      "title": "15분이면 한 판",
+      "lead": "남는 시간에 가볍게, 여러 판 해도 부담 없는 게임이에요.",
+      "games": [
+        "halli-galli",
+        "dobble",
+        "jenga",
+        "the-mind",
+        "coup",
+        "davinci-code",
+        "pop-up-pirate",
+        "othello",
+        "umul-gonu",
+        "omok",
+        "quoridor"
+      ]
+    },
+    {
+      "slug": "strategy-night",
+      "title": "한 판 제대로 붙어 볼 때",
+      "lead": "한 시간쯤 머리를 쓰며 진득하게 하는 게임이에요. 두 번째 판부터 더 재미있어요.",
+      "games": [
+        "catan",
+        "ticket-to-ride",
+        "carcassonne",
+        "splendor",
+        "azul",
+        "patchwork",
+        "hanabi",
+        "king-of-tokyo",
+        "janggi",
+        "baduk"
+      ]
+    }
+  ]
+}
