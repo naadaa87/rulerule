@@ -11,7 +11,11 @@
     "jenga",
     "uno",
     "just-one",
-    "catan"
+    "catan",
+    "burumabul",
+    "love-letter",
+    "bang",
+    "tichu"
   ],
   "collections": [
     {
@@ -30,7 +34,9 @@
         "hanabi",
         "omok",
         "janggi",
-        "umul-gonu"
+        "umul-gonu",
+        "chess",
+        "love-letter"
       ]
     },
     {
@@ -45,7 +51,10 @@
         "codenames",
         "the-mind",
         "halli-galli",
-        "dobble"
+        "dobble",
+        "cockroach-poker",
+        "las-vegas",
+        "incan-gold"
       ]
     },
     {
@@ -63,7 +72,12 @@
         "uno",
         "umul-gonu",
         "gonggi",
-        "ttakji"
+        "ttakji",
+        "tumbling-monkey",
+        "one-card",
+        "sabangchigi",
+        "ttangttameokgi",
+        "burumabul"
       ]
     },
     {
@@ -81,7 +95,12 @@
         "janggi",
         "rummikub",
         "halli-galli",
-        "jenga"
+        "jenga",
+        "burumabul",
+        "biseokchigi",
+        "paengichigi",
+        "sabangchigi",
+        "one-card"
       ]
     },
     {
@@ -98,7 +117,11 @@
         "dalmuti",
         "dixit",
         "just-one",
-        "dobble"
+        "dobble",
+        "saboteur",
+        "one-night-werewolf",
+        "bang",
+        "incan-gold"
       ]
     },
     {
@@ -116,7 +139,12 @@
         "coup",
         "the-mind",
         "dalmuti",
-        "uno"
+        "uno",
+        "cockroach-poker",
+        "one-night-werewolf",
+        "bang",
+        "skull-king",
+        "las-vegas"
       ]
     },
     {
@@ -134,7 +162,11 @@
         "othello",
         "umul-gonu",
         "omok",
-        "quoridor"
+        "quoridor",
+        "love-letter",
+        "tumbling-monkey",
+        "one-night-werewolf",
+        "one-card"
       ]
     },
     {
@@ -151,7 +183,12 @@
         "hanabi",
         "king-of-tokyo",
         "janggi",
-        "baduk"
+        "baduk",
+        "tichu",
+        "pandemic",
+        "lexio",
+        "chess",
+        "clue"
       ]
     }
   ]

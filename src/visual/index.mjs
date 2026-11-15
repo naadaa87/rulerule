@@ -4,6 +4,11 @@ import family from './family.mjs';
 import party from './party.mjs';
 import strategy from './strategy.mjs';
 import traditional from './traditional.mjs';
+import moreFamily from './more-family.mjs';
+import morePartyA from './more-party-a.mjs';
+import morePartyB from './more-party-b.mjs';
+import moreStrategy from './more-strategy.mjs';
+import moreTrad from './more-trad.mjs';
 
-export const VISUALS = { ...family, ...party, ...strategy, ...traditional };
+export const VISUALS = { ...family, ...party, ...strategy, ...traditional, ...moreFamily, ...morePartyA, ...morePartyB, ...moreStrategy, ...moreTrad };
 export { frameSVG } from './kit.mjs';

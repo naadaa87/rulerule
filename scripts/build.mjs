@@ -106,7 +106,7 @@ if (problems.length) {
 
 const bySlug = Object.fromEntries(games.map((g) => [g.slug, g]));
 // 전통놀이는 판 놀이, 손 놀이, 몸 놀이 순서로 보여 줘요
-const TRAD_ORDER = ['yutnori', 'janggi', 'baduk', 'omok', 'umul-gonu', 'gonggi', 'chilgyo', 'tuho', 'jegichagi', 'ttakji'];
+const TRAD_ORDER = ['yutnori', 'janggi', 'baduk', 'omok', 'umul-gonu', 'gonggi', 'chilgyo', 'tuho', 'jegichagi', 'ttakji', 'sabangchigi', 'biseokchigi', 'paengichigi', 'ttangttameokgi'];
 const tradGames = () => {
   const list = games.filter((g) => g.kind === 'traditional');
   const rank = (g) => (TRAD_ORDER.indexOf(g.slug) < 0 ? 99 : TRAD_ORDER.indexOf(g.slug));
@@ -391,7 +391,7 @@ function gamePage(g) {
   const statusNote = g.status === 'checked'
     ? `<p class="status status-ok">${icon('i-check')}<span>검수 완료${g.checked && g.checked.date ? ` (${esc(g.checked.date)}${g.checked.by ? `, ${esc(g.checked.by)}` : ''})` : ''}. 그래도 다른 곳이 보이면 알려 주세요.</span></p>`
     : g.status === 'reviewed'
-      ? `<p class="status status-rev">${icon('i-check')}<span>자료 대조 완료${g.reviewed && g.reviewed.date ? ` (${esc(g.reviewed.date)})` : ''}. ${g.kind === 'traditional' ? '백과사전과 널리 쓰이는 규칙에' : '공식 규칙서와 출판사 안내에'} 맞춰 봤어요. 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`
+      ? `<p class="status status-rev">${icon('i-check')}<span>자료 대조 완료${g.reviewed && g.reviewed.date ? ` (${esc(g.reviewed.date)})` : ''}. ${g.kind === 'traditional' ? '백과사전에 실린 방법과' : '아래 ‘맞춰 본 자료’와'} 하나씩 견줘 봤어요. 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`
       : `<p class="status status-draft"><span>아직 검수 중인 설명이에요. 상자 속 룰북과 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`;
   const refs = (g.refs || []).length ? `<p><b>맞춰 본 자료</b> ${g.refs.map((r) => (r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener nofollow">${esc(r.title)}</a>` : esc(r.title))).join(', ')}</p>` : '';
 
