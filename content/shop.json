@@ -1,0 +1,867 @@
+{
+ "disclosure": "이 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
+ "items": {
+  "rummikub": {
+   "name": "루미큐브 오리지널",
+   "q": "루미큐브 오리지널",
+   "note": "가장 많이 하는 기본판. 2~4명이 함께해요.",
+   "kind": "game",
+   "game": "rummikub"
+  },
+  "rummikub-travel": {
+   "name": "루미큐브 여행용",
+   "q": "루미큐브 트래블",
+   "note": "작은 판으로 들고 다니기 좋아요.",
+   "kind": "edition",
+   "game": "rummikub"
+  },
+  "halli-galli": {
+   "name": "할리갈리",
+   "q": "할리갈리 보드게임",
+   "note": "종 하나와 과일 카드면 바로 시작해요.",
+   "kind": "game",
+   "game": "halli-galli"
+  },
+  "halli-galli-deluxe": {
+   "name": "할리갈리 디럭스",
+   "q": "할리갈리 디럭스",
+   "note": "종이 커져서 여럿이 하기 좋은 판이에요.",
+   "kind": "edition",
+   "game": "halli-galli"
+  },
+  "davinci-code": {
+   "name": "다빈치 코드",
+   "q": "다빈치코드 보드게임",
+   "note": "숫자 타일로 하는 추리 게임 기본판.",
+   "kind": "game",
+   "game": "davinci-code"
+  },
+  "uno": {
+   "name": "우노 카드",
+   "q": "우노 카드게임",
+   "note": "기본 우노 카드 한 벌.",
+   "kind": "game",
+   "game": "uno"
+  },
+  "uno-flip": {
+   "name": "우노 플립",
+   "q": "우노 플립",
+   "note": "카드를 뒤집으면 규칙이 바뀌는 판이에요.",
+   "kind": "edition",
+   "game": "uno"
+  },
+  "jenga": {
+   "name": "젠가 클래식",
+   "q": "젠가 클래식",
+   "note": "나무 블록 54개짜리 기본판.",
+   "kind": "game",
+   "game": "jenga"
+  },
+  "jenga-giant": {
+   "name": "대형 젠가",
+   "q": "대형 젠가",
+   "note": "야외나 파티룸에서 쓰는 큰 블록.",
+   "kind": "edition",
+   "game": "jenga"
+  },
+  "dobble": {
+   "name": "도블",
+   "q": "도블 보드게임",
+   "note": "둥근 틴 케이스에 카드 55장.",
+   "kind": "game",
+   "game": "dobble"
+  },
+  "dobble-kids": {
+   "name": "도블 키즈",
+   "q": "도블 키즈",
+   "note": "그림이 적어 어린아이와 하기 좋아요.",
+   "kind": "edition",
+   "game": "dobble"
+  },
+  "chicken-chacha": {
+   "name": "치킨차차",
+   "q": "치킨차차 보드게임",
+   "note": "기억력으로 하는 유아 보드게임.",
+   "kind": "game",
+   "game": "chicken-chacha"
+  },
+  "pop-up-pirate": {
+   "name": "해적 룰렛 (통아저씨)",
+   "q": "통아저씨 게임",
+   "note": "칼을 꽂다 해적이 튀어나오면 끝.",
+   "kind": "game",
+   "game": "pop-up-pirate"
+  },
+  "blokus": {
+   "name": "블로커스",
+   "q": "블로커스 보드게임",
+   "note": "4명까지 하는 기본판.",
+   "kind": "game",
+   "game": "blokus"
+  },
+  "blokus-duo": {
+   "name": "블로커스 듀오",
+   "q": "블로커스 듀오",
+   "note": "둘이 하는 작은 판.",
+   "kind": "edition",
+   "game": "blokus"
+  },
+  "king-of-tokyo": {
+   "name": "킹 오브 도쿄",
+   "q": "킹오브도쿄 보드게임",
+   "note": "주사위 굴리는 괴수 싸움 게임.",
+   "kind": "game",
+   "game": "king-of-tokyo"
+  },
+  "burumabul": {
+   "name": "부루마불",
+   "q": "부루마불 보드게임",
+   "note": "세계 도시를 사고파는 국민 보드게임.",
+   "kind": "game",
+   "game": "burumabul"
+  },
+  "burumabul-deluxe": {
+   "name": "부루마불 디럭스",
+   "q": "부루마불 디럭스",
+   "note": "구성물이 큰 판이에요.",
+   "kind": "edition",
+   "game": "burumabul"
+  },
+  "clue": {
+   "name": "클루",
+   "q": "클루 보드게임",
+   "note": "범인, 도구, 장소를 맞히는 추리 게임.",
+   "kind": "game",
+   "game": "clue"
+  },
+  "tumbling-monkey": {
+   "name": "텀블링 몽키",
+   "q": "텀블링몽키 보드게임",
+   "note": "막대를 빼면 원숭이가 떨어져요.",
+   "kind": "game",
+   "game": "tumbling-monkey"
+  },
+  "playing-cards": {
+   "name": "트럼프 카드",
+   "q": "트럼프 카드",
+   "note": "원카드, 포커처럼 여러 게임에 써요.",
+   "kind": "goods",
+   "game": "one-card"
+  },
+  "just-one": {
+   "name": "저스트 원",
+   "q": "저스트원 보드게임",
+   "note": "힌트를 겹치지 않게 쓰는 협력 게임.",
+   "kind": "game",
+   "game": "just-one"
+  },
+  "the-mind": {
+   "name": "더 마인드",
+   "q": "더마인드 보드게임",
+   "note": "말없이 숫자를 맞추는 협력 카드 게임.",
+   "kind": "game",
+   "game": "the-mind"
+  },
+  "mafia-cards": {
+   "name": "마피아 게임 카드",
+   "q": "마피아 게임 카드",
+   "note": "역할 카드가 있으면 진행이 쉬워요.",
+   "kind": "goods",
+   "game": "mafia"
+  },
+  "avalon": {
+   "name": "레지스탕스 아발론",
+   "q": "레지스탕스 아발론",
+   "note": "5~10명이 하는 정체 숨기기 게임.",
+   "kind": "game",
+   "game": "avalon"
+  },
+  "telestrations": {
+   "name": "텔레스트레이션",
+   "q": "텔레스트레이션 보드게임",
+   "note": "그림과 말로 전하는 파티 게임.",
+   "kind": "game",
+   "game": "telestrations"
+  },
+  "dixit": {
+   "name": "딕싯",
+   "q": "딕싯 보드게임",
+   "note": "그림 카드로 이야기하는 기본판.",
+   "kind": "game",
+   "game": "dixit"
+  },
+  "dixit-expansion": {
+   "name": "딕싯 확장",
+   "q": "딕싯 확장",
+   "note": "그림 카드를 더 넣어 새롭게 즐겨요.",
+   "kind": "expansion",
+   "game": "dixit"
+  },
+  "codenames": {
+   "name": "코드네임",
+   "q": "코드네임 보드게임",
+   "note": "팀으로 단어를 찾는 기본판.",
+   "kind": "game",
+   "game": "codenames"
+  },
+  "codenames-duet": {
+   "name": "코드네임 듀엣",
+   "q": "코드네임 듀엣",
+   "note": "둘이 함께 하는 협력판.",
+   "kind": "edition",
+   "game": "codenames"
+  },
+  "6-nimmt": {
+   "name": "젝스님트",
+   "q": "젝스님트 보드게임",
+   "note": "10명까지 하는 숫자 카드 게임.",
+   "kind": "game",
+   "game": "6-nimmt"
+  },
+  "coup": {
+   "name": "쿠",
+   "q": "쿠 보드게임",
+   "note": "카드 15장으로 하는 짧은 블러핑 게임.",
+   "kind": "game",
+   "game": "coup"
+  },
+  "sand-timer": {
+   "name": "모래시계 타이머 세트",
+   "q": "모래시계 타이머 세트",
+   "note": "설명 시간, 토론 시간을 잴 때 써요.",
+   "kind": "goods",
+   "game": "liar-game"
+  },
+  "dalmuti": {
+   "name": "위대한 달무티",
+   "q": "위대한 달무티",
+   "note": "계급이 바뀌는 카드 게임.",
+   "kind": "game",
+   "game": "dalmuti"
+  },
+  "bang": {
+   "name": "뱅!",
+   "q": "뱅 보드게임",
+   "note": "서부 총잡이 정체 숨기기 게임.",
+   "kind": "game",
+   "game": "bang"
+  },
+  "love-letter": {
+   "name": "러브레터",
+   "q": "러브레터 보드게임",
+   "note": "카드 16장으로 하는 짧은 게임.",
+   "kind": "game",
+   "game": "love-letter"
+  },
+  "cockroach-poker": {
+   "name": "바퀴벌레 포커",
+   "q": "바퀴벌레 포커",
+   "note": "거짓말로 카드를 넘기는 파티 게임.",
+   "kind": "game",
+   "game": "cockroach-poker"
+  },
+  "saboteur": {
+   "name": "사보타지",
+   "q": "사보타지 보드게임",
+   "note": "광부와 방해꾼으로 나뉘는 길 놓기 게임.",
+   "kind": "game",
+   "game": "saboteur"
+  },
+  "one-night-werewolf": {
+   "name": "한밤의 늑대인간",
+   "q": "한밤의 늑대인간 보드게임",
+   "note": "10분이면 끝나는 늑대인간 게임.",
+   "kind": "game",
+   "game": "one-night-werewolf"
+  },
+  "skull-king": {
+   "name": "스컬킹",
+   "q": "스컬킹 보드게임",
+   "note": "이길 횟수를 맞히는 해적 카드 게임.",
+   "kind": "game",
+   "game": "skull-king"
+  },
+  "las-vegas": {
+   "name": "라스베가스",
+   "q": "라스베가스 보드게임",
+   "note": "주사위로 카지노 돈을 차지해요.",
+   "kind": "game",
+   "game": "las-vegas"
+  },
+  "incan-gold": {
+   "name": "잉카의 황금",
+   "q": "잉카의 황금 보드게임",
+   "note": "갈까 말까 눈치 싸움 탐험 게임.",
+   "kind": "game",
+   "game": "incan-gold"
+  },
+  "splendor": {
+   "name": "스플렌더",
+   "q": "스플렌더 보드게임",
+   "note": "보석을 모아 카드를 사는 기본판.",
+   "kind": "game",
+   "game": "splendor"
+  },
+  "splendor-cities": {
+   "name": "스플렌더 확장 도시",
+   "q": "스플렌더 도시 확장",
+   "note": "익숙해진 뒤 새 목표를 더해요.",
+   "kind": "expansion",
+   "game": "splendor"
+  },
+  "catan": {
+   "name": "카탄",
+   "q": "카탄 보드게임",
+   "note": "자원을 모아 마을을 짓는 기본판.",
+   "kind": "game",
+   "game": "catan"
+  },
+  "catan-56": {
+   "name": "카탄 5-6인 확장",
+   "q": "카탄 5-6인 확장",
+   "note": "5~6명이 함께 하려면 필요해요.",
+   "kind": "expansion",
+   "game": "catan"
+  },
+  "ticket-to-ride": {
+   "name": "티켓 투 라이드",
+   "q": "티켓투라이드 보드게임",
+   "note": "기차 노선을 잇는 게임. 유럽판도 있어요.",
+   "kind": "game",
+   "game": "ticket-to-ride"
+  },
+  "carcassonne": {
+   "name": "카르카손",
+   "q": "카르카손 보드게임",
+   "note": "타일로 땅을 넓혀 가는 기본판.",
+   "kind": "game",
+   "game": "carcassonne"
+  },
+  "azul": {
+   "name": "아줄",
+   "q": "아줄 보드게임",
+   "note": "타일로 벽을 꾸미는 기본판.",
+   "kind": "game",
+   "game": "azul"
+  },
+  "quoridor": {
+   "name": "쿼리도",
+   "q": "쿼리도 보드게임",
+   "note": "벽을 세워 길을 막는 2~4인 게임.",
+   "kind": "game",
+   "game": "quoridor"
+  },
+  "patchwork": {
+   "name": "패치워크",
+   "q": "패치워크 보드게임",
+   "note": "천 조각으로 이불을 만드는 2인 게임.",
+   "kind": "game",
+   "game": "patchwork"
+  },
+  "hanabi": {
+   "name": "하나비",
+   "q": "하나비 보드게임",
+   "note": "힌트로 불꽃을 쌓는 협력 카드 게임.",
+   "kind": "game",
+   "game": "hanabi"
+  },
+  "othello": {
+   "name": "오셀로",
+   "q": "오셀로 보드게임",
+   "note": "흑백 돌을 뒤집는 기본판.",
+   "kind": "game",
+   "game": "othello"
+  },
+  "chess": {
+   "name": "체스 세트",
+   "q": "체스 세트",
+   "note": "접이식 판에 기물을 담는 세트가 편해요.",
+   "kind": "game",
+   "game": "chess"
+  },
+  "tichu": {
+   "name": "티츄",
+   "q": "티츄 보드게임",
+   "note": "넷이 둘씩 편을 먹는 카드 게임.",
+   "kind": "game",
+   "game": "tichu"
+  },
+  "lexio": {
+   "name": "렉시오",
+   "q": "렉시오 보드게임",
+   "note": "타일로 하는 족보 게임.",
+   "kind": "game",
+   "game": "lexio"
+  },
+  "pandemic": {
+   "name": "팬데믹",
+   "q": "팬데믹 보드게임",
+   "note": "모두 한 편이 되는 협력 게임 기본판.",
+   "kind": "game",
+   "game": "pandemic"
+  },
+  "yutnori": {
+   "name": "윷놀이 세트",
+   "q": "윷놀이 세트",
+   "note": "윷, 윷판, 말이 함께 든 세트.",
+   "kind": "game",
+   "game": "yutnori"
+  },
+  "yut-big": {
+   "name": "대형 윷",
+   "q": "대형 윷",
+   "note": "명절에 마당에서 던지는 큰 윷.",
+   "kind": "edition",
+   "game": "yutnori"
+  },
+  "janggi": {
+   "name": "장기 세트",
+   "q": "장기판 장기알 세트",
+   "note": "접이식 판과 장기알 세트.",
+   "kind": "game",
+   "game": "janggi"
+  },
+  "baduk": {
+   "name": "바둑 세트",
+   "q": "바둑판 바둑알 세트",
+   "note": "입문용은 9줄, 13줄 판도 있어요.",
+   "kind": "game",
+   "game": "baduk"
+  },
+  "omok": {
+   "name": "오목판 바둑알 세트",
+   "q": "오목 바둑알 세트",
+   "note": "바둑판과 돌만 있으면 돼요.",
+   "kind": "game",
+   "game": "omok"
+  },
+  "gonu": {
+   "name": "고누 놀이판",
+   "q": "고누 놀이판",
+   "note": "우물고누, 참고누 같은 판이 그려진 세트.",
+   "kind": "game",
+   "game": "umul-gonu"
+  },
+  "gonggi": {
+   "name": "공깃돌",
+   "q": "공깃돌",
+   "note": "플라스틱 공깃돌 다섯 알 묶음.",
+   "kind": "game",
+   "game": "gonggi"
+  },
+  "chilgyo": {
+   "name": "칠교놀이 세트",
+   "q": "칠교놀이",
+   "note": "나무 조각과 도안 카드 세트.",
+   "kind": "game",
+   "game": "chilgyo"
+  },
+  "tuho": {
+   "name": "투호 세트",
+   "q": "투호놀이 세트",
+   "note": "항아리와 화살이 든 세트.",
+   "kind": "game",
+   "game": "tuho"
+  },
+  "jegi": {
+   "name": "제기",
+   "q": "제기차기 제기",
+   "note": "여러 개 묶음으로 사 두면 편해요.",
+   "kind": "game",
+   "game": "jegichagi"
+  },
+  "ttakji": {
+   "name": "딱지",
+   "q": "딱지치기 딱지",
+   "note": "접어 둔 딱지나 딱지 접기 종이.",
+   "kind": "game",
+   "game": "ttakji"
+  },
+  "chalk": {
+   "name": "바닥 분필",
+   "q": "바닥 분필",
+   "note": "놀이판을 그릴 굵은 분필.",
+   "kind": "goods",
+   "game": "sabangchigi"
+  },
+  "biseok": {
+   "name": "비석치기 세트",
+   "q": "비석치기 세트",
+   "note": "잘 서는 비석과 놀이 안내가 든 세트.",
+   "kind": "game",
+   "game": "biseokchigi"
+  },
+  "paengi": {
+   "name": "전통 팽이와 팽이채",
+   "q": "전통 팽이 팽이채",
+   "note": "채로 치는 나무 팽이 세트.",
+   "kind": "game",
+   "game": "paengichigi"
+  },
+  "sleeves": {
+   "name": "카드 슬리브",
+   "q": "보드게임 카드 슬리브",
+   "note": "카드가 닳지 않게 씌워 둬요. 카드 크기를 확인하세요.",
+   "kind": "goods"
+  },
+  "dice-set": {
+   "name": "주사위 세트",
+   "q": "보드게임 주사위 세트",
+   "note": "잃어버린 주사위를 채우거나 하우스룰에 써요.",
+   "kind": "goods"
+  },
+  "organizer": {
+   "name": "보드게임 정리함",
+   "q": "보드게임 정리함",
+   "note": "카드와 말을 칸칸이 나눠 담아요.",
+   "kind": "goods"
+  },
+  "card-holder": {
+   "name": "카드 거치대",
+   "q": "카드 거치대",
+   "note": "손이 작은 아이도 카드를 세워 둘 수 있어요.",
+   "kind": "goods"
+  },
+  "play-mat": {
+   "name": "보드게임 매트",
+   "q": "보드게임 매트",
+   "note": "카드와 타일이 미끄러지지 않게 깔아요.",
+   "kind": "goods"
+  },
+  "score-board": {
+   "name": "화이트보드 점수판",
+   "q": "미니 화이트보드",
+   "note": "점수와 순서를 적어 두기 좋아요.",
+   "kind": "goods"
+  }
+ },
+ "games": {
+  "rummikub": [
+   "rummikub",
+   "rummikub-travel"
+  ],
+  "halli-galli": [
+   "halli-galli",
+   "halli-galli-deluxe"
+  ],
+  "davinci-code": [
+   "davinci-code"
+  ],
+  "uno": [
+   "uno",
+   "uno-flip"
+  ],
+  "jenga": [
+   "jenga",
+   "jenga-giant"
+  ],
+  "dobble": [
+   "dobble",
+   "dobble-kids"
+  ],
+  "chicken-chacha": [
+   "chicken-chacha"
+  ],
+  "pop-up-pirate": [
+   "pop-up-pirate"
+  ],
+  "blokus": [
+   "blokus",
+   "blokus-duo"
+  ],
+  "king-of-tokyo": [
+   "king-of-tokyo"
+  ],
+  "burumabul": [
+   "burumabul",
+   "burumabul-deluxe"
+  ],
+  "clue": [
+   "clue"
+  ],
+  "tumbling-monkey": [
+   "tumbling-monkey"
+  ],
+  "one-card": [
+   "playing-cards"
+  ],
+  "just-one": [
+   "just-one"
+  ],
+  "the-mind": [
+   "the-mind"
+  ],
+  "mafia": [
+   "mafia-cards"
+  ],
+  "avalon": [
+   "avalon"
+  ],
+  "telestrations": [
+   "telestrations"
+  ],
+  "dixit": [
+   "dixit",
+   "dixit-expansion"
+  ],
+  "codenames": [
+   "codenames",
+   "codenames-duet"
+  ],
+  "6-nimmt": [
+   "6-nimmt"
+  ],
+  "coup": [
+   "coup"
+  ],
+  "liar-game": [
+   "sand-timer"
+  ],
+  "dalmuti": [
+   "dalmuti"
+  ],
+  "bang": [
+   "bang"
+  ],
+  "love-letter": [
+   "love-letter"
+  ],
+  "cockroach-poker": [
+   "cockroach-poker"
+  ],
+  "saboteur": [
+   "saboteur"
+  ],
+  "one-night-werewolf": [
+   "one-night-werewolf"
+  ],
+  "skull-king": [
+   "skull-king"
+  ],
+  "las-vegas": [
+   "las-vegas"
+  ],
+  "incan-gold": [
+   "incan-gold"
+  ],
+  "splendor": [
+   "splendor",
+   "splendor-cities"
+  ],
+  "catan": [
+   "catan",
+   "catan-56"
+  ],
+  "ticket-to-ride": [
+   "ticket-to-ride"
+  ],
+  "carcassonne": [
+   "carcassonne"
+  ],
+  "azul": [
+   "azul"
+  ],
+  "quoridor": [
+   "quoridor"
+  ],
+  "patchwork": [
+   "patchwork"
+  ],
+  "hanabi": [
+   "hanabi"
+  ],
+  "othello": [
+   "othello"
+  ],
+  "chess": [
+   "chess"
+  ],
+  "tichu": [
+   "tichu"
+  ],
+  "lexio": [
+   "lexio"
+  ],
+  "pandemic": [
+   "pandemic"
+  ],
+  "yutnori": [
+   "yutnori",
+   "yut-big"
+  ],
+  "janggi": [
+   "janggi"
+  ],
+  "baduk": [
+   "baduk"
+  ],
+  "omok": [
+   "omok"
+  ],
+  "umul-gonu": [
+   "gonu"
+  ],
+  "gonggi": [
+   "gonggi"
+  ],
+  "chilgyo": [
+   "chilgyo"
+  ],
+  "tuho": [
+   "tuho"
+  ],
+  "jegichagi": [
+   "jegi"
+  ],
+  "ttakji": [
+   "ttakji"
+  ],
+  "sabangchigi": [
+   "chalk"
+  ],
+  "biseokchigi": [
+   "biseok"
+  ],
+  "paengichigi": [
+   "paengi"
+  ],
+  "ttangttameokgi": [
+   "chalk"
+  ]
+ },
+ "shelves": [
+  {
+   "slug": "starter",
+   "title": "처음 사는 보드게임",
+   "lead": "규칙이 짧고 어느 모임에서나 통하는 게임부터 골라 보세요.",
+   "items": [
+    "rummikub",
+    "halli-galli",
+    "davinci-code",
+    "uno",
+    "jenga",
+    "dobble",
+    "splendor",
+    "burumabul"
+   ]
+  },
+  {
+   "slug": "two",
+   "title": "둘이서 하기 좋은 게임",
+   "lead": "연인, 친구, 부부가 둘이 해도 재미있는 게임이에요.",
+   "items": [
+    "patchwork",
+    "davinci-code",
+    "blokus-duo",
+    "codenames-duet",
+    "azul",
+    "quoridor",
+    "chess",
+    "othello",
+    "love-letter",
+    "lexio"
+   ]
+  },
+  {
+   "slug": "kids",
+   "title": "아이와 함께",
+   "lead": "글을 몰라도 할 수 있고, 한 판이 짧은 게임이에요.",
+   "items": [
+    "chicken-chacha",
+    "pop-up-pirate",
+    "tumbling-monkey",
+    "dobble-kids",
+    "halli-galli",
+    "blokus",
+    "jenga",
+    "uno"
+   ]
+  },
+  {
+   "slug": "party",
+   "title": "여럿이 모였을 때",
+   "lead": "여섯 명이 넘어도 다 같이 할 수 있는 파티 게임이에요.",
+   "items": [
+    "avalon",
+    "one-night-werewolf",
+    "telestrations",
+    "codenames",
+    "6-nimmt",
+    "dalmuti",
+    "bang",
+    "saboteur",
+    "cockroach-poker",
+    "skull-king",
+    "just-one",
+    "dixit",
+    "mafia-cards"
+   ]
+  },
+  {
+   "slug": "strategy",
+   "title": "한 판 제대로 붙어 볼 때",
+   "lead": "보드게임에 익숙해졌다면 다음으로 많이 사는 게임이에요.",
+   "items": [
+    "catan",
+    "ticket-to-ride",
+    "carcassonne",
+    "splendor",
+    "azul",
+    "pandemic",
+    "king-of-tokyo",
+    "tichu",
+    "catan-56",
+    "splendor-cities"
+   ]
+  },
+  {
+   "slug": "holiday",
+   "title": "명절과 전통놀이",
+   "lead": "설과 추석에 3대가 함께 하는 놀이 도구예요.",
+   "items": [
+    "yutnori",
+    "yut-big",
+    "janggi",
+    "baduk",
+    "omok",
+    "gonggi",
+    "tuho",
+    "jegi",
+    "paengi",
+    "chilgyo",
+    "ttakji",
+    "biseok",
+    "gonu"
+   ]
+  },
+  {
+   "slug": "goods",
+   "title": "보드게임 용품",
+   "lead": "오래 쓰려면 있으면 좋은 것들이에요.",
+   "items": [
+    "sleeves",
+    "sand-timer",
+    "dice-set",
+    "organizer",
+    "card-holder",
+    "play-mat",
+    "score-board",
+    "playing-cards",
+    "chalk"
+   ]
+  }
+ ],
+ "extras": {
+  "board": [
+   "sleeves",
+   "organizer"
+  ],
+  "kids": [
+   "card-holder"
+  ],
+  "party": [
+   "sand-timer"
+  ],
+  "traditional": []
+ }
+}

@@ -25,3 +25,23 @@
 
 /space/view/*
   X-Robots-Tag: noindex
+
+/account/*
+  X-Robots-Tag: noindex
+  Cache-Control: no-store
+
+/community/write/*
+  X-Robots-Tag: noindex
+
+/community/post/*
+  X-Robots-Tag: noindex
+
+/community/event/*
+  X-Robots-Tag: noindex
+
+/community/club/*
+  X-Robots-Tag: noindex
+
+/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=3600

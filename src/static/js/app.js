@@ -62,6 +62,19 @@
 
   window.RS = { $: $, $$: $$, toast: toast, copyText: copyText, shareOrCopy: shareOrCopy, track: track, store: store, esc: escHTML, plain: plain };
 
+  // ---------- 머리의 로그인 표시 (서버에 묻지 않고, 로그인할 때 저장한 닉네임만 보여 줘요) ----------
+  function paintAccount() {
+    var me = store.get('rr-me', null);
+    $$('[data-acct]').forEach(function (a) {
+      var nick = $('[data-acct-nick]', a);
+      a.setAttribute('aria-label', me && me.nick ? '내 정보 (' + me.nick + ')' : '로그인');
+      a.classList.toggle('on', !!(me && me.nick));
+      if (nick) nick.textContent = me && me.nick ? me.nick : '';
+    });
+  }
+  paintAccount();
+  window.RS.paintAccount = paintAccount;
+
   // ---------- 메뉴 ----------
   var menuBtn = $('.menu-btn'), nav = $('#site-nav');
   if (menuBtn && nav) {
@@ -288,7 +301,7 @@
     var firstTab = tabs.length ? tabs[0].getAttribute('aria-controls') : 'summary';
     var fromHash = function () {
       var h = location.hash;
-      if (h === '#table') return;
+      if (h === '#table' || h === '#faq' || h === '#buy') return;
       var id = h === '#house' || h.indexOf('#rule-') === 0 || h === '#detail' ? 'detail'
         : h === '#learn' ? 'learn' : h === '#summary' ? 'summary'
         : (h === '#visual' || h.indexOf('#v-') === 0) && document.getElementById('visual') ? 'visual' : firstTab;

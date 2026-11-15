@@ -58,7 +58,7 @@ self.addEventListener('fetch', (e) => {
     if (/(^|\.)cdn\.jsdelivr\.net$|^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) e.respondWith(cacheFirst(req, FONTS));
     return;
   }
-  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin')) return;
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin') || url.pathname.startsWith('/go/') || url.pathname.startsWith('/account')) return;
   if (req.mode === 'navigate' || url.pathname === '/data/games.json') {
     e.respondWith(networkFirst(req));
     return;

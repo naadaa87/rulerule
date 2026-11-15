@@ -11,7 +11,7 @@
   try { key = sessionStorage.getItem(KEY) || ''; } catch (e) { key = ''; }
   var gamesBySlug = {}, gamesData = null;
   var KIND = { wrong: '규칙이 틀림', unclear: '설명이 헷갈림', typo: '오타, 표현', request: '게임 추가 요청', other: '그 밖의 의견' };
-  var TYPE = { view: '게임 페이지 열람', table: '테이블 모드', qr: 'QR로 들어옴', venue: '매장 페이지', speak: '소리 내 읽기', share: '링크 보내기' };
+  var TYPE = { view: '게임 페이지 열람', table: '테이블 모드', qr: 'QR로 들어옴', venue: '매장 페이지', speak: '소리 내 읽기', share: '링크 보내기', buy: '구매 버튼 누름' };
 
   function api(path, opt) {
     opt = opt || {};
@@ -66,7 +66,7 @@
   function show(id) {
     tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t.getAttribute('aria-controls') === id)); });
     panels.forEach(function (p) { p.classList.toggle('active', p.id === id); });
-    if (!loaded[id]) { loaded[id] = true; ({ 'a-reports': loadReports, 'a-stats': loadStats, 'a-content': loadContent })[id](); }
+    if (!loaded[id]) { loaded[id] = true; ({ 'a-reports': loadReports, 'a-stats': loadStats, 'a-content': loadContent, 'a-inq': loadInq, 'a-shop': loadShop, 'a-cm': loadCm })[id](); }
   }
   tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('aria-controls')); }); });
 
@@ -141,7 +141,7 @@
       var stat = function (k) { return '<div class="stat"><b>' + (t[k] || 0).toLocaleString('ko-KR') + '</b><span>' + TYPE[k] + '</span></div>'; };
       var max = Math.max.apply(null, [1].concat(j.daily.map(function (d) { return d.n; })));
       var name = function (s) { return gamesBySlug[s] ? gamesBySlug[s].n : s; };
-      out.innerHTML = '<div class="stat-grid">' + ['view', 'table', 'qr', 'venue', 'speak', 'share'].map(stat).join('') + '</div>' +
+      out.innerHTML = '<div class="stat-grid">' + ['view', 'table', 'buy', 'qr', 'venue', 'share'].map(stat).join('') + '</div>' +
         '<h2 class="h3">날짜별 게임 페이지 열람</h2>' +
         (j.daily.length ? '<div class="bars" role="img" aria-label="날짜별 열람 수 막대 그래프">' + j.daily.map(function (d) { return '<span title="' + d.day + ' ' + d.n + '회" style="height:' + Math.round(d.n / max * 100) + '%"></span>'; }).join('') + '</div><p class="muted small">' + esc(j.daily[0].day) + ' ~ ' + esc(j.daily[j.daily.length - 1].day) + '</p>' : '<p class="muted">아직 기록이 없어요.</p>') +
         '<h2 class="h3">많이 본 게임</h2>' +
@@ -174,10 +174,158 @@
       '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>게임</th><th>상태</th><th>채운 항목</th><th></th></tr></thead><tbody>' +
       list.map(function (g) {
         return '<tr><td><a href="/games/' + g.s + '/">' + esc(g.n) + '</a></td>' +
-          '<td><span class="badge ' + (g.st === 'checked' ? 'checked">검수 완료' : 'draft">검수 중') + '</span>' + (g.ck && g.ck.date ? '<br><small class="muted">' + esc(g.ck.date) + '</small>' : '') + '</td>' +
+          '<td><span class="badge ' + (g.st === 'checked' ? 'checked">검수 완료' : g.st === 'reviewed' ? 'checked">자료 대조' : 'draft">검수 중') + '</span>' + (g.ck && g.ck.date ? '<br><small class="muted">' + esc(g.ck.date) + '</small>' : '') + '</td>' +
           '<td>' + g.done + ' / 6</td>' +
           '<td>' + (repo ? '<a class="link-btn" href="' + ghEdit(g.s) + '" target="_blank" rel="noopener">고치기</a>' : '') + '</td></tr>';
       }).join('') + '</tbody></table></div>' +
       '<p class="muted small">채운 항목은 구성물, 준비하기, 따라 해 보기, 자세한 규칙, 헷갈리는 상황, 자주 묻는 질문 여섯 가지 가운데 내용이 있는 것의 수예요.</p>';
   }
+  // ---------- 공용 ----------
+  var post = function (path, body) { return api(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body || {}) }); };
+  var chipsHTML = function (cur, list, attr) {
+    return '<div class="row-btns" role="radiogroup">' + list.map(function (x) { return '<button type="button" class="chip" role="radio" aria-checked="' + (cur === x[0]) + '" ' + attr + '="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+  };
+
+  // ---------- 문의함 ----------
+  var IKIND = { partner: '제휴·협업', ad: '광고·입점', store: '매장 등록', game: '게임 추가', bug: '오류·불편', etc: '그 밖의 문의' };
+  var inqStatus = 'new';
+  function loadInq() {
+    var p = $('#a-inq');
+    p.innerHTML = chipsHTML(inqStatus, [['new', '새 문의'], ['done', '답변함'], ['all', '전체']], 'data-ist') + '<div data-list><p class="muted">불러오는 중이에요</p></div>';
+    RS.radioGroup($('[role="radiogroup"]', p), function (b) { inqStatus = b.dataset.ist; fetchInq(); });
+    fetchInq();
+  }
+  function fetchInq() {
+    var box = $('#a-inq [data-list]');
+    api('inquiries?status=' + inqStatus).then(function (j) {
+      if (j._status !== 200) { box.innerHTML = '<p class="notice">' + esc(j.message || '문의를 불러오지 못했어요.') + '</p>'; return; }
+      if (!j.inquiries.length) { box.innerHTML = '<p class="muted">' + (inqStatus === 'new' ? '새 문의가 없어요.' : '문의가 없어요.') + '</p>'; return; }
+      box.innerHTML = j.inquiries.map(function (r) {
+        var reply = 'mailto:' + encodeURIComponent(r.email) + '?subject=' + encodeURIComponent('[룰룰] ' + (r.title || IKIND[r.kind] + ' 문의') + ' 답변드려요');
+        return '<article class="report" data-id="' + r.id + '"><div class="report-meta"><span class="badge' + (r.status === 'new' ? ' new' : '') + '">' + (r.status === 'new' ? '새 문의' : '답변함') + '</span><b>' + esc(IKIND[r.kind] || r.kind) + '</b><span>' + esc(fmtTime(r.created_at)) + '</span></div>' +
+          (r.title ? '<p><b>' + esc(r.title) + '</b></p>' : '') + '<p class="report-msg">' + esc(r.message) + '</p>' +
+          '<p class="small">' + esc(r.name) + (r.org ? ' · ' + esc(r.org) : '') + ' · <a href="' + reply + '">' + esc(r.email) + '</a>' + (r.phone ? ' · ' + esc(r.phone) : '') + '</p>' +
+          '<label class="field"><span class="small">메모</span><input data-memo maxlength="500" value="' + esc(r.memo || '') + '" placeholder="처리 내용을 적어 두세요"></label>' +
+          '<div class="row-btns"><a class="btn btn-sub" href="' + reply + '">이메일로 답하기</a>' +
+          (r.status === 'new' ? '<button type="button" class="btn btn-sub" data-done>답변함으로 옮기기</button>' : '<button type="button" class="btn btn-ghost" data-undo>새 문의로 되돌리기</button>') +
+          '<button type="button" class="btn btn-ghost" data-save>메모 저장</button><button type="button" class="btn btn-ghost" data-del>지우기</button></div></article>';
+      }).join('');
+    });
+  }
+  $('#a-inq').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var card = b.closest('[data-id]'); if (!card) return;
+    var id = card.dataset.id, memo = $('[data-memo]', card).value;
+    if (b.hasAttribute('data-done') || b.hasAttribute('data-undo') || b.hasAttribute('data-save')) {
+      var st = b.hasAttribute('data-done') ? 'done' : b.hasAttribute('data-undo') ? 'new' : (inqStatus === 'done' ? 'done' : $('.badge.new', card) ? 'new' : 'done');
+      post('inquiries/' + id, { status: st, memo: memo }).then(function (j) {
+        if (!j.ok) { RS.toast('저장하지 못했어요'); return; }
+        RS.toast(b.hasAttribute('data-save') ? '메모를 저장했어요' : '옮겼어요');
+        if (!b.hasAttribute('data-save') && inqStatus !== 'all') card.remove();
+      });
+    }
+    if (b.hasAttribute('data-del')) {
+      if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = '한 번 더 누르면 지워요'; return; }
+      api('inquiries/' + id, { method: 'DELETE' }).then(function (j) { if (j.ok) { card.remove(); RS.toast('지웠어요'); } });
+    }
+  });
+
+  // ---------- 쇼핑 링크 ----------
+  var shopItems = null;
+  function loadShop() {
+    var p = $('#a-shop');
+    p.innerHTML = '<p class="muted">불러오는 중이에요</p>';
+    Promise.all([fetch('/data/shop.json').then(function (r) { return r.json(); }), api('shop?days=30')]).then(function (r) {
+      shopItems = r[0].items;
+      var j = r[1];
+      if (j._status !== 200) { p.innerHTML = '<p class="notice">' + esc(j.message || '불러오지 못했어요.') + '</p>'; return; }
+      var link = {}, clicks = {};
+      j.links.forEach(function (l) { link[l.id] = l.url; });
+      j.clicks.forEach(function (c) { clicks[c.id] = c.n; });
+      var ids = Object.keys(shopItems).sort(function (a, b) { return (clicks[b] || 0) - (clicks[a] || 0) || (link[a] ? 1 : 0) - (link[b] ? 1 : 0); });
+      var done = ids.filter(function (id) { return link[id]; }).length;
+      var total = ids.reduce(function (n, id) { return n + (clicks[id] || 0); }, 0);
+      p.innerHTML = '<div class="stat-grid"><div class="stat"><b>' + done + ' / ' + ids.length + '</b><span>파트너스 링크 넣음</span></div><div class="stat"><b>' + total + '</b><span>최근 30일 구매 버튼</span></div></div>' +
+        '<div class="notice"><b>파트너스 링크 넣는 순서</b><ol><li>‘쿠팡에서 찾기’를 눌러 알맞은 상품 페이지를 열고 주소를 복사해요.</li><li>쿠팡 파트너스 → 링크 생성 → 간편 링크 만들기에 그 주소를 붙여 넣고 단축 링크(https://link.coupang.com/a/...)를 만들어요.</li><li>아래 칸에 붙여 넣고 ‘저장’을 누르면 바로 사이트의 구매 버튼에 쓰여요.</li></ol>링크를 넣지 않은 상품은 쿠팡 검색 결과로 가요. 이때는 수수료가 생기지 않으니, 많이 눌린 상품(위쪽)부터 채워 주세요.</div>' +
+        (j.api ? '<div class="row-btns"><button type="button" class="btn btn-main" data-auto>쿠팡 API로 빈 링크 자동 만들기</button></div>' : '<p class="muted small">쿠팡 파트너스 API 승인을 받은 뒤 Cloudflare에 COUPANG_ACCESS_KEY, COUPANG_SECRET_KEY를 넣으면 빈 링크를 한 번에 만들 수 있어요.</p>') +
+        (j.sources.length ? '<h2 class="h3">어디서 많이 눌렀나요 (최근 30일)</h2><p class="small">' + j.sources.map(function (s) { return esc(s.src || '바로 들어옴') + ' ' + s.n; }).join(' · ') + '</p>' : '') +
+        '<div class="tbl-wrap"><table class="tbl shop-tbl"><thead><tr><th>상품</th><th>30일 클릭</th><th>파트너스 링크</th></tr></thead><tbody>' +
+        ids.map(function (id) {
+          var it = shopItems[id];
+          var search = 'https://www.coupang.com/np/search?q=' + encodeURIComponent(it.q);
+          return '<tr data-id="' + id + '"><td><b>' + esc(it.n) + '</b><br><a class="small" href="' + search + '" target="_blank" rel="noopener">쿠팡에서 찾기</a> · <span class="small muted">' + id + '</span></td><td>' + (clicks[id] || 0) + '</td>' +
+            '<td><div class="shop-in"><input data-url value="' + esc(link[id] || '') + '" placeholder="https://link.coupang.com/a/..." inputmode="url"><button type="button" class="btn btn-sub btn-sm" data-save>저장</button></div></td></tr>';
+        }).join('') + '</tbody></table></div>';
+    });
+  }
+  $('#a-shop').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-auto')) {
+      b.disabled = true; b.textContent = '만드는 중이에요';
+      post('shop/auto').then(function (j) { RS.toast(j.ok ? '링크 ' + j.made + '개를 만들었어요' : (j.message || '만들지 못했어요')); loadShop(); });
+      return;
+    }
+    var row = b.closest('[data-id]'); if (!row || !b.hasAttribute('data-save')) return;
+    post('shop/link', { id: row.dataset.id, url: $('[data-url]', row).value.trim() }).then(function (j) { RS.toast(j.ok ? (j.removed ? '링크를 지웠어요' : '저장했어요') : (j.message || '저장하지 못했어요')); });
+  });
+
+  // ---------- 커뮤니티 관리 ----------
+  var TARGET = { post: '글', event: '일정', club: '모임', comment: '댓글' };
+  var linkOf = function (t, id, parent) {
+    if (t === 'post') return '/community/post/?id=' + id;
+    if (t === 'event') return '/community/event/?id=' + id;
+    if (t === 'club') return '/community/club/?id=' + id;
+    var pp = String(parent || '').split(':');
+    return pp[0] ? linkOf(pp[0], pp[1]) : '#';
+  };
+  function loadCm() {
+    var p = $('#a-cm');
+    p.innerHTML = '<p class="muted">불러오는 중이에요</p>';
+    Promise.all([api('community/flags'), api('community/recent')]).then(function (r) {
+      var f = r[0], c = r[1];
+      if (f._status !== 200) { p.innerHTML = '<p class="notice">' + esc(f.message || '불러오지 못했어요.') + '</p>'; return; }
+      var act = function (t, id, hidden) {
+        return '<span class="row-btns" data-t="' + t + '" data-i="' + id + '"><button type="button" class="btn btn-ghost btn-sm" data-hide="' + (hidden ? 0 : 1) + '">' + (hidden ? '다시 보이기' : '가리기') + '</button><button type="button" class="btn btn-ghost btn-sm" data-remove>지우기</button></span>';
+      };
+      var userAct = function (u) {
+        return '<span class="row-btns" data-u="' + u.id + '">' + (u.status === 'banned' ? '<button type="button" class="btn btn-ghost btn-sm" data-ua="unban">제한 풀기</button>' : '<button type="button" class="btn btn-ghost btn-sm" data-ua="ban">이용 제한</button>') +
+          '<button type="button" class="btn btn-ghost btn-sm" data-ua="reset">임시 비밀번호</button></span>';
+      };
+      p.innerHTML = '<div class="stat-grid"><div class="stat"><b>' + c.userCount + '</b><span>회원</span></div><div class="stat"><b>' + f.flags.length + '</b><span>확인할 신고</span></div></div>' +
+        '<h2 class="h3">확인할 신고</h2>' + (f.flags.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>대상</th><th>신고</th><th>사유</th><th></th></tr></thead><tbody>' + f.flags.map(function (x) {
+          return '<tr><td>' + TARGET[x.target] + ' · <a href="' + linkOf(x.target, x.target_id, x.parent) + '" target="_blank">' + esc(x.label || '(지워짐)') + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : '') + '</td><td>' + x.n + '</td><td class="small">' + esc(x.reasons || '') + '</td><td>' + act(x.target, x.target_id, x.hidden) +
+            '<span class="row-btns" data-t="' + x.target + '" data-i="' + x.target_id + '"><button type="button" class="btn btn-ghost btn-sm" data-dismiss>문제없음</button></span></td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="muted">확인할 신고가 없어요.</p>') +
+        '<h2 class="h3">최근 글</h2>' + table(c.posts, function (x) { return [esc(({ free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천' })[x.cat] || x.cat), '<a href="/community/post/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('post', x.id, x.hidden)]; }) +
+        '<h2 class="h3">최근 일정</h2>' + table(c.events, function (x) { return [x.kind === 'regular' ? '정모' : '번개', '<a href="/community/event/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('event', x.id, x.hidden)]; }) +
+        '<h2 class="h3">최근 모임</h2>' + table(c.clubs, function (x) { return [esc(x.region), '<a href="/community/club/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('club', x.id, x.hidden)]; }) +
+        '<h2 class="h3">최근 가입한 회원</h2>' + table(c.users, function (u) { return [esc(u.login), esc(u.nick) + (u.status === 'banned' ? ' <span class="badge">제한</span>' : ''), esc(fmtTime(u.created_at)), userAct(u)]; }) +
+        '<p class="muted small">임시 비밀번호는 비밀번호를 잊은 회원이 문의했을 때 본인인지 확인한 뒤 알려 주세요. 회원은 로그인 후 내 정보에서 비밀번호를 바꿀 수 있어요.</p>';
+    });
+  }
+  function table(rows, cols) {
+    if (!rows || !rows.length) return '<p class="muted">없어요.</p>';
+    return '<div class="tbl-wrap"><table class="tbl"><tbody>' + rows.map(function (r) { return '<tr>' + cols(r).map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+  }
+  $('#a-cm').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var box = b.closest('[data-t]'), ub = b.closest('[data-u]');
+    if (box) {
+      var body = { target: box.dataset.t, id: Number(box.dataset.i) };
+      if (b.hasAttribute('data-hide')) { body.hidden = b.dataset.hide === '1'; post('community/hide', body).then(function (j) { RS.toast(j.ok ? (body.hidden ? '가렸어요' : '다시 보이게 했어요') : '바꾸지 못했어요'); loadCm(); }); }
+      if (b.hasAttribute('data-dismiss')) post('community/dismiss', body).then(function () { RS.toast('신고를 정리했어요'); loadCm(); });
+      if (b.hasAttribute('data-remove')) {
+        if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = '한 번 더 누르면 지워요'; return; }
+        post('community/remove', body).then(function (j) { RS.toast(j.ok ? '지웠어요' : '지우지 못했어요'); loadCm(); });
+      }
+    }
+    if (ub) {
+      var a = b.dataset.ua;
+      if (a === 'reset' && !confirm('이 회원의 비밀번호를 임시 비밀번호로 바꿀까요?')) return;
+      post('community/user/' + ub.dataset.u, { action: a }).then(function (j) {
+        if (!j.ok) { RS.toast('바꾸지 못했어요'); return; }
+        if (a === 'reset') prompt('임시 비밀번호예요. 회원에게 알려 주세요.', j.temp); else { RS.toast(a === 'ban' ? '이용을 제한했어요' : '제한을 풀었어요'); loadCm(); }
+      });
+    }
+  });
 })();

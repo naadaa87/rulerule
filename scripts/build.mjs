@@ -22,6 +22,8 @@ const readJSON = (rel) => {
 };
 
 const cfg = readJSON('site.config.json');
+const SEO = readJSON('content/seo.json');
+const SHOP = readJSON('content/shop.json');
 const SITE = cfg.siteUrl.replace(/\/$/, '');
 const abs = (p) => SITE + p;
 
@@ -95,6 +97,19 @@ for (const c of content.collections) {
   for (const s of c.games) if (!slugs.has(s)) problems.push(`collections.json: '${c.title}'에 없는 게임이 있어요 (${s})`);
 }
 for (const s of content.popular) if (!slugs.has(s)) problems.push(`collections.json: popular에 없는 게임이 있어요 (${s})`);
+for (const g of games) {
+  if (!SEO[g.slug] || !Array.isArray(SEO[g.slug].hooks) || !SEO[g.slug].hooks.length) problems.push(`seo.json: ${g.slug}의 hooks(핵심 주제)가 없어요`);
+}
+for (const [slug, ids] of Object.entries(SHOP.games)) {
+  if (!slugs.has(slug)) problems.push(`shop.json: games에 없는 게임이 있어요 (${slug})`);
+  for (const id of ids) if (!SHOP.items[id]) problems.push(`shop.json: ${slug}의 상품 ${id}가 items에 없어요`);
+}
+for (const sh of SHOP.shelves) for (const id of sh.items) if (!SHOP.items[id]) problems.push(`shop.json: 진열대 ${sh.slug}의 상품 ${id}가 items에 없어요`);
+for (const [id, it] of Object.entries(SHOP.items)) {
+  if (!/^[a-z0-9-]{1,60}$/.test(id)) problems.push(`shop.json: 상품 id는 영문 소문자, 숫자, 하이픈만 써요 (${id})`);
+  if (!it.name || !it.q) problems.push(`shop.json: ${id}에 name과 q(쿠팡 검색어)가 필요해요`);
+  if (it.url && !/^https:\/\/(link\.coupang\.com|coupa\.ng|www\.coupang\.com)\//.test(it.url)) problems.push(`shop.json: ${id}의 url은 쿠팡 주소여야 해요`);
+}
 for (const v of venues) {
   if (!/^[a-z0-9-]+$/.test(v.slug || '')) problems.push(`venues.json: slug가 잘못됐어요 (${v.name})`);
   for (const s of v.games || []) if (!slugs.has(s)) problems.push(`venues.json: '${v.name}'에 없는 게임이 있어요 (${s})`);
@@ -132,6 +147,13 @@ const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-hidden=
 <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 14h2v2h-2zM18 14h2v2h-2zM16 16h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z" fill="currentColor"/></symbol>
 <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
 <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.3a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17" cy="19.5" r="1.5" fill="currentColor"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4.5 21c.6-4.2 3.6-7 7.5-7s6.9 2.8 7.5 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12m0 0-5-5m5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>`;
 
@@ -234,8 +256,10 @@ const DIAGRAMS = { 'yut-board': yutBoard, 'umul-gonu': umulGonuBoard, chilgyo: c
 // ---------- 공통 틀 ----------
 const NAV = [
   ['/games/', '게임 찾기'],
+  ['/rules/', '룰 모음'],
   ['/traditional/', '전통놀이'],
-  ['/learn/', '처음이라면'],
+  ['/shop/', '보드게임몰'],
+  ['/community/', '커뮤니티'],
   ['/space/', '공간 운영자'],
 ];
 
@@ -247,6 +271,7 @@ function header(current) {
 ${NAV.map(([href, label]) => `<a href="${href}"${current.startsWith(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('\n')}
 </nav>
 <a class="icon-btn" href="/games/#search" aria-label="게임 찾기">${icon('i-search')}</a>
+<a class="icon-btn acct-btn" href="/account/" data-acct aria-label="로그인">${icon('i-user')}<span class="acct-nick" data-acct-nick></span></a>
 <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">${icon('i-menu')}</button>
 </div>
 </header>`;
@@ -261,13 +286,23 @@ function footer() {
 </div>
 <nav class="foot-nav" aria-label="바닥 메뉴">
 <a href="/games/">게임 찾기</a>
+<a href="/rules/">보드게임 룰 모음</a>
 <a href="/traditional/">전통놀이</a>
 <a href="/learn/">처음이라면</a>
+<a href="/shop/">보드게임몰</a>
+<a href="/community/">커뮤니티</a>
 <a href="/space/">공간 운영자</a>
 <a href="/about/">${esc(cfg.siteName)} 소개</a>
+<a href="/contact/">제휴·문의</a>
 <button type="button" class="link-btn" data-report="">틀린 곳 알려 주기</button>
 </nav>
+<nav class="foot-legal" aria-label="약관과 정책">
+<a href="/terms/">이용약관</a>
+<a href="/privacy/"><b>개인정보처리방침</b></a>
+<a href="/community/rules/">커뮤니티 이용 규칙</a>
+</nav>
 <p class="foot-note">게임 이름과 상표는 각 권리자의 것이에요. ${esc(cfg.siteName)}의 설명은 규칙을 우리 말로 다시 쓴 것이며, 상자 속 공식 룰북을 대신하지 않아요.</p>
+<p class="foot-note">${esc(cfg.siteName)} 보드게임몰과 게임 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
 <p class="foot-copy">© ${new Date().getFullYear()} ${esc(cfg.siteName)}</p>
 </div>
 </footer>`;
@@ -300,7 +335,7 @@ function reportDialog() {
 </dialog>`;
 }
 
-function layout({ title, description, path: p, body, scripts = [], noindex = false, jsonld = null, bodyClass = '' }) {
+function layout({ title, description, path: p, body, scripts = [], noindex = false, jsonld = null, bodyClass = '', keywords = [], ogImage = '', ogType = 'website' }) {
   const url = abs(p);
   const ld = jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : '';
   return `<!doctype html>
@@ -310,15 +345,16 @@ function layout({ title, description, path: p, body, scripts = [], noindex = fal
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+${keywords.length ? `<meta name="keywords" content="${esc(keywords.join(', '))}">` : ''}
 <link rel="canonical" href="${url}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
-<meta property="og:type" content="website">
+<meta property="og:type" content="${ogType}">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="${esc(cfg.siteName)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${abs('/assets/img/og.png')}">
+<meta property="og:image" content="${abs(ogImage || '/assets/img/og.png')}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -329,6 +365,7 @@ ${cfg.googleSiteVerification ? `<meta name="google-site-verification" content="$
 <link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="${esc(cfg.siteName)} 보드게임 하는법" href="/rss.xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -385,9 +422,71 @@ ${tile(g)}
 
 const qaList = (items) => `<div class="qa">${items.map((x) => `<div class="qa-item"><p class="qa-q">${fmt(x.q)}</p><p class="qa-a">${fmt(x.a)}</p></div>`).join('')}</div>`;
 
+// ---------- 검색어와 조사 ----------
+// 받침이 있으면 a, 없으면 b (예: 루미큐브 + 은/는 → 루미큐브는)
+const josa = (word, a, b) => {
+  const ch = String(word).replace(/[^가-힣A-Za-z0-9]+$/, '').slice(-1);
+  if (/[가-힣]/.test(ch)) return word + ((ch.charCodeAt(0) - 0xac00) % 28 ? a : b);
+  if (/[0-9]/.test(ch)) return word + ('013678'.includes(ch) ? a : b);
+  return word + (/[lmnr]$/i.test(ch) ? a : b);
+};
+const bare = (name) => name.replace(/[!?]+$/, '');
+const GENERIC_ALIAS = /게임$|놀이$|^[a-z ]+$/i;
+const seoOf = (g) => {
+  const s = SEO[g.slug] || { hooks: [], kw: [] };
+  const n = bare(g.name);
+  const alt = (g.aliases || []).filter((a) => a !== g.name && !a.includes(' 두는 법'));
+  const main = g.kind === 'traditional' && !/놀이|치기|차기|먹기/.test(n)
+    ? [`${n} 하는법`, `${n} 규칙`, `${n} 두는 법`, `${n} 방법`]
+    : [`${n} 하는법`, `${n} 룰`, `${n} 규칙`, `${n} 게임방법`];
+  const altKw = alt.filter((a) => !GENERIC_ALIAS.test(a)).slice(0, 2).map((a) => `${a} 하는법`);
+  const kw = [...new Set([...main, ...s.kw, ...altKw])];
+  return { hooks: s.hooks, kw, alt, n };
+};
+
+function gameFaq(g) {
+  const n = bare(g.name);
+  const list = [
+    { q: `${josa(n, '은', '는')} 몇 명이서 하나요?`, a: `${josa(playersText(g.players), '이', '가')} 할 수 있어요.${g.best ? ` 가장 재미있는 인원은 ${josa(g.best, '이에요', '예요')}.` : ''}` },
+    { q: `${n} 한 판은 얼마나 걸리나요?`, a: `한 판에 ${minutesText(g.minutes)}쯤 걸려요. 처음 하는 사람이 있으면 설명까지 10분쯤 더 잡아 두세요.` },
+    { q: `${josa(n, '은', '는')} 몇 살부터 할 수 있나요?`, a: `${ageText(g.age)}면 할 수 있어요. 난이도는 ${josa(LEVELS[g.level], '이에요', '예요')}.` },
+    { q: `${josa(n, '은', '는')} 어떻게 하면 이기나요?`, a: plain(g.summary.goal) },
+    { q: `${josa(n, '은', '는')} 언제 끝나나요?`, a: plain(g.summary.end) },
+    ...(g.faq || []).map((x) => ({ q: plain(x.q), a: plain(x.a) })),
+  ];
+  return list;
+}
+
+const SHOP_KIND = { game: '본판', edition: '다른 판', expansion: '확장', goods: '용품', set: '세트' };
+const goHref = (id, from) => `/go/${id}${from ? `?from=${from}` : ''}`;
+const buyLink = (id, from, label = '쿠팡에서 보기', cls = 'btn btn-buy') => `<a class="${cls}" href="${goHref(id, from)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}">${label}</a>`;
+const shopItemsOf = (g) => {
+  const ids = [...(SHOP.games[g.slug] || [])];
+  const extra = g.kind === 'traditional' ? SHOP.extras.traditional : g.group === 'family' && g.age <= 6 ? SHOP.extras.kids : g.group === 'party' ? [...SHOP.extras.party, ...SHOP.extras.board] : SHOP.extras.board;
+  for (const id of extra || []) if (!ids.includes(id) && ids.length < 4) ids.push(id);
+  return ids;
+};
+function buyBox(g) {
+  const ids = shopItemsOf(g);
+  if (!ids.length) return '';
+  const n = bare(g.name);
+  return `<section class="buy" id="buy" aria-labelledby="buy-title">
+<p class="ad-note"><span class="ad-tag">광고</span>이 상자의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+<h2 class="h2" id="buy-title">${esc(n)} 구매하기</h2>
+<p class="muted small">판매처의 가격과 구성은 수시로 바뀌어요. 상자 속 구성물이 이 설명과 같은지 상품 페이지에서 한 번 더 확인하세요.</p>
+<ul class="buy-list">
+${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item"><span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span><span class="buy-text"><b>${esc(it.name)}</b><small>${esc(it.note || '')}</small></span>${buyLink(id, g.slug)}</li>`; }).join('\n')}
+</ul>
+<p class="buy-more"><a href="/shop/">${icon('i-cart')}룰룰 보드게임몰에서 더 보기</a></p>
+</section>`;
+}
+
 // ---------- 페이지: 게임 ----------
 function gamePage(g) {
   const name = g.name;
+  const seo = seoOf(g);
+  const hasBuy = shopItemsOf(g).length > 0;
+  const faqItems = gameFaq(g);
   const statusNote = g.status === 'checked'
     ? `<p class="status status-ok">${icon('i-check')}<span>검수 완료${g.checked && g.checked.date ? ` (${esc(g.checked.date)}${g.checked.by ? `, ${esc(g.checked.by)}` : ''})` : ''}. 그래도 다른 곳이 보이면 알려 주세요.</span></p>`
     : g.status === 'reviewed'
@@ -408,7 +507,7 @@ function gamePage(g) {
   const vis = visualsOf(g);
   const visPanel = vis.length ? `<section class="panel" id="visual" role="tabpanel" aria-labelledby="tab-visual">
 <div class="vis" data-vis>
-<div class="vis-top"><h2 class="h2">그림으로 보는 ${esc(name)} 하는 법</h2><button type="button" class="vis-mode" data-vis-mode aria-pressed="false">모두 펼치기</button></div>
+<div class="vis-top"><h2 class="h2">${esc(seo.n)} 하는법 그림 설명</h2><button type="button" class="vis-mode" data-vis-mode aria-pressed="false">모두 펼치기</button></div>
 <ol class="vis-steps" aria-label="단계 목록">${vis.map((f, i) => `<li><button type="button" data-vis-go="${i}"><span>${i + 1}</span>${esc(f.k)}</button></li>`).join('')}</ol>
 <ol class="vis-track" tabindex="0" aria-label="${esc(name)} 그림 설명 ${vis.length}장" data-vis-track>
 ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} / ${vis.length}">
@@ -444,12 +543,13 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 <header class="game-head">
 ${tile(g, 'tile-lg')}
 <div class="game-title">
-<h1 class="game-name">${esc(name)}</h1>
-${g.original ? `<p class="game-orig">${esc(g.original)}</p>` : ''}
+<h1 class="game-name">${esc(name)}<span class="game-h1-sub">하는법·룰</span></h1>
+${g.original || seo.alt.length ? `<p class="game-orig">${[g.original, ...seo.alt.filter((a) => a !== g.original && !GENERIC_ALIAS.test(a))].filter(Boolean).slice(0, 3).map(esc).join(' · ')}</p>` : ''}
 <p class="game-one">${fmt(g.oneLine)}</p>
 </div>
 </header>
 ${facts(g)}
+<nav class="jump" aria-label="이 페이지 바로가기"><a href="#faq">자주 묻는 질문</a>${hasBuy ? `<a href="#buy">${icon('i-cart')}구매하기</a>` : ''}<a href="/community/board/?game=${g.slug}">${icon('i-chat')}이야기 나누기</a></nav>
 ${g.intro ? `<p class="game-intro">${fmt(g.intro)}</p>` : ''}
 ${g.compare ? `<p class="compare">${fmt(g.compare)}</p>` : ''}
 ${statusNote}
@@ -462,7 +562,7 @@ ${vis.length ? '<button role="tab" id="tab-visual" aria-controls="visual" aria-s
 
 ${visPanel}
 <section class="panel" id="summary" role="tabpanel" aria-labelledby="tab-summary">
-<h2 class="h2">${esc(name)} 1분 요약</h2>
+<h2 class="h2">${esc(seo.n)} 룰 1분 요약</h2>
 ${guide('dice-explain', '다이스', '이 세 가지만 알면 첫 판을 시작할 수 있어요.')}
 <div class="rcard">
 <div class="rcard-row"><p class="rcard-k">이기는 법</p><p class="rcard-v">${fmt(g.summary.goal)}</p></div>
@@ -476,9 +576,10 @@ ${guide('dice-explain', '다이스', '이 세 가지만 알면 첫 판을 시작
 </section>
 
 <section class="panel" id="learn" role="tabpanel" aria-labelledby="tab-learn">
-<h2 class="h2">${esc(name)} 하는 법: 따라하기</h2>
+<h2 class="h2">${esc(seo.n)} 하는법 따라하기</h2>
 ${guide('domi-order', '도미', '위에서부터 순서대로 따라 하면 돼요.')}
 ${comps}
+${hasBuy && g.components.length ? `<p class="comp-buy">구성물이 없거나 잃어버렸다면 <a href="#buy">구매하기</a>에서 찾을 수 있어요.</p>` : ''}
 ${diagram}
 <h3 class="h3">준비하기</h3>
 <ol class="steps">${g.setup.map((s) => `<li>${fmt(s)}</li>`).join('')}</ol>
@@ -487,21 +588,26 @@ ${scoring}
 </section>
 
 <section class="panel" id="detail" role="tabpanel" aria-labelledby="tab-detail">
-<h2 class="h2">${esc(name)} 자세한 규칙</h2>
+<h2 class="h2">${esc(seo.n)} 자세한 룰과 규칙</h2>
 ${guide('book-warn', '북', '하다가 막히면 여기서 찾아보세요.')}
 ${(g.rules || []).length > 1 ? `<label class="rule-find"><span class="sr">규칙에서 찾기</span>${icon('i-search')}<input type="search" placeholder="규칙에서 찾기 (예: 동점, 2명)" data-rule-find></label>` : ''}
 <div class="rules">${rules}</div>
 ${(g.tricky || []).length ? `<h3 class="h3">헷갈리는 상황</h3>${qaList(g.tricky)}` : ''}
-${(g.faq || []).length ? `<h3 class="h3">자주 묻는 질문</h3>${qaList(g.faq)}` : ''}
 ${variants}
 ${house}
 </section>
 
+<section class="faq-sec" id="faq" aria-labelledby="faq-title">
+<h2 class="h2" id="faq-title">${esc(seo.n)} 자주 묻는 질문</h2>
+<div class="faq-list">${faqItems.map((x, i) => `<details class="faq"${i < 2 ? ' open' : ''}><summary>${esc(x.q)}</summary><p>${esc(x.a)}</p></details>`).join('')}</div>
+</section>
+${buyBox(g)}
 <aside class="source">
 <p><b>설명 기준</b> ${esc(g.edition || (g.kind === 'traditional' ? '널리 쓰이는 공통 규칙' : '한국어판'))}</p>
 <p><b>만든 방법</b> ${esc(g.source || '규칙을 우리 말로 다시 썼어요. 문장과 그림은 룰북에서 옮기지 않았어요.')}</p>
 ${refs}
-<p><button type="button" class="link-btn" data-report="${g.slug}">${icon('i-flag')}틀린 곳 알려 주기</button></p>
+<p><b>많이 찾는 검색어</b> <span class="kw">${seo.kw.slice(0, 10).map((k) => `<span>${esc(k)}</span>`).join('')}</span></p>
+<p><button type="button" class="link-btn" data-report="${g.slug}">${icon('i-flag')}틀린 곳 알려 주기</button> <a href="/community/board/?game=${g.slug}">${icon('i-chat')}커뮤니티에서 ${esc(seo.n)} 이야기 보기</a></p>
 </aside>
 </div>
 ${related}
@@ -509,15 +615,28 @@ ${related}
 <script type="application/json" id="game-data">${JSON.stringify({ ...g, _file: undefined }).replace(/</g, '\\u003c')}</script>
 </article>`;
 
-  const desc = `${name} 룰과 하는법을 단계별 그림과 1분 요약, 따라하기로 알려 드려요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
+  const desc = `${seo.n} 하는법과 룰을 그림으로 쉽게 정리했어요. ${seo.hooks.join(', ')}까지 한 번에 확인하세요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
+  const howSteps = [...g.setup.map((t) => ({ name: '준비', text: plain(t) })), ...g.summary.turn.map((t) => ({ name: '내 차례', text: plain(t) })), { name: '끝', text: plain(g.summary.end) }];
   return layout({
-    title: `${name} 하는법, 룰 1분 요약 - ${cfg.siteName}`,
+    title: `${seo.n} 하는법·룰 총정리 | ${seo.hooks.join('·')} - ${cfg.siteName}`,
     description: desc,
     path: `/games/${g.slug}/`,
     body,
     scripts: ['table.js'],
     bodyClass: 'has-cta',
+    keywords: seo.kw.slice(0, 14),
+    ogImage: fs.existsSync(path.join(STATIC, 'img', 'og', `${g.slug}.png`)) ? `/assets/img/og/${g.slug}.png` : '',
+    ogType: 'article',
     jsonld: [
+      {
+        '@context': 'https://schema.org', '@type': 'HowTo', name: `${seo.n} 하는법`, description: plain(g.oneLine), inLanguage: 'ko',
+        totalTime: `PT${g.minutes[1]}M`, supply: g.components.slice(0, 12).map((c) => ({ '@type': 'HowToSupply', name: plain(c) })),
+        step: howSteps.map((st, i) => ({ '@type': 'HowToStep', position: i + 1, name: `${st.name} ${i + 1}`, text: st.text, url: abs(`/games/${g.slug}/#${i < g.setup.length ? 'learn' : 'summary'}`) })),
+      },
+      {
+        '@context': 'https://schema.org', '@type': 'FAQPage',
+        mainEntity: faqItems.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })),
+      },
       {
         '@context': 'https://schema.org', '@type': 'Game', name, alternateName: g.original || undefined,
         description: plain(g.intro || g.oneLine), url: abs(`/games/${g.slug}/`),
@@ -613,6 +732,31 @@ ${COL_ART[c.slug] ? `<span class="col-art">${pic(COL_ART[c.slug], '', '')}</span
 </div>
 </section>
 
+<section class="shop-band">
+<div class="wrap">
+<div class="band-head"><h2 class="sec-title">룰룰 보드게임몰</h2><a class="more-link" href="/shop/">전체 보기</a></div>
+<p class="sec-lead">하는 법을 읽고 마음에 들었다면 바로 구할 수 있게, 상황별로 골라 두었어요.</p>
+<div class="shelf-cards">
+${SHOP.shelves.slice(0, 6).map((sh) => `<a class="shelf-card" href="/shop/#${sh.slug}"><span class="shelf-t">${esc(sh.title)}</span><span class="shelf-d">${esc(sh.lead)}</span><span class="col-tiles">${sh.items.map((id) => SHOP.items[id].game).filter((gs, i, a) => gs && bySlug[gs] && a.indexOf(gs) === i).slice(0, 4).map((gs) => tile(bySlug[gs], 'tile-sm')).join('')}<span class="col-count">${sh.items.length}개</span></span></a>`).join('\n')}
+</div>
+</div>
+</section>
+
+<section class="cm-band">
+<div class="wrap cm-band-grid">
+<div>
+<h2 class="sec-title">같이 할 사람, 여기서 찾아요</h2>
+<p class="sec-lead">우리 동네 보드게임 모임에 들어가거나, 오늘 저녁 번개를 열어 보세요. 규칙이 헷갈릴 때는 게시판에 물어보면 돼요.</p>
+<div class="row-btns"><a class="btn btn-main" href="/community/">커뮤니티 둘러보기</a><a class="btn btn-sub" href="/community/write/?t=event">번개 열기</a></div>
+</div>
+<ul class="cm-points">
+<li>${icon('i-people')}<span><b>모임</b>지역별 보드게임 모임에 가입하고 정모 일정을 받아요.</span></li>
+<li>${icon('i-cal')}<span><b>정모·번개</b>날짜, 장소, 인원을 정해 올리면 참여 신청을 받아요.</span></li>
+<li>${icon('i-chat')}<span><b>자유게시판</b>규칙 질문, 게임 후기, 추천 부탁을 나눠요.</span></li>
+</ul>
+</div>
+</section>
+
 <section class="crew-band">
 <div class="wrap">
 <h2 class="sec-title">룰룰 친구들</h2>
@@ -642,7 +786,11 @@ ${pic('scene-store', '매장 테이블에서 휴대폰으로 게임 설명을 �
     path: '/',
     body,
     scripts: [],
-    jsonld: { '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.siteName, url: abs('/'), inLanguage: 'ko', potentialAction: { '@type': 'SearchAction', target: abs('/games/?q={search_term_string}'), 'query-input': 'required name=search_term_string' } },
+    keywords: ['보드게임 하는법', '보드게임 룰', '보드게임 규칙', '보드게임 추천', '루미큐브 하는법', '할리갈리 룰', '다빈치코드 하는법', '윷놀이 규칙', '보드게임 모임'],
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.siteName, alternateName: ['룰룰 보드게임', 'rulerule', '보드게임 룰 하는법 설명서'], url: abs('/'), inLanguage: 'ko', potentialAction: { '@type': 'SearchAction', target: abs('/games/?q={search_term_string}'), 'query-input': 'required name=search_term_string' } },
+      { '@context': 'https://schema.org', '@type': 'Organization', name: cfg.siteName, url: abs('/'), logo: abs('/assets/img/icon-512.png') },
+    ],
   });
 }
 
@@ -699,10 +847,16 @@ ${pic('fox-search', '', 'empty-pic')}
     description: `인원, 시간, 난이도로 보드게임과 전통놀이를 골라 보세요. ${games.length}가지 게임의 하는 법을 1분 요약으로 알려 드려요.`,
     path: '/games/',
     body,
+    keywords: ['보드게임 추천', '보드게임 종류', '보드게임 하는법', '인원별 보드게임', '2인 보드게임', '파티 보드게임'],
   });
 }
 
 // ---------- 페이지: 상황 묶음 ----------
+const COL_SEO = {
+  'two-players': '2인 보드게임 추천', 'first-meeting': '처음 만난 사이 보드게임 추천, 아이스브레이킹 게임', 'with-kids': '아이와 하는 보드게임 추천, 유아·초등 보드게임',
+  holiday: '명절 가족 보드게임·전통놀이 추천', 'big-group': '여러 명이 하는 보드게임 추천, 6명 이상 단체 게임', 'party-room': '파티룸 보드게임 추천',
+  quick: '15분 짧은 보드게임 추천', 'strategy-night': '전략 보드게임 추천',
+};
 function collectionPage(c) {
   const list = c.games.map((s) => bySlug[s]);
   const body = `<section class="page-head">
@@ -722,8 +876,9 @@ ${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', `page-art${COL_ART[c.slug].startsWi
 <div class="trad-links">${content.collections.filter((x) => x.slug !== c.slug).map((x) => `<a class="pill" href="/collections/${x.slug}/">${esc(x.title)}</a>`).join('')}</div>
 </section>`;
   return layout({
-    title: `${c.title} 보드게임 추천 ${list.length}가지 - ${cfg.siteName}`,
-    description: `${c.lead} ${list.slice(0, 5).map((g) => g.name).join(', ')} 등 ${list.length}가지 게임의 하는 법을 1분 요약으로 알려 드려요.`,
+    title: `${COL_SEO[c.slug] || `${c.title} 보드게임 추천`} ${list.length}가지 | 하는법까지 - ${cfg.siteName}`,
+    description: `${c.lead} ${list.slice(0, 6).map((g) => g.name).join(', ')} 등 ${list.length}가지 게임의 하는법과 룰을 그림과 1분 요약으로 알려 드려요.`,
+    keywords: [COL_SEO[c.slug] || c.title, ...list.slice(0, 6).map((g) => `${bare(g.name)} 하는법`)],
     path: `/collections/${c.slug}/`,
     body,
   });
@@ -766,8 +921,9 @@ ${groupsT.map(([title, list]) => `<h2 class="h2">${title}</h2><div class="gcards
 </div>
 </section>`;
   return layout({
-    title: `전통놀이 하는 법 - 윷놀이, 장기, 공기놀이, 투호 | ${cfg.siteName}`,
-    description: `윷놀이, 장기, 바둑, 오목, 우물고누, 공기놀이, 칠교놀이, 투호, 제기차기, 딱지치기 하는 법을 쉽게 알려 드려요. 우리 집 윷놀이 규칙 카드도 만들 수 있어요.`,
+    title: `전통놀이 하는법·규칙 ${trad.length}가지 - 윷놀이 규칙, 장기 두는법, 공기놀이, 사방치기 | ${cfg.siteName}`,
+    description: `${trad.map((g) => g.name).join(', ')} 하는법과 규칙을 그림으로 쉽게 알려 드려요. 명절에 쓰는 우리 집 윷놀이 규칙 카드도 만들 수 있어요.`,
+    keywords: ['전통놀이 종류', '전통놀이 방법', '민속놀이', '윷놀이 규칙', '장기 두는법', '공기놀이 방법', '사방치기 방법', '비석치기 방법', '제기차기 방법'],
     path: '/traditional/',
     body,
   });
@@ -912,6 +1068,246 @@ ${v.contact && /^(https?:|tel:)/.test(v.contact) ? `<div class="row-btns"><a cla
   return layout({ title: `${v.name} 보드게임 - ${cfg.siteName}`, description: `${v.name}에 있는 보드게임 ${list.length}가지의 하는 법`, path: `/space/${v.slug}/`, body, noindex: true });
 }
 
+
+// ---------- 페이지: 보드게임 룰 모음 (가나다순) ----------
+const CHO_HEAD = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+const MERGE = { 'ㄲ': 'ㄱ', 'ㄸ': 'ㄷ', 'ㅃ': 'ㅂ', 'ㅆ': 'ㅅ', 'ㅉ': 'ㅈ' };
+const headOf = (name) => {
+  const ch = name.replace(/^[^가-힣A-Za-z0-9]+/, '')[0] || '';
+  if (/[가-힣]/.test(ch)) { const h = CHO_HEAD[Math.floor((ch.charCodeAt(0) - 0xac00) / 588)]; return MERGE[h] || h; }
+  return /[0-9]/.test(ch) ? '0-9' : 'A-Z';
+};
+function rulesPage() {
+  const groups = {};
+  for (const g of sortedGames) (groups[headOf(g.name)] = groups[headOf(g.name)] || []).push(g);
+  const order = Object.keys(groups).sort((a, b) => (a === '0-9' ? -1 : b === '0-9' ? 1 : collator.compare(a, b)));
+  const body = `<section class="page-head">
+<div class="wrap">
+<h1 class="page-title">보드게임 룰·하는법 모음</h1>
+<p class="page-lead">${cfg.siteName}에 정리한 보드게임과 전통놀이 ${games.length}가지의 하는법과 룰을 가나다순으로 모았어요. 이름을 누르면 그림 설명, 1분 요약, 자세한 규칙, 자주 묻는 질문을 볼 수 있어요.</p>
+<nav class="cho-nav" aria-label="첫 글자로 이동">${order.map((h) => `<a href="#cho-${encodeURIComponent(h)}">${h}</a>`).join('')}</nav>
+</div>
+</section>
+<section class="wrap rules-index">
+${order.map((h) => `<div class="cho-group" id="cho-${encodeURIComponent(h)}"><h2 class="cho-h">${h}</h2><ul class="rule-links">${groups[h].map((g) => { const so = seoOf(g); return `<li><a href="/games/${g.slug}/"><b>${esc(so.n)} 하는법·룰</b><small>${so.hooks.map(esc).join(' · ')}</small></a><span class="rule-sub">${so.kw.slice(4, 7).map((k) => esc(k)).join(', ')}</span></li>`; }).join('')}</ul></div>`).join('\n')}
+<div class="tip-box">
+<h2 class="h2">찾는 게임이 없나요?</h2>
+<p>넣어 줬으면 하는 게임을 알려 주시면 순서대로 정리해 올려요.</p>
+<div class="row-btns"><a class="btn btn-sub" href="/contact/?kind=game">게임 추가 요청하기</a><a class="btn btn-ghost" href="/games/">인원·시간으로 찾기</a></div>
+</div>
+</section>`;
+  return layout({
+    title: `보드게임 룰·하는법 모음 ${games.length}가지 (가나다순) - ${cfg.siteName}`,
+    description: `루미큐브, 할리갈리, 다빈치코드, 우노, 스플렌더, 카탄, 윷놀이까지 보드게임과 전통놀이 ${games.length}가지의 하는법과 룰을 가나다순으로 모았어요.`,
+    path: '/rules/',
+    body,
+    keywords: ['보드게임 룰', '보드게임 하는법', '보드게임 규칙 모음', '보드게임 설명서', '보드게임 룰북'],
+    jsonld: { '@context': 'https://schema.org', '@type': 'ItemList', name: '보드게임 룰·하는법 모음', itemListElement: sortedGames.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/games/${g.slug}/`), name: `${bare(g.name)} 하는법` })) },
+  });
+}
+
+// ---------- 페이지: 보드게임몰 ----------
+const GOODS_ICON = `<div class="tile tile-sm tile-goods" aria-hidden="true">${icon('i-cart')}</div>`;
+function productCard(id, from) {
+  const it = SHOP.items[id];
+  const g = it.game && bySlug[it.game] && it.kind !== 'goods' ? bySlug[it.game] : null;
+  return `<li class="pcard">
+<div class="pcard-top">${g ? tile(g, 'tile-sm') : GOODS_ICON}<span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span></div>
+<h3 class="pcard-name">${esc(it.name)}</h3>
+<p class="pcard-note">${esc(it.note || '')}</p>
+${g ? `<p class="pcard-meta">${playersText(g.players)} · ${minutesText(g.minutes)} · ${ageText(g.age)} · ${LEVELS[g.level]}</p>` : ''}
+<div class="pcard-btns">${g ? `<a class="btn btn-sub btn-sm" href="/games/${g.slug}/">하는법 보기</a>` : ''}${buyLink(id, from, '쿠팡에서 보기', 'btn btn-buy btn-sm')}</div>
+</li>`;
+}
+function shopPage() {
+  const body = `<section class="page-head">
+<div class="wrap page-head-grid">
+<div>
+<h1 class="page-title">룰룰 보드게임몰</h1>
+<p class="ad-note ad-note-top"><span class="ad-tag">광고</span>이 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+<p class="page-lead">처음 사는 보드게임부터 둘이서, 아이와, 여럿이 모였을 때 하기 좋은 게임과 용품을 골라 두었어요. 모두 ${cfg.siteName}에 하는 법이 정리된 게임이라, 사기 전에 어떤 게임인지 먼저 확인할 수 있어요.</p>
+</div>
+${pic('scene-shelf', '보드게임이 가득 꽂힌 선반', 'page-art', true)}
+</div>
+<div class="wrap"><nav class="shelf-nav" aria-label="진열대로 이동">${SHOP.shelves.map((sh) => `<a class="pill" href="#${sh.slug}">${esc(sh.title)}</a>`).join('')}</nav></div>
+</section>
+<div class="wrap shop">
+${SHOP.shelves.map((sh) => `<section class="shelf" id="${sh.slug}" aria-labelledby="sh-${sh.slug}">
+<h2 class="h2" id="sh-${sh.slug}">${esc(sh.title)}</h2>
+<p class="muted">${esc(sh.lead)}</p>
+<ul class="pcards">${sh.items.map((id) => productCard(id, `shop-${sh.slug}`)).join('\n')}</ul>
+</section>`).join('\n')}
+<div class="tip-box">
+<h2 class="h2">사기 전에 알아 두세요</h2>
+<ul class="list">
+<li>버튼을 누르면 쿠팡 상품 페이지나 검색 결과로 이동해요. 가격과 배송, 교환·환불은 판매처의 안내를 따라요.</li>
+<li>같은 이름이라도 판(에디션)에 따라 구성물과 인원이 조금 달라요. 상품 페이지의 구성품을 확인하세요.</li>
+<li>${cfg.siteName}은 상품을 직접 팔지 않아요. 링크를 통해 구매하면 ${cfg.siteName}에 수수료가 생기고, 이 수수료는 설명을 만들고 검수하는 데 써요.</li>
+</ul>
+</div>
+</div>`;
+  const allIds = [...new Set(SHOP.shelves.flatMap((sh) => sh.items))];
+  return layout({
+    title: `룰룰 보드게임몰 - 처음 사는 보드게임, 2인 보드게임, 아이 보드게임 추천 | ${cfg.siteName}`,
+    description: `처음 사는 보드게임, 둘이서 하기 좋은 게임, 아이와 하는 게임, 파티 게임, 전략 게임, 명절 전통놀이 도구와 보드게임 용품을 골라 두었어요. 하는법을 먼저 확인하고 고르세요.`,
+    path: '/shop/',
+    body,
+    keywords: ['보드게임 추천', '보드게임 선물', '2인 보드게임 추천', '아이 보드게임 추천', '파티 보드게임 추천', '보드게임 구매', '윷놀이 세트'],
+    jsonld: { '@context': 'https://schema.org', '@type': 'ItemList', name: '룰룰 보드게임몰', itemListElement: allIds.map((id, i) => ({ '@type': 'ListItem', position: i + 1, name: SHOP.items[id].name })) },
+  });
+}
+
+// ---------- 페이지: 커뮤니티 ----------
+const REGIONS = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주', '온라인'];
+const POST_CATS = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천해 주세요' };
+const cmTabs = (cur) => `<nav class="cm-tabs" aria-label="커뮤니티 메뉴">${[['/community/', '홈'], ['/community/events/', '정모·번개'], ['/community/clubs/', '모임'], ['/community/board/', '자유게시판']].map(([h, l]) => `<a href="${h}"${cur === h ? ' aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const cmData = `<script type="application/json" id="cm-data">${JSON.stringify({ regions: REGIONS, cats: POST_CATS })}</script>`;
+const NOJS = '<noscript><p class="notice">커뮤니티는 자바스크립트를 켜야 쓸 수 있어요.</p></noscript>';
+function cmPage({ p, title, h1, lead, kind, desc, noindex = false, side = '' }) {
+  const body = `<section class="page-head cm-head">
+<div class="wrap">
+${cmTabs(p)}
+<h1 class="page-title">${h1}</h1>
+${lead ? `<p class="page-lead">${lead}</p>` : ''}
+</div>
+</section>
+<section class="wrap cm" data-cm="${kind}">
+${NOJS}
+<div class="cm-body" data-cm-body><p class="muted cm-loading">불러오는 중이에요</p></div>
+${side}
+</section>
+${cmData}`;
+  return layout({ title: `${title} - ${cfg.siteName}`, description: desc || lead.replace(/<[^>]+>/g, ''), path: p, body, scripts: ['community.js'], noindex });
+}
+const SAFETY = `<aside class="tip-box cm-safety">
+<h2 class="h2">처음 만나는 모임이라면</h2>
+<ul class="list">
+<li>보드게임카페처럼 사람이 많은 공개된 장소에서 만나요.</li>
+<li>회비나 돈을 먼저 보내 달라는 요청은 조심하세요. 참가비는 만나서 내는 게 안전해요.</li>
+<li>전화번호, 주소 같은 개인 정보는 글이나 댓글에 쓰지 마세요.</li>
+<li>불편한 글이나 사람은 ‘신고’를 눌러 알려 주세요. 운영자가 확인해요.</li>
+</ul>
+<p><a href="/community/rules/">커뮤니티 이용 규칙 보기</a></p>
+</aside>`;
+const communityPages = () => [
+  ['community/index.html', cmPage({ p: '/community/', kind: 'hub', title: '보드게임 모임·정모·번개 커뮤니티', h1: '보드게임 커뮤니티', lead: '우리 동네 보드게임 모임을 찾고, 정모와 번개 일정에 참여하고, 규칙 질문과 후기를 나눠요.', desc: '지역별 보드게임 모임, 보드게임 정모와 번개 일정, 자유게시판에서 규칙 질문과 게임 후기를 나누는 룰룰 보드게임 커뮤니티예요.', side: SAFETY })],
+  ['community/events/index.html', cmPage({ p: '/community/events/', kind: 'events', title: '보드게임 정모·번개 일정', h1: '정모·번개 일정', lead: '다가오는 보드게임 정모와 번개예요. 지역과 종류로 골라 보고, 마음에 드는 일정에 참여 신청하세요.', desc: '지역별 보드게임 정모와 번개 일정을 찾고 참여 신청할 수 있어요.' })],
+  ['community/event/index.html', cmPage({ p: '/community/event/', kind: 'event', title: '일정', h1: '', lead: '', noindex: true, side: SAFETY })],
+  ['community/clubs/index.html', cmPage({ p: '/community/clubs/', kind: 'clubs', title: '지역별 보드게임 모임 찾기', h1: '보드게임 모임', lead: '지역별 보드게임 모임이에요. 가입하면 정모 일정과 모임 게시판을 볼 수 있어요.', desc: '서울, 경기, 부산 등 지역별 보드게임 모임을 찾고 가입할 수 있어요.' })],
+  ['community/club/index.html', cmPage({ p: '/community/club/', kind: 'club', title: '모임', h1: '', lead: '', noindex: true, side: SAFETY })],
+  ['community/board/index.html', cmPage({ p: '/community/board/', kind: 'board', title: '보드게임 자유게시판', h1: '자유게시판', lead: '규칙이 헷갈릴 때 물어보고, 해 본 게임의 후기를 나누고, 모임에 맞는 게임을 추천받아요.', desc: '보드게임 규칙 질문, 게임 후기, 추천 부탁을 나누는 자유게시판이에요.' })],
+  ['community/post/index.html', cmPage({ p: '/community/post/', kind: 'post', title: '게시글', h1: '', lead: '', noindex: true })],
+  ['community/write/index.html', cmPage({ p: '/community/write/', kind: 'write', title: '글쓰기', h1: '', lead: '', noindex: true })],
+  ['account/index.html', cmPage({ p: '/account/', kind: 'account', title: '로그인·회원가입', h1: '', lead: '', noindex: true })],
+];
+
+// ---------- 페이지: 제휴·문의 ----------
+const INQUIRY_KINDS = { partner: '제휴·협업 제안', ad: '광고·입점 문의', store: '매장(공간) 등록·QR', game: '게임 설명 추가 요청', bug: '오류·불편 신고', etc: '그 밖의 문의' };
+function contactPage() {
+  const body = `<section class="page-head">
+<div class="wrap page-head-grid">
+<div>
+<h1 class="page-title">제휴·문의</h1>
+<p class="page-lead">출판사와 제작사, 보드게임카페와 파티룸, 교육기관, 브랜드라면 어떤 협업이든 편하게 제안해 주세요. 남겨 주신 이메일로 답을 드려요.</p>
+</div>
+${pic('fox-explain', '', 'page-art page-art-sq', true)}
+</div>
+</section>
+<section class="wrap-narrow contact">
+<ul class="contact-kinds">
+<li><b>출판사·제작사</b><span>공식 설명 함께 만들기, 신작 하는 법 등록, 설명 고치기와 삭제 요청</span></li>
+<li><b>매장·공간</b><span>보드게임카페, 파티룸, 펜션의 매장 QR과 게임 목록 등록</span></li>
+<li><b>광고·입점</b><span>보드게임몰 입점, 기획전, 브랜드 협업</span></li>
+<li><b>교육·기관</b><span>학교, 도서관, 돌봄 기관의 놀이 수업 자료</span></li>
+</ul>
+<form class="contact-form" data-contact novalidate>
+<label class="field"><span>문의 종류</span><select name="kind" required><option value="">골라 주세요</option>${Object.entries(INQUIRY_KINDS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
+<div class="field-row">
+<label class="field"><span>이름 또는 담당자 이름</span><input name="name" maxlength="40" required autocomplete="name"></label>
+<label class="field"><span>회사·단체·매장 이름 (선택)</span><input name="org" maxlength="60" autocomplete="organization"></label>
+</div>
+<div class="field-row">
+<label class="field"><span>답을 받을 이메일</span><input name="email" type="email" maxlength="120" required autocomplete="email" inputmode="email"></label>
+<label class="field"><span>전화번호 (선택)</span><input name="phone" type="tel" maxlength="30" autocomplete="tel" inputmode="tel"></label>
+</div>
+<label class="field"><span>제목</span><input name="title" maxlength="80" placeholder="예: 신작 보드게임 하는 법 등록 문의"></label>
+<label class="field"><span>내용</span><textarea name="message" rows="8" maxlength="3000" required placeholder="제안하고 싶은 내용, 일정, 참고할 주소 등을 적어 주세요."></textarea></label>
+<div class="consent">
+<p><b>개인정보 수집·이용 안내</b></p>
+<ul class="list small">
+<li>수집 항목: 이름, 이메일, 전화번호(선택), 회사·단체 이름(선택), 문의 내용</li>
+<li>이용 목적: 문의 확인과 답변, 제휴 검토</li>
+<li>보관 기간: 답변을 마친 날부터 1년 뒤 지워요. 제휴 계약으로 이어지면 계약 기간 동안 보관해요.</li>
+<li>동의하지 않을 수 있지만, 그러면 문의를 받을 수 없어요. 자세한 내용은 <a href="/privacy/">개인정보처리방침</a>에 있어요.</li>
+</ul>
+<label class="check"><input type="checkbox" name="agree" required><span>개인정보 수집·이용에 동의해요 (필수)</span></label>
+</div>
+<label class="hp" aria-hidden="true">비워 두세요<input name="website" tabindex="-1" autocomplete="off"></label>
+<p class="form-msg" role="status" aria-live="polite"></p>
+<button type="submit" class="btn btn-main btn-block">문의 보내기</button>
+</form>
+<p class="muted small center">설명이 틀린 곳은 게임 페이지의 ‘틀린 곳 알려 주기’로 보내 주시면 더 빨리 고칠 수 있어요.</p>
+</section>`;
+  return layout({ title: `제휴·문의 - ${cfg.siteName}`, description: `${cfg.siteName}과 제휴, 협업, 광고, 매장 등록, 게임 추가를 원하시면 남겨 주세요. 이메일로 답을 드려요.`, path: '/contact/', body, scripts: ['community.js'] });
+}
+
+// ---------- 페이지: 약관, 개인정보처리방침, 커뮤니티 규칙 ----------
+const officer = () => (cfg.privacyOfficer || cfg.privacyEmail
+  ? `${cfg.privacyOfficer ? esc(cfg.privacyOfficer) : '운영자'}${cfg.privacyEmail ? ` (<a href="mailto:${esc(cfg.privacyEmail)}">${esc(cfg.privacyEmail)}</a>)` : ''}`
+  : '운영자 (<a href="/contact/">제휴·문의</a> 페이지로 연락)');
+function legalPage(p, title, desc, sections) {
+  const body = `<section class="page-head"><div class="wrap-narrow">
+<h1 class="page-title">${title}</h1>
+<p class="muted">시행일 ${esc(cfg.policyDate)}</p>
+</div></section>
+<section class="wrap-narrow legal">
+${sections.map(([h, html]) => `<h2 class="h2">${h}</h2>${html}`).join('\n')}
+</section>`;
+  return layout({ title: `${title} - ${cfg.siteName}`, description: desc, path: p, body });
+}
+const ul = (items) => `<ul class="list">${items.map((x) => `<li>${x}</li>`).join('')}</ul>`;
+function termsPage() {
+  const op = cfg.operatorName ? esc(cfg.operatorName) : `${esc(cfg.siteName)} 운영자`;
+  return legalPage('/terms/', '이용약관', `${cfg.siteName} 서비스 이용약관`, [
+    ['1. 목적', `<p>이 약관은 ${op}(이하 ‘운영자’)가 제공하는 ${esc(cfg.siteName)}(${esc(SITE.replace(/^https?:\/\//, ''))}, 이하 ‘서비스’)를 이용할 때 운영자와 이용자 사이의 권리와 의무를 정해요.</p>`],
+    ['2. 서비스 내용', ul(['보드게임과 전통놀이의 하는 법 설명, 테이블 모드, 매장 QR', '회원 커뮤니티: 모임, 정모·번개 일정, 자유게시판, 댓글', '보드게임몰: 쿠팡 파트너스를 통한 상품 연결(운영자가 직접 판매하지 않아요)', '제휴·문의 받기'])],
+    ['3. 회원가입과 계정', ul(['만 14세 이상만 가입할 수 있어요.', '아이디와 비밀번호는 본인이 관리해요. 다른 사람에게 빌려주거나 팔 수 없어요.', '회원은 언제든 내 정보에서 탈퇴할 수 있어요. 탈퇴하면 계정 정보는 바로 지워지고, 이미 쓴 글과 댓글은 ‘탈퇴한 회원’ 이름으로 남아요. 지우고 싶은 글은 탈퇴 전에 직접 지워 주세요.'])],
+    ['4. 게시물', ul(['회원이 쓴 글의 권리는 쓴 사람에게 있어요. 운영자는 서비스 안에서 보여 주고 검색에 노출하는 범위에서 쓸 수 있어요.', '다음 게시물은 알리지 않고 가리거나 지울 수 있어요: 욕설과 혐오 표현, 개인 정보 노출, 광고와 도배, 불법 정보, 다른 사람의 권리를 침해하는 글, 성적인 글, 미성년자에게 해로운 글.', '여러 회원이 신고한 글은 운영자가 확인하기 전까지 자동으로 가려질 수 있어요.'])],
+    ['5. 모임과 오프라인 만남', ul(['모임과 정모·번개는 회원이 스스로 열고 참여해요. 운영자는 만남을 주최하거나 보증하지 않아요.', '만남에서 생긴 다툼, 사고, 금전 문제는 당사자끼리 해결해야 해요. 운영자는 신고를 받으면 게시물과 계정에 필요한 조치를 해요.', '회비를 받는 모임은 금액과 쓰는 곳을 미리 알려야 해요.'])],
+    ['6. 이용 제한', `<p>약관이나 <a href="/community/rules/">커뮤니티 이용 규칙</a>을 어기면 글을 가리거나, 글쓰기를 막거나, 계정 이용을 멈출 수 있어요.</p>`],
+    ['7. 구매 링크', `<p>보드게임몰과 게임 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다. 상품의 가격, 배송, 교환·환불은 판매처의 정책을 따라요.</p>`],
+    ['8. 책임의 한계', ul(['게임 설명은 규칙을 우리 말로 다시 쓴 것이에요. 판과 지역에 따라 다를 수 있고, 상자 속 공식 룰북을 대신하지 않아요.', '운영자는 천재지변, 서비스 점검, 이용자의 잘못으로 생긴 손해에 책임지지 않아요.'])],
+    ['9. 약관 바꾸기', `<p>약관을 바꿀 때는 시행 7일 전에 이 페이지에 알려요. 이용자에게 불리한 변경은 30일 전에 알려요.</p>`],
+  ]);
+}
+function privacyPage() {
+  return legalPage('/privacy/', '개인정보처리방침', `${cfg.siteName}이 어떤 개인정보를 왜 모으고 어떻게 지키는지 알려 드려요.`, [
+    ['1. 모으는 정보와 목적', `<div class="table-wrap"><table class="ptable"><thead><tr><th>구분</th><th>항목</th><th>목적</th><th>보관 기간</th></tr></thead><tbody>
+<tr><td>회원가입</td><td>아이디, 닉네임, 비밀번호(암호화해서 저장), 활동 지역(선택), 한 줄 소개(선택)</td><td>회원 확인, 커뮤니티 이용</td><td>탈퇴할 때까지</td></tr>
+<tr><td>커뮤니티 이용</td><td>글, 댓글, 모임 가입과 일정 참여 기록</td><td>커뮤니티 서비스 제공</td><td>탈퇴하면 작성자 정보를 지우고 글은 ‘탈퇴한 회원’으로 남아요</td></tr>
+<tr><td>제휴·문의</td><td>이름, 이메일, 전화번호(선택), 회사·단체 이름(선택), 문의 내용</td><td>문의 답변, 제휴 검토</td><td>답변 후 1년</td></tr>
+<tr><td>틀린 곳 알려 주기</td><td>연락처(선택), 의견 내용</td><td>설명 고치기, 답변</td><td>처리 후 1년</td></tr>
+<tr><td>부정 이용 막기</td><td>접속 IP를 날마다 바뀌는 방식으로 바꾼 값(원래 IP는 저장하지 않아요)</td><td>도배와 자동 가입 막기</td><td>2일</td></tr>
+</tbody></table></div>`],
+    ['2. 쿠키와 브라우저 저장', ul(['로그인 상태를 유지하려고 쿠키(rr_sid)를 써요. 30일 동안 쓰지 않으면 끝나요.', '글씨 크기, 체크한 구성물 같은 설정은 이용자의 브라우저에만 저장해요.', '이용 숫자는 날짜별 합계로만 세요. 누가 봤는지는 알 수 없어요.', '보드게임몰의 구매 버튼을 누르면 쿠팡으로 이동하고, 이후에는 쿠팡의 개인정보처리방침이 적용돼요.'])],
+    ['3. 다른 곳에 주거나 맡기는 일', `<p>법에 따른 요청이 있을 때 말고는 개인정보를 다른 곳에 주지 않아요. 서비스 운영을 위해 아래 업체에 저장과 처리를 맡겨요.</p>
+${ul(['Cloudflare, Inc. (미국): 웹사이트 호스팅, 데이터 저장(Cloudflare D1). 위 1번의 항목이 Cloudflare의 데이터센터에 저장되며, 이용자가 정보를 입력할 때 네트워크를 통해 옮겨져요. 보관 기간은 위 1번과 같아요.'])}`],
+    ['4. 지우는 방법', `<p>보관 기간이 지나거나 목적을 이룬 정보는 바로 지워요. 데이터베이스의 기록은 복구할 수 없게 지워요.</p>`],
+    ['5. 이용자의 권리', ul(['내 정보 페이지에서 닉네임, 지역, 소개를 고치고 탈퇴할 수 있어요.', '내 정보를 보거나 고치거나 지워 달라고 요청할 수 있어요. 아래 책임자에게 알려 주시면 10일 안에 처리해요.', '만 14세 미만은 회원가입을 받지 않아요.'])],
+    ['6. 안전하게 지키는 방법', ul(['비밀번호는 되돌릴 수 없는 방식(PBKDF2)으로 바꿔 저장해요.', '모든 연결은 HTTPS로 암호화해요.', '운영 관리 화면은 관리자 비밀번호로만 들어갈 수 있어요.'])],
+    ['7. 개인정보 보호책임자', `<p>${officer()}</p><p class="muted small">개인정보 침해 신고와 상담은 개인정보침해신고센터(privacy.kisa.or.kr, 국번 없이 118)에서도 받을 수 있어요.</p>`],
+    ['8. 바뀌는 경우', `<p>이 방침을 바꿀 때는 시행 7일 전에 이 페이지에 알려요.</p>`],
+  ]);
+}
+function communityRulesPage() {
+  return legalPage('/community/rules/', '커뮤니티 이용 규칙', `${cfg.siteName} 커뮤니티를 함께 쓰는 규칙이에요.`, [
+    ['함께 지켜요', ul(['처음 보는 사람에게도 존댓말을 써요.', '게임을 못한다고, 규칙을 모른다고 핀잔 주지 않아요. 모두 처음이 있었어요.', '규칙 질문에는 아는 만큼 친절하게 답해 주세요. 판마다 다른 규칙이면 어떤 판인지 함께 적어 주세요.'])],
+    ['이런 글은 가려요', ul(['욕설, 비하, 혐오 표현', '전화번호, 주소, 실명 같은 개인 정보 (내 것도, 남의 것도)', '모임과 상관없는 광고, 홍보, 같은 글 반복', '돈을 먼저 보내 달라는 글, 중고 거래 사기 의심 글', '이성 만남을 목적으로 한 모임 글', '성적인 글, 미성년자에게 해로운 글'])],
+    ['모임을 열 때', ul(['날짜, 장소, 인원, 참가비를 분명하게 적어요. 참가비가 있다면 어디에 쓰는지도 적어요.', '공개된 장소에서 만나요. 보드게임카페, 스터디카페, 파티룸처럼 사람이 오가는 곳이 좋아요.', '일정이 바뀌거나 취소되면 바로 고치고 댓글로 알려 주세요.', '미성년자가 참여하는 모임은 보호자와 함께해요.'])],
+    ['신고와 조치', ul(['글과 댓글 아래 ‘신고’를 누르면 운영자에게 알려져요.', '여러 회원이 신고한 글은 운영자가 보기 전까지 자동으로 가려져요.', '규칙을 여러 번 어기면 글쓰기를 막거나 계정 이용을 멈춰요.'])],
+  ]);
+}
+
 // ---------- 페이지: 소개, 관리자, 404, 오프라인 ----------
 function aboutPage() {
   const principles = [
@@ -945,7 +1341,7 @@ ${pic('scene-phone', '테이블 위 휴대폰으로 규칙을 확인하는 모�
 <ul class="crew crew-wrap">
 ${CREW.map(([im, nm, role, line]) => `<li><span class="crew-card">${pic(im, '', 'crew-pic')}<span class="crew-name">${nm}</span><span class="crew-role">${role}</span><span class="crew-line">${line}</span></span></li>`).join('')}
 </ul>
-<div class="row-btns"><button type="button" class="btn btn-sub" data-report="">의견 보내기</button>${cfg.contactEmail ? `<a class="btn btn-ghost" href="mailto:${esc(cfg.contactEmail)}">${esc(cfg.contactEmail)}</a>` : ''}</div>
+<div class="row-btns"><a class="btn btn-main" href="/contact/">제휴·문의하기</a><button type="button" class="btn btn-sub" data-report="">의견 보내기</button>${cfg.contactEmail ? `<a class="btn btn-ghost" href="mailto:${esc(cfg.contactEmail)}">${esc(cfg.contactEmail)}</a>` : ''}</div>
 </section>`;
   return layout({ title: `${cfg.siteName} 소개 - 설명을 만드는 원칙 | ${cfg.siteName}`, description: `${cfg.siteName}이 보드게임 설명을 만드는 원칙과 검수 표시, 출판사 문의 방법을 알려 드려요.`, path: '/about/', body });
 }
@@ -966,10 +1362,16 @@ function adminPage() {
 <button role="tab" aria-selected="true" aria-controls="a-reports" id="t-reports">신고함</button>
 <button role="tab" aria-selected="false" aria-controls="a-stats" id="t-stats">이용 기록</button>
 <button role="tab" aria-selected="false" aria-controls="a-content" id="t-content">원고 관리</button>
+<button role="tab" aria-selected="false" aria-controls="a-inq" id="t-inq">문의함</button>
+<button role="tab" aria-selected="false" aria-controls="a-shop" id="t-shop">쇼핑 링크</button>
+<button role="tab" aria-selected="false" aria-controls="a-cm" id="t-cm">커뮤니티</button>
 </div>
 <div class="panel" id="a-reports" role="tabpanel" aria-labelledby="t-reports"></div>
 <div class="panel" id="a-stats" role="tabpanel" aria-labelledby="t-stats"></div>
 <div class="panel" id="a-content" role="tabpanel" aria-labelledby="t-content"></div>
+<div class="panel" id="a-inq" role="tabpanel" aria-labelledby="t-inq"></div>
+<div class="panel" id="a-shop" role="tabpanel" aria-labelledby="t-shop"></div>
+<div class="panel" id="a-cm" role="tabpanel" aria-labelledby="t-cm"></div>
 </div>
 </section>`;
   return layout({ title: `운영 관리 - ${cfg.siteName}`, description: '운영 관리 화면', path: '/admin/', body, noindex: true, scripts: ['admin.js'] });
@@ -1027,6 +1429,15 @@ write('space/index.html', spacePage());
 write('space/view/index.html', spaceViewPage());
 for (const v of venues) write(`space/${v.slug}/index.html`, venuePage(v));
 write('about/index.html', aboutPage());
+write('rules/index.html', rulesPage());
+write('shop/index.html', shopPage());
+for (const [f, html] of communityPages()) write(f, html);
+write('contact/index.html', contactPage());
+write('terms/index.html', termsPage());
+write('privacy/index.html', privacyPage());
+write('community/rules/index.html', communityRulesPage());
+// 네이버 사이트 소유 확인 파일 (함수가 먼저 답하지만, 정적 파일도 함께 둬요)
+write('naver166f723b5ee950517c79af0092638755.html', 'naver-site-verification: naver166f723b5ee950517c79af0092638755.html');
 write('admin/index.html', adminPage());
 write('404.html', notFoundPage());
 write('offline.html', offlinePage());
@@ -1039,6 +1450,8 @@ const compact = sortedGames.map((g) => ({
   done: ['components', 'setup', 'examples', 'rules', 'tricky', 'faq'].filter((k) => (g[k] || []).length).length,
 }));
 write('data/games.json', JSON.stringify({ build: BUILD, games: compact, popular: content.popular }));
+// 구매 버튼(/go/)이 읽는 상품 목록: id -> 이름, 쿠팡 검색어, 고정 링크
+write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || '', g: it.game || '' }])) }));
 
 write('manifest.webmanifest', JSON.stringify({
   name: cfg.tagline ? `${cfg.siteName} | ${cfg.tagline}` : cfg.siteName,
@@ -1060,22 +1473,63 @@ write('manifest.webmanifest', JSON.stringify({
 write('sw.js', fs.readFileSync(path.join(STATIC, 'sw.js'), 'utf8').replace(/__BUILD__/g, BUILD));
 write('_headers', fs.readFileSync(path.join(STATIC, '_headers'), 'utf8'));
 
-const today = new Date().toISOString().slice(0, 10);
-const urls = ['/', '/games/', '/traditional/', '/learn/', '/space/', '/about/',
-  ...games.map((g) => `/games/${g.slug}/`),
-  ...content.collections.map((c) => `/collections/${c.slug}/`)];
+const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+const gameDay = (g) => (g.checked && g.checked.date) || (g.reviewed && g.reviewed.date) || today;
+const urls = [
+  ['/', 'daily', '1.0'], ['/games/', 'weekly', '0.9'], ['/rules/', 'weekly', '0.9'], ['/traditional/', 'weekly', '0.8'], ['/shop/', 'weekly', '0.7'],
+  ['/community/', 'daily', '0.6'], ['/community/events/', 'daily', '0.5'], ['/community/clubs/', 'daily', '0.5'], ['/community/board/', 'daily', '0.5'],
+  ['/learn/', 'monthly', '0.6'], ['/space/', 'monthly', '0.5'], ['/about/', 'monthly', '0.4'], ['/contact/', 'yearly', '0.4'],
+  ['/terms/', 'yearly', '0.2'], ['/privacy/', 'yearly', '0.2'], ['/community/rules/', 'yearly', '0.2'],
+  ...games.map((g) => [`/games/${g.slug}/`, 'weekly', '0.9', gameDay(g)]),
+  ...content.collections.map((c) => [`/collections/${c.slug}/`, 'weekly', '0.7']),
+];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `<url><loc>${abs(u)}</loc><lastmod>${today}</lastmod></url>`).join('\n')}
+${urls.map(([u, f, pr, d]) => `<url><loc>${abs(u)}</loc><lastmod>${d || today}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority></url>`).join('\n')}
 </urlset>
 `);
 write('robots.txt', `User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+Disallow: /go/
 Disallow: /space/view/
+Disallow: /account/
+Disallow: /community/write/
+
+User-agent: Yeti
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /go/
+Disallow: /account/
+Disallow: /community/write/
 
 Sitemap: ${abs('/sitemap.xml')}
+Sitemap: ${abs('/rss.xml')}
+`);
+// 네이버 서치어드바이저에 제출하는 RSS (게임 페이지 전체)
+const rfc822 = (d) => new Date(`${d}T09:00:00+09:00`).toUTCString();
+const xesc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+write('rss.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>${xesc(cfg.siteTitle)}</title>
+<link>${abs('/')}</link>
+<description>${xesc(cfg.description)}</description>
+<language>ko</language>
+<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+<atom:link href="${abs('/rss.xml')}" rel="self" type="application/rss+xml"/>
+${[...games].sort((a, b) => gameDay(b).localeCompare(gameDay(a)) || collator.compare(a.name, b.name)).map((g) => { const so = seoOf(g); return `<item>
+<title>${xesc(`${so.n} 하는법·룰 총정리 | ${so.hooks.join('·')}`)}</title>
+<link>${abs(`/games/${g.slug}/`)}</link>
+<guid isPermaLink="true">${abs(`/games/${g.slug}/`)}</guid>
+<category>${xesc(GROUPS[g.group])}</category>
+<description>${xesc(`${so.n} 하는법과 룰. ${plain(g.oneLine)} ${playersText(g.players)}, ${minutesText(g.minutes)}. 이기는 법: ${plain(g.summary.goal)}`)}</description>
+<pubDate>${rfc822(gameDay(g))}</pubDate>
+</item>`; }).join('\n')}
+</channel>
+</rss>
 `);
 
-console.log(`완료: 게임 ${games.length}개, 묶음 ${content.collections.length}개, 페이지 ${urls.length + 6 + venues.length}개를 public/에 만들었어요. (빌드 ${BUILD})`);
+console.log(`완료: 게임 ${games.length}개, 묶음 ${content.collections.length}개, 상품 ${Object.keys(SHOP.items).length}개, 사이트맵 주소 ${urls.length}개를 public/에 만들었어요. (빌드 ${BUILD})`);
