@@ -40,7 +40,11 @@ export const blob = (shapes, fill, sw = 2.4, stroke = C.ink) =>
   shapes.map((f) => f({ fill: stroke, stroke, sw: sw * 2, join: 'round' })).join('') + shapes.map((f) => f({ fill })).join('');
 
 // ---------- 글자 ----------
+// 휴대폰에서도 읽히도록 한글 글씨는 15.5, 숫자와 영문은 12보다 작게 쓰지 않아요.
+export const MIN_KO = 15.5, MIN_NUM = 12;
+export const ts = (size, s) => (/[\u1100-\uD7AF]/.test(String(s)) ? Math.max(size, MIN_KO) : Math.max(size, MIN_NUM));
 export function textW(s, size) {
+  size = ts(size, s);
   let w = 0;
   for (const ch of String(s)) {
     const c = ch.codePointAt(0);
@@ -54,20 +58,23 @@ export function textW(s, size) {
   return w * size;
 }
 export const T = (x, y, s, o = {}) => {
-  const { size = 17, weight = 700, fill = C.ink, anchor = 'middle', op } = o;
+  const { weight = 700, fill = C.ink, anchor = 'middle', op } = o;
+  const size = n(ts(o.size || 17, s));
   return `<text x="${n(x)}" y="${n(y)}" font-size="${size}" font-weight="${weight}" fill="${fill}" text-anchor="${anchor}" dominant-baseline="central"${op !== undefined ? ` opacity="${op}"` : ''}>${esc(s)}</text>`;
 };
 
 // 동그란 이름표
 export function pill(cx, cy, s, o = {}) {
-  const { size = 15, bg = C.ink, fg = '#fff', pad = 10, stroke, h = size + 13 } = o;
+  const { bg = C.ink, fg = '#fff', pad = 10, stroke } = o;
+  const size = ts(o.size || 15, s), h = o.h || size + 13;
   const w = textW(s, size) + pad * 2;
   return rect(cx - w / 2, cy - h / 2, w, h, { fill: bg, rx: h / 2, stroke, sw: stroke ? 2 : undefined }) + T(cx, cy + 0.5, s, { size, fill: fg });
 }
 
 // 말풍선 (tail: 꼬리 방향 'bl', 'br', 'tl', 'tr', 'l', 'r')
 export function bubble(cx, cy, s, o = {}) {
-  const { size = 17, tail = 'bl', bg = C.paper, fg = C.ink, stroke = C.ink, h = size + 18 } = o;
+  const { tail = 'bl', bg = C.paper, fg = C.ink, stroke = C.ink } = o;
+  const size = ts(o.size || 17, s), h = o.h || size + 18;
   const w = Math.max(textW(s, size) + 26, h + 6);
   const x = cx - w / 2, y = cy - h / 2;
   let t;

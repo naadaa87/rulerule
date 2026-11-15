@@ -267,6 +267,7 @@
         if (on && focus) t.focus();
       });
       panels.forEach(function (p) { p.classList.toggle('active', p.id === id); });
+      if (id === 'visual' && window.RS.visPaint) window.RS.visPaint();
     };
     tabs.forEach(function (t, i) {
       t.addEventListener('click', function () {
@@ -300,24 +301,46 @@
     if (vis) {
       var visTrack = $('[data-vis-track]', vis), steps = $$('.vis-step', vis), dots = $$('[data-vis-go]', vis);
       var prevB = $('[data-vis-prev]', vis), nextB = $('[data-vis-next]', vis), countEl = $('.vis-count', vis), modeB = $('[data-vis-mode]', vis);
-      var cur = 0, total = steps.length, ticking = false;
+      var cur = 0, total = steps.length, ticking = false, chipBar = $('.vis-steps', vis);
       var stepW = function () { return steps.length > 1 ? steps[1].offsetLeft - steps[0].offsetLeft : visTrack.clientWidth; };
       var paint = function () {
-        dots.forEach(function (d, i) { d.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+        dots.forEach(function (d, i) {
+          d.setAttribute('aria-current', i === cur ? 'true' : 'false');
+          if (i <= cur) d.classList.add('seen');
+        });
+        var on = dots[cur];
+        if (chipBar && on) {
+          var l = on.parentNode.offsetLeft - chipBar.offsetLeft, r = l + on.offsetWidth;
+          if (l < chipBar.scrollLeft) chipBar.scrollLeft = l - 8;
+          else if (r > chipBar.scrollLeft + chipBar.clientWidth) chipBar.scrollLeft = r - chipBar.clientWidth + 8;
+        }
         if (countEl) countEl.textContent = (cur + 1) + ' / ' + total;
+        // 지금 보는 장의 높이에 맞춰 아래 버튼이 바로 붙게 해요
+        var hh = steps[cur] ? steps[cur].offsetHeight : 0;
+        visTrack.style.height = !vis.classList.contains('all') && hh ? (hh + 8) + 'px' : '';
         prevB.disabled = cur === 0;
         nextB.textContent = cur === total - 1 ? '처음부터' : '다음';
       };
-      var go = function (i, instant) {
+      // 버튼으로 넘겼는데 그림 윗부분이 탭 아래로 가려져 있으면 단계 목록이 보이게 올려 줘요
+      var reveal = function () {
+        var bar = $('.tabs', gameEl), top = (bar ? bar.getBoundingClientRect().bottom : 0) + 8;
+        var head = chipBar || visTrack, y = head.getBoundingClientRect().top;
+        if (y < top) window.scrollBy({ top: y - top, behavior: 'smooth' });
+      };
+      var go = function (i, instant, fromUser) {
         cur = Math.max(0, Math.min(total - 1, i));
+        if (fromUser) setTimeout(reveal, 40);
         if (!vis.classList.contains('all')) visTrack.scrollTo({ left: cur * stepW(), behavior: instant ? 'auto' : undefined });
         else steps[cur].scrollIntoView({ block: 'start' });
         paint();
       };
       window.RS.visGo = go;
-      prevB.addEventListener('click', function () { go(cur - 1); });
-      nextB.addEventListener('click', function () { go(cur === total - 1 ? 0 : cur + 1); });
+      window.RS.visPaint = function () { paint(); };
+      window.addEventListener('load', function () { paint(); });
+      prevB.addEventListener('click', function () { go(cur - 1, false, true); });
+      nextB.addEventListener('click', function () { go(cur === total - 1 ? 0 : cur + 1, false, true); });
       dots.forEach(function (d) { d.addEventListener('click', function () { go(Number(d.dataset.visGo)); }); });
+      window.addEventListener('resize', function () { paint(); });
       visTrack.addEventListener('scroll', function () {
         if (ticking || vis.classList.contains('all')) return;
         ticking = true;

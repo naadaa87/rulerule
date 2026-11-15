@@ -70,7 +70,7 @@ const island = (cx, cy, r, tiles) => {
 };
 const vtx = (cx, cy, r, i) => hexPts(cx, cy, r)[i];
 const road = (x1, y1, x2, y2, c) => line(x1, y1, x2, y2, { stroke: C.ink, sw: 9 }) + line(x1, y1, x2, y2, { stroke: c, sw: 5.5 });
-const rcard = (x, y, k, o = {}) => card(x, y, { w: o.w || 30, h: o.h || 42, fill: RES[k][0], rx: 5, op: o.op, inner: (cx, cy) => (o.label ? T(cx, cy, RES[k][1], { size: 10, fill: '#fff' }) : '') });
+const rcard = (x, y, k, o = {}) => card(x, y, { w: o.w || 30, h: o.h || 42, fill: RES[k][0], rx: 5, op: o.op, inner: (cx, cy) => (o.label ? T(cx, cy, RES[k][1], { size: 13, fill: k === 'g' || k === 's' ? C.ink : '#fff' }) : '') });
 const ISL = [['g', 8], ['w', 11], ['b', 6], ['o', 5], ['s', 9], ['s', 4], ['w', 10]];
 const catan = [
   {
@@ -86,15 +86,15 @@ const catan = [
     art: [1, 2, 3, 4].map((n, i) => badge(60 + i * 60, 60, n, { r: 15, bg: [C.red, C.blue, C.orange, '#6B7280'][i] })).join('') + arrow(70, 84, 230, 84, { w: 3, c: C.muted }) + T(150, 112, '첫째 바퀴', { size: 14 })
       + [4, 3, 2, 1].map((n, i) => badge(60 + i * 60, 160, n, { r: 15, bg: [C.red, C.blue, C.orange, '#6B7280'][4 - n] })).join('') + arrow(70, 184, 230, 184, { w: 3, c: C.muted }) + T(150, 212, '둘째 바퀴 (거꾸로)', { size: 14 })
       + hex(370, 130, 52, 'w', 11) + house(...vtx(370, 130, 52, 5), C.red, 1.3) + road(...vtx(370, 130, 52, 5), ...vtx(370, 130, 52, 4), C.red)
-      + rcard(340, 214, 'w', { label: true, w: 36, h: 50 }) + T(410, 240, '+1장', { size: 16, fill: C.ok }),
+      + rcard(336, 212, 'w', { label: true, w: 40, h: 52 }) + T(410, 238, '+1장', { size: 16, fill: C.ok }),
   },
   {
     k: '내 차례', t: '주사위 합의 땅에서 자원이 나와요',
     d: '주사위 2개를 굴려요. 나온 합의 숫자가 적힌 땅에 붙은 마을은 자원 1장, 도시는 2장을 받아요. 내 차례가 아니어도 받아요.',
     art: die(54, 70, 3, { s: 44 }) + die(108, 70, 5, { s: 44 }) + T(82, 124, '= 8', { size: 24, weight: 800 })
       + hex(250, 150, 70, 'g', 8) + house(...vtx(250, 150, 70, 0), C.red, 1.3) + city(...vtx(250, 150, 70, 3), C.blue, 1.2)
-      + rcard(372, 48, 'g', { label: true }) + T(434, 70, '빨강 1장', { size: 14 })
-      + rcard(372, 186, 'g', { label: true }) + rcard(386, 196, 'g', { label: true }) + T(442, 220, '파랑 2장', { size: 14 })
+      + rcard(374, 36, 'g', { label: true, w: 40, h: 52 }) + T(394, 112, '빨강 1장', { size: 14 })
+      + rcard(374, 176, 'g', { w: 40, h: 52 }) + rcard(388, 186, 'g', { label: true, w: 40, h: 52 }) + T(408, 260, '파랑 2장', { size: 14 })
       + arrow(266, 70, 364, 70, { w: 3 }) + arrow(270, 222, 364, 218, { w: 3 }),
   },
   {
@@ -103,7 +103,7 @@ const catan = [
     art: [['길', ['b', 'w']], ['마을', ['b', 'w', 's', 'g']], ['도시', ['o', 'o', 'o', 'g', 'g']], ['발전 카드', ['o', 's', 'g']]].map(([nm, list], r) => {
       const y = 22 + r * 68;
       const icon = r === 0 ? road(36, y + 40, 70, y + 26, C.red) : r === 1 ? house(52, y + 34, C.red, 1.3) : r === 2 ? city(52, y + 34, C.red, 1.2) : card(38, y + 14, { w: 28, h: 40, back: true, rx: 5 });
-      return icon + T(130, y + 34, nm, { size: 15 }) + list.map((k, i) => rcard(192 + i * 40, y + 12, k, { label: true })).join('');
+      return icon + T(130, y + 34, nm, { size: 15 }) + list.map((k, i) => rcard(186 + i * 46, y + 10, k, { label: true, w: 40, h: 48 })).join('');
     }).join(''),
   },
   {
@@ -139,15 +139,15 @@ const seg = (x1, y1, x2, y2, n, c, o = {}) => {
 const cityDot = (x, y, nm, o = {}) => circ(x, y, 9, { fill: C.paper, stroke: C.ink, sw: 2.4 }) + (nm ? T(x + (o.dx || 0), y + (o.dy ?? -20), nm, { size: 14 }) : '');
 const tcard = (x, y, c, o = {}) => card(x, y, { w: o.w || 40, h: o.h || 58, fill: c === 'loco' ? '#F6F0FF' : TC[c], rx: 6, rot: o.rot || 0,
   inner: (cx, cy, w, h) => (c === 'loco'
-    ? ['#D8413F', '#F2B42E', '#3D9A5E', '#3B6FC0'].map((cc, i) => rect(cx - w * 0.36 + i * w * 0.18, cy - h * 0.06, w * 0.18, h * 0.12, { fill: cc })).join('') + T(cx, cy + h * 0.26, '기관차', { size: w * 0.2, fill: C.purple })
+    ? ['#D8413F', '#F2B42E', '#3D9A5E', '#3B6FC0'].map((cc, i) => rect(cx - w * 0.36 + i * w * 0.18, cy - h * 0.06, w * 0.18, h * 0.12, { fill: cc })).join('') + (w >= 56 ? T(cx, cy + h * 0.26, '기관차', { size: 13, fill: C.purple }) : '')
     : rect(cx - w * 0.3, cy - h * 0.08, w * 0.6, h * 0.16, { fill: '#fff', op: 0.45, rx: 3 })) });
-const ticket = (x, y, a, b, pts, o = {}) => rect(x, y + 3, 110, 56, { fill: C.ink, rx: 8 }) + rect(x, y, 110, 56, { fill: '#FFF6E0', stroke: C.ink, sw: 2, rx: 8 }) + T(x + 55, y + 20, `${a} – ${b}`, { size: 13 }) + T(x + 55, y + 40, `${pts}점`, { size: 15, weight: 800, fill: C.pt });
+const ticket = (x, y, a, b, pts, o = {}) => rect(x, y + 3, 124, 58, { fill: C.ink, rx: 8 }) + rect(x, y, 124, 58, { fill: '#FFF6E0', stroke: C.ink, sw: 2, rx: 8 }) + T(x + 62, y + 20, `${a}–${b}`, { size: 14 }) + T(x + 62, y + 41, `${pts}점`, { size: 15, weight: 800, fill: C.pt });
 const ttr = [
   {
     k: '목표', t: '노선을 잇고 목적지 티켓을 완성해요',
     d: '기차 카드를 모아 도시와 도시 사이 노선을 차지해요. 노선 점수와 목적지 티켓 점수를 더해 가장 많으면 이겨요.',
     art: seg(80, 220, 190, 120, 3, 'x', { train: C.red }) + seg(190, 120, 320, 110, 4, 'b') + seg(320, 110, 410, 200, 3, 'y') + seg(80, 220, 250, 240, 4, 'g') + seg(250, 240, 410, 200, 4, 'x', { train: C.red })
-      + cityDot(80, 220, '덴버', { dy: 24 }) + cityDot(190, 120, '오마하') + cityDot(320, 110, '시카고') + cityDot(410, 200, '피츠버그', { dy: -22 }) + cityDot(250, 240, '댈러스', { dy: 24 })
+      + cityDot(80, 220, '덴버', { dy: 24 }) + cityDot(190, 120, '오마하') + cityDot(320, 110, '시카고') + cityDot(410, 200, '피츠버그', { dy: 26, dx: 10 }) + cityDot(250, 240, '댈러스', { dy: 24 })
       + ticket(20, 24, '덴버', '시카고', 11),
   },
   {
@@ -156,12 +156,12 @@ const ttr = [
     art: [0, 1, 2, 3, 4].map((i) => g(rect(-18, -7, 36, 14, { fill: C.red, stroke: C.ink, sw: 1.6, rx: 3 }), { x: 60, y: 60 + i * 20 })).join('') + T(60, 176, '기차 45개', { size: 14 })
       + ['r', 'b', 'loco', 'g'].map((c, i) => tcard(130 + i * 46, 54, c)).join('') + T(220, 140, '기차 카드 4장', { size: 14 })
       + ['y', 'k', 'w', 'r', 'p'].map((c, i) => tcard(118 + i * 46, 176, c, { w: 36, h: 52 })).join('') + T(220, 252, '5장 펼치기', { size: 14 })
-      + ticket(350, 40, '덴버', '시카고', 11) + ticket(350, 108, '오마하', '댈러스', 8) + ticket(350, 176, '덴버', '피츠버그', 11) + no(458, 204, 12) + T(405, 254, '2장 이상 가져요', { size: 13, fill: C.muted }),
+      + ticket(346, 30, '덴버', '시카고', 11) + ticket(346, 98, '오마하', '댈러스', 8) + ticket(346, 166, '덴버', '피츠버그', 11) + no(466, 194, 12) + T(408, 254, '2장 이상 가져요', { size: 13, fill: C.muted }),
   },
   {
     k: '내 차례', t: '셋 중 하나만 해요',
     d: '기차 카드 2장 받기, 노선 하나 차지하기, 목적지 티켓 받기 가운데 하나만 해요. 펼친 카드 중 기관차를 가져오면 그 차례에는 그 1장만 가져와요.',
-    art: [['카드 2장', (cx) => tcard(cx - 34, 92, 'r') + tcard(cx - 2, 100, 'g')], ['노선 차지', (cx) => seg(cx - 50, 130, cx + 50, 110, 3, 'x', { train: C.red })], ['티켓 받기', (cx) => ticket(cx - 55, 98, 'A', 'B', '?')]].map(([nm, f], i) => {
+    art: [['카드 2장', (cx) => tcard(cx - 34, 92, 'r') + tcard(cx - 2, 100, 'g')], ['노선 차지', (cx) => seg(cx - 50, 130, cx + 50, 110, 3, 'x', { train: C.red })], ['티켓 받기', (cx) => ticket(cx - 62, 98, 'A', 'B', '?')]].map(([nm, f], i) => {
       const cx = 86 + i * 154;
       return rect(cx - 70, 30, 140, 200, { fill: C.paper, stroke: C.ink, sw: 2, rx: 16 }) + T(cx, 58, nm, { size: 16 }) + f(cx);
     }).join('') + pill(240, 266, '하나만 골라요', { size: 15, bg: C.pt }),
@@ -170,7 +170,7 @@ const ttr = [
     k: '노선', t: '칸 수만큼 같은 색 카드를 내요',
     d: '노선의 칸 수만큼 그 색 카드를 내고 내 기차를 놓아요. 기관차는 어떤 색으로도 쓸 수 있어요. 회색 노선은 아무 색이든 한 가지 색으로만 내요.',
     art: cityDot(60, 70, '오마하') + cityDot(420, 70, '시카고') + seg(60, 70, 420, 70, 4, 'r') + T(240, 106, '빨간 4칸', { size: 14, fill: C.muted })
-      + tcard(120, 140, 'r') + tcard(166, 140, 'r') + tcard(212, 140, 'r') + tcard(258, 140, 'loco') + T(340, 170, '= 빨강 4장', { size: 16 }) + ok(420, 170, 14)
+      + tcard(110, 140, 'r') + tcard(156, 140, 'r') + tcard(202, 140, 'r') + tcard(248, 140, 'loco') + T(350, 160, '= 빨강 4장', { size: 16 }) + T(350, 184, '기관차는 아무 색', { size: 12, fill: C.muted }) + ok(440, 170, 14)
       + arrow(240, 210, 240, 236, { w: 3 }) + seg(140, 256, 340, 256, 4, 'r', { train: C.blue }) + T(400, 256, '내 기차', { size: 13, fill: C.blue }),
   },
   {
@@ -185,8 +185,8 @@ const ttr = [
     k: '끝', t: '기차가 2개 이하로 남으면 한 바퀴 더',
     d: '누군가 남은 기차가 2개 이하가 되면 그 사람까지 모두 한 번씩 더 하고 끝나요. 완성한 티켓은 더하고 못 이은 티켓은 빼요. 가장 길게 이어진 사람은 10점을 더 받아요.',
     art: [0, 1].map((i) => g(rect(-18, -7, 36, 14, { fill: C.red, stroke: C.ink, sw: 1.6, rx: 3 }), { x: 60 + i * 42, y: 60 })).join('') + T(140, 60, '2개 남음', { size: 15, anchor: 'start' }) + pill(330, 60, '모두 한 번씩 더', { size: 14, bg: C.pt })
-      + ticket(40, 120, '덴버', '시카고', 11) + ok(162, 148, 13) + T(214, 148, '+11', { size: 18, weight: 800, fill: C.ok })
-      + ticket(40, 196, '오마하', '댈러스', 8) + no(162, 224, 13) + T(210, 224, '−8', { size: 18, weight: 800, fill: C.pt })
+      + ticket(30, 120, '덴버', '시카고', 11) + ok(172, 148, 13) + T(222, 148, '+11', { size: 18, weight: 800, fill: C.ok })
+      + ticket(30, 196, '오마하', '댈러스', 8) + no(172, 224, 13) + T(218, 224, '−8', { size: 18, weight: 800, fill: C.pt })
       + rect(290, 130, 150, 110, { fill: C.paper, stroke: C.ink, sw: 2, rx: 14 }) + T(365, 162, '가장 긴 길', { size: 15 }) + T(365, 204, '+10', { size: 26, weight: 800, fill: C.ok }),
   },
 ];

@@ -379,13 +379,14 @@ function gamePage(g) {
   const visPanel = vis.length ? `<section class="panel" id="visual" role="tabpanel" aria-labelledby="tab-visual">
 <div class="vis" data-vis>
 <div class="vis-top"><h2 class="h2">그림으로 보는 ${esc(name)} 하는 법</h2><button type="button" class="vis-mode" data-vis-mode aria-pressed="false">모두 펼치기</button></div>
+<ol class="vis-steps" aria-label="단계 목록">${vis.map((f, i) => `<li><button type="button" data-vis-go="${i}"><span>${i + 1}</span>${esc(f.k)}</button></li>`).join('')}</ol>
 <ol class="vis-track" tabindex="0" aria-label="${esc(name)} 그림 설명 ${vis.length}장" data-vis-track>
 ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} / ${vis.length}">
 <figure class="vis-fig"><div class="vis-art">${frameSVG(f.art, `${f.t}. ${f.d}`)}</div>
 <figcaption class="vis-cap"><p class="vis-k"><span class="vis-n">${i + 1}</span>${esc(f.k)}</p><h3 class="vis-t">${esc(f.t)}</h3><p class="vis-d">${esc(f.d)}</p></figcaption></figure>
 </li>`).join('\n')}
 </ol>
-<div class="vis-nav"><button type="button" class="vis-btn" data-vis-prev>이전</button><div class="vis-dots">${vis.map((f, i) => `<button type="button" aria-label="${i + 1}번째 그림" data-vis-go="${i}"></button>`).join('')}</div><span class="vis-count" aria-live="polite">1 / ${vis.length}</span><button type="button" class="vis-btn vis-next" data-vis-next>다음</button></div>
+<div class="vis-nav"><button type="button" class="vis-btn" data-vis-prev>이전</button><span class="vis-count" aria-live="polite">1 / ${vis.length}</span><button type="button" class="vis-btn vis-next" data-vis-next>다음</button></div>
 <p class="vis-after">글로 차근차근 보려면 <a href="#learn">따라하기</a>, 규칙을 찾아보려면 <a href="#detail">자세히</a>를 눌러요.</p>
 </div>
 </section>` : '';

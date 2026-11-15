@@ -136,8 +136,8 @@ const mafia = [
     k: '준비', t: '진행자 한 명, 역할은 몰래 나눠요',
     d: '진행자를 한 명 정해요. 나머지에게 마피아, 경찰, 의사, 시민 역할을 몰래 나눠요. 마피아는 7명까지 1명, 8~11명이면 2명, 12명 이상이면 3명이 무난해요.',
     art: roleCard(24, 30, '마피아', '#3A4152', hatI) + roleCard(110, 30, '경찰', C.blue, badgeI) + roleCard(196, 30, '의사', C.green, crossI) + roleCard(282, 30, '시민', C.paper, citI)
-      + rect(24, 166, 334, 104, { fill: C.paper, stroke: C.ink, sw: 2, rx: 14 }) + T(44, 190, '역할 받는 사람', { size: 14, anchor: 'start', fill: C.muted }) + T(270, 190, '마피아', { size: 14, fill: C.muted })
-      + [['7명까지', '1명'], ['8~11명', '2명'], ['12명 이상', '3명']].map(([a, b], i) => T(44, 216 + i * 22, a, { size: 15, anchor: 'start' }) + T(270, 216 + i * 22, b, { size: 15 })).join('')
+      + rect(24, 156, 334, 128, { fill: C.paper, stroke: C.ink, sw: 2, rx: 14 }) + T(44, 180, '역할 받는 사람', { size: 14, anchor: 'start', fill: C.muted }) + T(270, 180, '마피아', { size: 14, fill: C.muted })
+      + [['7명까지', '1명'], ['8~11명', '2명'], ['12명 이상', '3명']].map(([a, b], i) => T(44, 208 + i * 24, a, { size: 15, anchor: 'start' }) + T(270, 208 + i * 24, b, { size: 15 })).join('')
       + person(420, 120, { s: 1.1, fill: C.ptTint }) + pill(420, 190, '진행자', { size: 14, bg: C.pt }),
   },
   {
@@ -355,7 +355,7 @@ const codenames = [
     k: '준비', t: '25장을 깔고, 정답 카드는 팀장만 봐요',
     d: '단어 카드 25장을 5×5로 깔아요. 정답 카드 한 장을 두 팀장만 보이게 세워 둬요. 테두리 색 팀이 먼저 하고, 먼저 하는 팀은 요원이 9명, 다른 팀은 8명이에요.',
     art: cgrid(20, 40, 50, 30, 6) + keycard(340, 60, 22) + T(397, 30, '정답 카드', { size: 14 }) + eye(397, 200, 1.1) + T(397, 230, '팀장만 봐요', { size: 14, fill: C.pt })
-      + [[C.red, '빨강'], [C.blue, '파랑'], ['#111', '암살자']].map(([c, t], i) => rect(330 + i * 46, 256, 10, 10, { fill: c, rx: 2 }) + T(344 + i * 46, 261, t, { size: 11, anchor: 'start', fill: C.muted })).join(''),
+      + [[C.red, '빨강', 300], [C.blue, '파랑', 352], ['#111', '암살자', 404]].map(([c, t, x]) => rect(x, 256, 10, 10, { fill: c, rx: 2 }) + T(x + 14, 261, t, { size: 11, anchor: 'start', fill: C.muted })).join(''),
   },
   {
     k: '힌트', t: '팀장은 단어 하나와 숫자 하나만',
@@ -447,7 +447,7 @@ const ROLE = {
   백작부인: [C.red, (cx, cy) => path(`M${cx} ${cy + 14}L${cx - 14} ${cy - 6}Q${cx} ${cy - 18} ${cx + 14} ${cy - 6}Z`, { fill: '#fff' }) + path(`M${cx} ${cy + 14}L${cx - 6} ${cy - 10}M${cx} ${cy + 14}L${cx} ${cy - 12}M${cx} ${cy + 14}L${cx + 6} ${cy - 10}`, { stroke: C.red, sw: 1.4 })],
 };
 const rcard = (x, y, name, o = {}) => card(x, y, { w: o.w || 60, h: o.h || 84, back: o.back, fill: ROLE[name] ? ROLE[name][0] : C.paper, rot: o.rot || 0, op: o.op,
-  inner: o.back ? null : (cx, cy, w, h) => ROLE[name][1](cx, cy - h * 0.1) + T(cx, cy + h * 0.3, name, { size: Math.min(13, w * 0.22), fill: '#fff' }) });
+  inner: o.back ? null : (cx, cy, w, h) => (w >= 50 ? ROLE[name][1](cx, cy - h * 0.1) + T(cx, cy + h * 0.3, name, { size: 13, fill: '#fff' }) : ROLE[name][1](cx, cy)) });
 const coup = [
   {
     k: '목표', t: '마지막까지 인물 카드를 지켜요',
@@ -462,7 +462,7 @@ const coup = [
     d: '인물 카드를 섞어 한 사람에게 2장씩 남이 못 보게 나눠요. 각자 동전 2개를 받아요. 남은 카드는 가운데에 뒤집어 두고, 이 더미를 궁정이라고 불러요.',
     art: pile(60, 70, { w: 60, h: 84, back: true, count: 4 }) + T(92, 190, '궁정', { size: 16 })
       + rcard(210, 70, '', { back: true }) + rcard(278, 70, '', { back: true }) + coin(364, 98, 18) + coin(404, 112, 18)
-      + T(276, 190, '내 카드 2장 (나만 봐요)', { size: 14 }) + T(384, 190, '동전 2개', { size: 14 }),
+      + T(244, 190, '내 카드 2장', { size: 14 }) + T(244, 214, '나만 봐요', { size: 13, fill: C.muted }) + T(390, 160, '동전 2개', { size: 14 }),
   },
   {
     k: '내 차례', t: '행동은 하나만 해요',
@@ -496,7 +496,7 @@ const coup = [
 ];
 
 // ---------- 라이어 게임 ----------
-const phone = (cx, cy, top, main, o = {}) => rect(cx - 40, cy - 66, 80, 132, { fill: C.ink, rx: 14 }) + rect(cx - 34, cy - 56, 68, 110, { fill: o.fill || C.paper, rx: 6 })
+const phone = (cx, cy, top, main, o = {}) => rect(cx - 50, cy - 66, 100, 132, { fill: C.ink, rx: 14 }) + rect(cx - 44, cy - 56, 88, 110, { fill: o.fill || C.paper, rx: 6 })
   + T(cx, cy - 34, top, { size: 12, fill: C.muted }) + T(cx, cy + 2, main, { size: o.size || 18, fill: o.fg || C.ink });
 const liar = [
   {
@@ -510,7 +510,7 @@ const liar = [
     d: '주제를 고르고 테이블 모드의 ‘제시어 나누기’를 써요. 휴대폰을 돌려 가며 자기 화면만 봐요. 라이어 화면에는 주제만 나와요.',
     art: phone(120, 140, '주제: 음식', '떡볶이') + T(120, 236, '대부분의 화면', { size: 14 })
       + phone(330, 140, '주제: 음식', '라이어', { fill: C.ptTint, fg: C.pt }) + T(330, 236, '라이어 화면', { size: 14, fill: C.pt })
-      + arrow(178, 120, 270, 120, { bend: 14, w: 3, c: C.muted }) + T(224, 92, '돌려 가며', { size: 13, fill: C.muted }),
+      + arrow(180, 120, 268, 120, { bend: 14, w: 3, c: C.muted }) + T(224, 88, '돌려 가며', { size: 13, fill: C.muted }),
   },
   {
     k: '진행', t: '한 문장씩 설명해요',

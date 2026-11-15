@@ -313,7 +313,7 @@ html:not(.js) .tabs { display: none; }
 .vis-top .h2 { margin: 10px 0 14px; }
 .vis-mode { flex: none; min-height: 36px; padding: 0 14px; border: 1.5px solid var(--line-2); border-radius: 999px; background: #fff; font-size: 14px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
 .vis-mode[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
-.vis-track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 16px; align-items: start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 6px; }
+.vis-track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 16px; align-items: start; transition: height .2s ease; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 6px; }
 .vis-track::-webkit-scrollbar { display: none; }
 .vis-track:focus-visible { outline-offset: 4px; }
 .vis-step { scroll-snap-align: start; min-width: 0; }
@@ -326,11 +326,15 @@ html:not(.js) .tabs { display: none; }
 .vis-t { margin: 6px 0 4px; font-size: 19px; font-weight: 800; line-height: 1.4; }
 .vis-d { color: var(--ink-2); font-size: 16px; line-height: 1.7; }
 .vis-nav { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
-.vis-dots { display: flex; flex: 1; justify-content: center; flex-wrap: wrap; }
-.vis-dots button { position: relative; width: 22px; height: 30px; padding: 0; border: 0; background: transparent; cursor: pointer; }
-.vis-dots button::before { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--line-2); transition: background .15s; }
-.vis-dots button[aria-current="true"]::before { background: var(--dice); }
-.vis-count { flex: none; min-width: 44px; text-align: center; font-size: 14px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.vis-steps { display: flex; gap: 6px; margin: 0 0 12px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+.vis-steps::-webkit-scrollbar { display: none; }
+.vis-steps li { flex: none; }
+.vis-steps button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 6px; border: 1.5px solid var(--line-2); border-radius: 999px; background: #fff; font-size: 14px; font-weight: 700; color: var(--ink-2); white-space: nowrap; cursor: pointer; }
+.vis-steps button span { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--mist-2); color: var(--ink-2); font-size: 12.5px; font-weight: 800; }
+.vis-steps button[aria-current="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+.vis-steps button[aria-current="true"] span { background: var(--dice); color: #fff; }
+.vis-steps button.seen:not([aria-current="true"]) span { background: var(--dice-tint); color: var(--dice-dark); }
+.vis-count { flex: 1; text-align: center; font-size: 15px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
 .vis-btn { flex: none; min-height: 44px; padding: 0 18px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; font-weight: 800; font-size: 15.5px; cursor: pointer; box-shadow: 0 3px 0 var(--ink); }
 .vis-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .vis-btn:disabled { opacity: .35; cursor: default; }
@@ -338,16 +342,17 @@ html:not(.js) .tabs { display: none; }
 .vis-after { margin-top: 18px; font-size: 14.5px; color: var(--muted); }
 .vis-after a { color: var(--ink); font-weight: 700; }
 .vis.all .vis-track, html:not(.js) .vis-track { grid-auto-flow: row; grid-auto-columns: auto; gap: 22px; overflow: visible; scroll-snap-type: none; }
-.vis.all .vis-nav, html:not(.js) .vis-nav, html:not(.js) .vis-mode { display: none; }
+.vis.all .vis-nav, .vis.all .vis-steps, html:not(.js) .vis-nav, html:not(.js) .vis-mode, html:not(.js) .vis-steps { display: none; }
 @media (min-width: 700px) {
   .vis-fig { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
   .vis-art { display: flex; align-items: center; border-bottom: 0; border-right: 1.5px solid var(--line); }
   .vis-cap { align-self: center; padding: 18px 20px; }
   .vis-d { font-size: 15.5px; }
 }
-@media (max-width: 380px) { .vis-btn { padding: 0 13px; } .vis-count { display: none; } .tabs button { font-size: 14.5px; } }
+@media (max-width: 560px) { .vis-track { margin: 0 -12px; } .vis-fig { border-radius: 16px; } .vis-cap { padding: 14px 16px 16px; } }
+@media (max-width: 380px) { .vis-btn { padding: 0 14px; } .tabs button { font-size: 14.5px; } }
 @media (prefers-reduced-motion: reduce) { .vis-track { scroll-behavior: auto; } }
-@media print { .vis-track { grid-auto-flow: row; overflow: visible; } .vis-nav, .vis-mode { display: none; } .vis-step { break-inside: avoid; } }
+@media print { .vis-track { grid-auto-flow: row; overflow: visible; } .vis-nav, .vis-mode, .vis-steps { display: none; } .vis-step { break-inside: avoid; } }
 
 .rcard { border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); background: #fff; overflow: hidden; }
 .rcard-row { display: grid; gap: 4px; padding: 16px 18px; }
