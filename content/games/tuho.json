@@ -29,7 +29,7 @@
   "compare": "",
   "edition": "널리 쓰이는 놀이 방법. 거리와 화살 수는 모인 사람에 맞게 바꿔요.",
   "source": "",
-  "status": "draft",
+  "status": "reviewed",
   "checked": null,
   "components": [
     "투호 병 1개",
@@ -57,7 +57,8 @@
   ],
   "scoring": [
     "병 안에 들어간 화살 하나에 10점이에요.",
-    "편으로 할 때는 편원 점수를 모두 더해요."
+    "편으로 할 때는 편원 점수를 모두 더해요.",
+    "옛 기록에는 화살 12개로 겨루고 먼저 120점을 채우는 편이 이긴다고 나와요."
   ],
   "rules": [
     {
@@ -109,5 +110,14 @@
     "gonggi"
   ],
   "diagram": "",
-  "diagramCaption": ""
+  "diagramCaption": "",
+  "reviewed": {
+    "date": "2026-11-15"
+  },
+  "refs": [
+    {
+      "title": "한국민족문화대백과사전 ‘투호’",
+      "url": "https://encykorea.aks.ac.kr/Article/E0059493"
+    }
+  ]
 }

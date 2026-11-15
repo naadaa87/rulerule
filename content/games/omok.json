@@ -28,7 +28,7 @@
   "compare": "",
   "edition": "널리 쓰는 기본 규칙. 금지 수는 ‘우리 집 규칙 정하기’에서 고르세요.",
   "source": "",
-  "status": "draft",
+  "status": "reviewed",
   "checked": null,
   "components": [
     "바둑판 (15줄이나 19줄)",
@@ -119,5 +119,14 @@
     "quoridor"
   ],
   "diagram": "",
-  "diagramCaption": ""
+  "diagramCaption": "",
+  "reviewed": {
+    "date": "2026-11-15"
+  },
+  "refs": [
+    {
+      "title": "한국민족문화대백과사전 ‘오목’",
+      "url": "https://encykorea.aks.ac.kr/Article/E0038235"
+    }
+  ]
 }

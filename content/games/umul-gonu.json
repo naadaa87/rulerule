@@ -4,9 +4,11 @@
   "name": "우물고누",
   "original": "",
   "aliases": [
+    "강고누",
     "고누",
-    "우물 고누",
-    "고누 놀이"
+    "고누 놀이",
+    "샘고누",
+    "우물 고누"
   ],
   "kind": "traditional",
   "group": "traditional",
@@ -29,7 +31,7 @@
   "compare": "",
   "edition": "널리 쓰이는 공통 규칙. 지역과 집안마다 조금씩 달라요.",
   "source": "",
-  "status": "draft",
+  "status": "reviewed",
   "checked": null,
   "components": [
     "우물고누 판 (종이에 그려도 돼요)",
@@ -102,5 +104,14 @@
     "quoridor"
   ],
   "diagram": "umul-gonu",
-  "diagramCaption": "네 꼭짓점과 가운데, 모두 다섯 점이에요. 아래쪽 두 점 사이는 우물이라 이어져 있지 않아요. 먼저 두는 사람은 점선으로 표시한 말을 첫 수로 움직일 수 없어요."
+  "diagramCaption": "네 꼭짓점과 가운데, 모두 다섯 점이에요. 아래쪽 두 점 사이는 우물이라 이어져 있지 않아요. 먼저 두는 사람은 점선으로 표시한 말을 첫 수로 움직일 수 없어요.",
+  "reviewed": {
+    "date": "2026-11-15"
+  },
+  "refs": [
+    {
+      "title": "한국민족문화대백과사전 ‘고누’",
+      "url": "https://encykorea.aks.ac.kr/Article/E0003367"
+    }
+  ]
 }

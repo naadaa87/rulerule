@@ -30,7 +30,7 @@
   "compare": "",
   "edition": "널리 쓰이는 공통 규칙. 빽도와 낙처럼 집마다 다른 규칙은 ‘우리 집 규칙 정하기’에서 고르세요.",
   "source": "",
-  "status": "draft",
+  "status": "reviewed",
   "checked": null,
   "components": [
     "윷가락 4개",
@@ -162,5 +162,14 @@
     "omok"
   ],
   "diagram": "yut-board",
-  "diagramCaption": "윷판은 모두 29칸이에요. 오른쪽 아래 출발점에서 반시계 방향으로 돌아요. 모서리나 가운데 방에 멈추면 다음에 지름길로 갈 수 있어요."
+  "diagramCaption": "윷판은 모두 29칸이에요. 오른쪽 아래 출발점에서 반시계 방향으로 돌아요. 모서리나 가운데 방에 멈추면 다음에 지름길로 갈 수 있어요.",
+  "reviewed": {
+    "date": "2026-11-15"
+  },
+  "refs": [
+    {
+      "title": "한국민족문화대백과사전 ‘윷놀이’",
+      "url": "https://encykorea.aks.ac.kr/Article/E0042794"
+    }
+  ]
 }
