@@ -308,6 +308,47 @@ html:not(.js) .tabs { display: none; }
 .panel > .h2:first-child { margin-top: 10px; }
 .h3 { font-size: 18px; font-weight: 800; line-height: 1.4; margin: 30px 0 12px; }
 
+/* ---------- 그림으로 보기 ---------- */
+.vis-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.vis-top .h2 { margin: 10px 0 14px; }
+.vis-mode { flex: none; min-height: 36px; padding: 0 14px; border: 1.5px solid var(--line-2); border-radius: 999px; background: #fff; font-size: 14px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
+.vis-mode[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+.vis-track { display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 16px; align-items: start; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: 6px; }
+.vis-track::-webkit-scrollbar { display: none; }
+.vis-track:focus-visible { outline-offset: 4px; }
+.vis-step { scroll-snap-align: start; min-width: 0; }
+.vis-fig { border: 2px solid var(--ink); border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 4px 0 var(--ink); }
+.vis-art { background: var(--mist); border-bottom: 1.5px solid var(--line); }
+.vis-svg { display: block; width: 100%; height: auto; }
+.vis-cap { padding: 14px 18px 18px; }
+.vis-k { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; color: var(--dice); }
+.vis-n { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; line-height: 1; }
+.vis-t { margin: 6px 0 4px; font-size: 19px; font-weight: 800; line-height: 1.4; }
+.vis-d { color: var(--ink-2); font-size: 16px; line-height: 1.7; }
+.vis-nav { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.vis-dots { display: flex; flex: 1; justify-content: center; flex-wrap: wrap; }
+.vis-dots button { position: relative; width: 22px; height: 30px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.vis-dots button::before { content: ""; position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--line-2); transition: background .15s; }
+.vis-dots button[aria-current="true"]::before { background: var(--dice); }
+.vis-count { flex: none; min-width: 44px; text-align: center; font-size: 14px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.vis-btn { flex: none; min-height: 44px; padding: 0 18px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; font-weight: 800; font-size: 15.5px; cursor: pointer; box-shadow: 0 3px 0 var(--ink); }
+.vis-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.vis-btn:disabled { opacity: .35; cursor: default; }
+.vis-next { background: var(--ink); color: #fff; }
+.vis-after { margin-top: 18px; font-size: 14.5px; color: var(--muted); }
+.vis-after a { color: var(--ink); font-weight: 700; }
+.vis.all .vis-track, html:not(.js) .vis-track { grid-auto-flow: row; grid-auto-columns: auto; gap: 22px; overflow: visible; scroll-snap-type: none; }
+.vis.all .vis-nav, html:not(.js) .vis-nav, html:not(.js) .vis-mode { display: none; }
+@media (min-width: 700px) {
+  .vis-fig { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+  .vis-art { display: flex; align-items: center; border-bottom: 0; border-right: 1.5px solid var(--line); }
+  .vis-cap { align-self: center; padding: 18px 20px; }
+  .vis-d { font-size: 15.5px; }
+}
+@media (max-width: 380px) { .vis-btn { padding: 0 13px; } .vis-count { display: none; } .tabs button { font-size: 14.5px; } }
+@media (prefers-reduced-motion: reduce) { .vis-track { scroll-behavior: auto; } }
+@media print { .vis-track { grid-auto-flow: row; overflow: visible; } .vis-nav, .vis-mode { display: none; } .vis-step { break-inside: avoid; } }
+
 .rcard { border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); background: #fff; overflow: hidden; }
 .rcard-row { display: grid; gap: 4px; padding: 16px 18px; }
 .rcard-row + .rcard-row { border-top: 1.5px dashed var(--line-2); }

@@ -284,16 +284,60 @@
       });
     });
     // 주소의 # 뒤를 보고 알맞은 단계를 열어요 (#house, #rule-2, #learn, #detail)
+    var firstTab = tabs.length ? tabs[0].getAttribute('aria-controls') : 'summary';
     var fromHash = function () {
       var h = location.hash;
       if (h === '#table') return;
-      var id = h === '#house' || h.indexOf('#rule-') === 0 || h === '#detail' ? 'detail' : (h === '#learn' ? 'learn' : 'summary');
+      var id = h === '#house' || h.indexOf('#rule-') === 0 || h === '#detail' ? 'detail'
+        : h === '#learn' ? 'learn' : h === '#summary' ? 'summary'
+        : (h === '#visual' || h.indexOf('#v-') === 0) && document.getElementById('visual') ? 'visual' : firstTab;
       showTab(id);
+      if (h.indexOf('#v-') === 0 && window.RS.visGo) window.RS.visGo(Number(h.slice(3)) - 1, true);
       if (h === '#house' || h.indexOf('#rule-') === 0) setTimeout(function () { var t = document.getElementById(h.slice(1)); if (t) t.scrollIntoView(); }, 60);
     };
+    // 그림으로 보기: 한 장씩 넘기기
+    var vis = $('[data-vis]', gameEl);
+    if (vis) {
+      var visTrack = $('[data-vis-track]', vis), steps = $$('.vis-step', vis), dots = $$('[data-vis-go]', vis);
+      var prevB = $('[data-vis-prev]', vis), nextB = $('[data-vis-next]', vis), countEl = $('.vis-count', vis), modeB = $('[data-vis-mode]', vis);
+      var cur = 0, total = steps.length, ticking = false;
+      var stepW = function () { return steps.length > 1 ? steps[1].offsetLeft - steps[0].offsetLeft : visTrack.clientWidth; };
+      var paint = function () {
+        dots.forEach(function (d, i) { d.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+        if (countEl) countEl.textContent = (cur + 1) + ' / ' + total;
+        prevB.disabled = cur === 0;
+        nextB.textContent = cur === total - 1 ? '처음부터' : '다음';
+      };
+      var go = function (i, instant) {
+        cur = Math.max(0, Math.min(total - 1, i));
+        if (!vis.classList.contains('all')) visTrack.scrollTo({ left: cur * stepW(), behavior: instant ? 'auto' : undefined });
+        else steps[cur].scrollIntoView({ block: 'start' });
+        paint();
+      };
+      window.RS.visGo = go;
+      prevB.addEventListener('click', function () { go(cur - 1); });
+      nextB.addEventListener('click', function () { go(cur === total - 1 ? 0 : cur + 1); });
+      dots.forEach(function (d) { d.addEventListener('click', function () { go(Number(d.dataset.visGo)); }); });
+      visTrack.addEventListener('scroll', function () {
+        if (ticking || vis.classList.contains('all')) return;
+        ticking = true;
+        requestAnimationFrame(function () { ticking = false; var i = Math.round(visTrack.scrollLeft / stepW()); if (i !== cur) { cur = i; paint(); } });
+      }, { passive: true });
+      visTrack.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      });
+      modeB.addEventListener('click', function () {
+        var all = vis.classList.toggle('all');
+        modeB.setAttribute('aria-pressed', String(all));
+        modeB.textContent = all ? '한 장씩 보기' : '모두 펼치기';
+        if (!all) go(cur, true);
+      });
+      paint();
+    }
     fromHash();
     window.addEventListener('hashchange', function () {
-      if (/^#(house|learn|detail|summary|rule-\d+)$/.test(location.hash)) fromHash();
+      if (/^#(house|learn|detail|summary|visual|rule-\d+|v-\d+)$/.test(location.hash)) fromHash();
     });
 
     // 구성물 체크 기억하기

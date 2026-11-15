@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { VISUALS, frameSVG } from '../src/visual/index.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'public');
@@ -55,6 +56,7 @@ const games = fs.readdirSync(gamesDir).filter((f) => f.endsWith('.json')).sort()
 });
 
 const need = (g, cond, msg) => { if (!cond) problems.push(`${g._file}: ${msg}`); };
+const visualsOf = (g) => VISUALS[g.slug] || [];
 const slugs = new Set();
 const codes = new Set();
 for (const g of games) {
@@ -76,6 +78,8 @@ for (const g of games) {
   need(g, g.summary && g.summary.goal && Array.isArray(g.summary.turn) && g.summary.end, 'summary(goal, turn, end)를 모두 채워 주세요');
   need(g, Array.isArray(g.setup) && g.setup.length, 'setup(준비하기)이 비어 있어요');
   need(g, Array.isArray(g.components), 'components(구성물)가 필요해요');
+  visualsOf(g).forEach((f, i) => need(g, f.k && f.t && f.d && f.art, `그림 설명 ${i + 1}번째에 k, t, d, art가 모두 있어야 해요`));
+  if (!visualsOf(g).length) console.warn(`알림: ${g._file}에는 아직 그림 설명이 없어요 (src/visual)`);
 }
 for (const g of games) {
   g.related = (g.related || []).filter((s) => {
@@ -371,6 +375,21 @@ function gamePage(g) {
 
   const diagram = g.diagram && DIAGRAMS[g.diagram] ? `<figure class="figure">${DIAGRAMS[g.diagram]()}${g.diagramCaption ? `<figcaption>${fmt(g.diagramCaption)}</figcaption>` : ''}</figure>` : '';
 
+  const vis = visualsOf(g);
+  const visPanel = vis.length ? `<section class="panel" id="visual" role="tabpanel" aria-labelledby="tab-visual">
+<div class="vis" data-vis>
+<div class="vis-top"><h2 class="h2">그림으로 보는 ${esc(name)} 하는 법</h2><button type="button" class="vis-mode" data-vis-mode aria-pressed="false">모두 펼치기</button></div>
+<ol class="vis-track" tabindex="0" aria-label="${esc(name)} 그림 설명 ${vis.length}장" data-vis-track>
+${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} / ${vis.length}">
+<figure class="vis-fig"><div class="vis-art">${frameSVG(f.art, `${f.t}. ${f.d}`)}</div>
+<figcaption class="vis-cap"><p class="vis-k"><span class="vis-n">${i + 1}</span>${esc(f.k)}</p><h3 class="vis-t">${esc(f.t)}</h3><p class="vis-d">${esc(f.d)}</p></figcaption></figure>
+</li>`).join('\n')}
+</ol>
+<div class="vis-nav"><button type="button" class="vis-btn" data-vis-prev>이전</button><div class="vis-dots">${vis.map((f, i) => `<button type="button" aria-label="${i + 1}번째 그림" data-vis-go="${i}"></button>`).join('')}</div><span class="vis-count" aria-live="polite">1 / ${vis.length}</span><button type="button" class="vis-btn vis-next" data-vis-next>다음</button></div>
+<p class="vis-after">글로 차근차근 보려면 <a href="#learn">따라하기</a>, 규칙을 찾아보려면 <a href="#detail">자세히</a>를 눌러요.</p>
+</div>
+</section>` : '';
+
   const rules = (g.rules || []).map((r, i) => `<section class="rule-sec" id="rule-${i + 1}"><h3 class="h3">${fmt(r.title)}</h3><ul class="list">${r.items.map((it) => `<li>${fmt(it)}</li>`).join('')}</ul></section>`).join('');
 
   const variants = (g.variants || []).length ? `<h3 class="h3">인원별 규칙과 다른 방법</h3><div class="examples">${g.variants.map((v) => `<div class="example"><p class="example-t">${fmt(v.title)}</p><p>${fmt(v.text)}</p></div>`).join('')}</div>` : '';
@@ -404,11 +423,13 @@ ${g.intro ? `<p class="game-intro">${fmt(g.intro)}</p>` : ''}
 ${g.compare ? `<p class="compare">${fmt(g.compare)}</p>` : ''}
 ${statusNote}
 <div class="tabs" role="tablist" aria-label="설명 단계">
-<button role="tab" id="tab-summary" aria-controls="summary" aria-selected="true">1분 요약</button>
+${vis.length ? '<button role="tab" id="tab-visual" aria-controls="visual" aria-selected="true">그림으로</button>' : ''}
+<button role="tab" id="tab-summary" aria-controls="summary" aria-selected="${vis.length ? 'false' : 'true'}">1분 요약</button>
 <button role="tab" id="tab-learn" aria-controls="learn" aria-selected="false">따라하기</button>
 <button role="tab" id="tab-detail" aria-controls="detail" aria-selected="false">자세히</button>
 </div>
 
+${visPanel}
 <section class="panel" id="summary" role="tabpanel" aria-labelledby="tab-summary">
 <h2 class="h2">${esc(name)} 1분 요약</h2>
 <div class="rcard">
@@ -453,7 +474,7 @@ ${related}
 <script type="application/json" id="game-data">${JSON.stringify({ ...g, _file: undefined }).replace(/</g, '\\u003c')}</script>
 </article>`;
 
-  const desc = `${name} 룰과 하는법을 1분 요약과 따라하기로 알려 드려요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
+  const desc = `${name} 룰과 하는법을 단계별 그림과 1분 요약, 따라하기로 알려 드려요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
   return layout({
     title: `${name} 하는법, 룰 1분 요약 - ${cfg.siteName}`,
     description: desc,
@@ -488,7 +509,7 @@ function homePage() {
 <div class="hero-grid">
 <div class="hero-main">
 <h1 class="hero-q">지금 몇 명이에요?</h1>
-<p class="hero-lead">인원과 시간만 고르면 바로 할 수 있는 게임을 골라 드려요. 하는 법은 1분 요약부터 보면 돼요.</p>
+<p class="hero-lead">인원과 시간만 고르면 바로 할 수 있는 게임을 골라 드려요. 하는 법은 그림 몇 장만 넘겨 보면 감이 와요.</p>
 <div class="picker" data-picker>
 <div class="tokens" role="radiogroup" aria-label="인원">
 ${[2, 3, 4, 5, 6].map((n) => `<button type="button" class="token" role="radio" aria-checked="false" data-p="${n}">${n === 6 ? '6+' : n}</button>`).join('')}
@@ -556,7 +577,7 @@ ${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slu
 </div>
 <div class="space-art" aria-hidden="true">
 <div class="qr-mock">${icon('i-qr')}</div>
-<div class="qr-steps"><span>QR 찍기</span><span>게임 고르기</span><span>1분 요약 보고 시작</span></div>
+<div class="qr-steps"><span>QR 찍기</span><span>게임 고르기</span><span>그림 보고 시작</span></div>
 </div>
 </div>
 </section>`;
@@ -691,6 +712,7 @@ ${groupsT.map(([title, list]) => `<h2 class="h2">${title}</h2><div class="gcards
 function learnPage() {
   const steps = [
     ['인원과 시간부터 정해요', '게임 이름보다 ‘몇 명이 몇 분 동안’이 먼저예요. 처음에는 15~30분짜리 쉬운 게임이 좋아요.'],
+    ['그림 설명을 다 같이 넘겨 봐요', '게임 페이지 첫 화면에 단계별 그림이 있어요. 대여섯 장만 넘겨 보면 무엇을 하는 게임인지 감이 와요.'],
     ['설명하는 사람 한 명만 1분 요약을 읽어요', '모두가 각자 읽으면 오래 걸려요. 한 사람이 ‘이기는 법, 내 차례, 끝나는 때’만 소리 내 읽으면 충분해요.'],
     ['한 바퀴는 연습으로 돌아요', '첫 바퀴는 점수를 세지 말고 손을 맞춰 보세요. 막히는 곳은 그때 ‘헷갈리는 상황’을 열어 보면 돼요.'],
     ['막히면 테이블 모드에서 찾아요', '테이블 모드의 ‘이럴 땐?’ 버튼에 그 게임에서 자주 막히는 장면을 모아 두었어요.'],
@@ -830,7 +852,7 @@ function aboutPage() {
   const body = `<section class="page-head">
 <div class="wrap">
 <h1 class="page-title">${esc(cfg.siteName)}은 이렇게 만들어요</h1>
-<p class="page-lead">${esc(cfg.siteName)}은 처음 하는 사람도 3분 안에 첫 판을 시작하게 돕는 보드게임 설명 서비스예요. 게임을 고르고, 1분 요약으로 배우고, 하다가 막히면 그 자리에서 찾을 수 있게 만들었어요.</p>
+<p class="page-lead">${esc(cfg.siteName)}은 처음 하는 사람도 3분 안에 첫 판을 시작하게 돕는 보드게임 설명 서비스예요. 게임을 고르고, 그림과 1분 요약으로 배우고, 하다가 막히면 그 자리에서 찾을 수 있게 만들었어요.</p>
 </div>
 </section>
 <section class="wrap-narrow about">
