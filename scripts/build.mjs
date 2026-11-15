@@ -144,6 +144,33 @@ const BRAND = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><r
 
 const tile = (g, cls = '') => `<div class="tile ${cls}" data-g="${g.group}" aria-hidden="true"><span>${esc(firstSyllable(g.name))}</span></div>`;
 
+// ---------- 브랜드 그림 (src/static/img/brand) ----------
+const BRAND_IMG = {
+  'char-dice': [520, 422], 'char-pawn': [453, 560], 'char-card': [520, 498], 'char-book': [513, 560], 'char-tick': [440, 560], 'char-domi': [520, 534], 'char-fox': [205, 560], 'char-cat': [292, 560],
+  'dice-hello': [520, 446], 'dice-explain': [520, 473], 'dice-ok': [495, 560], 'dice-think': [356, 560], 'pawn-map': [285, 560], 'card-recommend': [500, 560], 'book-open': [417, 560], 'book-warn': [432, 560], 'tick-wait': [428, 560], 'domi-order': [332, 560], 'fox-explain': [225, 560], 'fox-search': [214, 560], 'cat-hello': [244, 560],
+  'hero-main': [1200, 600], 'hero-search': [1200, 600], 'scene-phone': [1200, 675], 'scene-variety': [960, 720],
+  'ico-find': [640, 640], 'ico-players': [640, 640], 'ico-quick': [640, 640], 'ico-first': [640, 640], 'ico-setup': [640, 640], 'ico-turn': [640, 640], 'ico-help': [640, 640], 'ico-joy': [640, 640],
+  'scene-friends': [960, 720], 'scene-family': [960, 720], 'scene-two': [960, 720], 'scene-store': [960, 720], 'scene-first-meet': [960, 720], 'scene-strategy': [800, 800], 'scene-coop': [960, 720], 'scene-shelf': [960, 720], 'scene-workshop': [960, 720], 'scene-picnic': [960, 720], 'scene-generations': [960, 720],
+};
+const pic = (name, alt = '', cls = '', eager = false) => {
+  const d = BRAND_IMG[name];
+  if (!d) throw new Error(`브랜드 그림이 없어요: ${name}`);
+  return `<img${cls ? ` class="${cls}"` : ''} src="/assets/img/brand/${name}.webp" width="${d[0]}" height="${d[1]}" alt="${esc(alt)}"${eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async">`;
+};
+// 룰룰 친구들: [그림, 이름, 맡은 일, 한 줄 소개, 바로 가기]
+const CREW = [
+  ['char-dice', '다이스', '진행 가이드', '차례와 순서를 챙겨요', '/learn/'],
+  ['char-card', '카드', '게임 추천가', '인원과 시간에 맞는 게임을 골라요', '/games/'],
+  ['char-book', '북', '규칙 설명가', '헷갈리는 규칙을 찾아 줘요', '/learn/#words'],
+  ['char-domi', '도미', '순서 안내가', '준비부터 끝까지 순서대로', '/games/halli-galli/#learn'],
+  ['char-tick', '틱', '시간 도우미', '15분이면 되는 게임을 알아요', '/collections/quick/'],
+  ['char-pawn', '폰', '전략 파트너', '한 판 제대로 붙을 때', '/collections/strategy-night/'],
+  ['char-fox', '폭스', '전략 큐레이터', '둘이서 하기 좋은 게임', '/collections/two-players/'],
+  ['char-cat', '캣', '모임 호스트', '여럿이 모인 자리를 띄워요', '/collections/party-room/'],
+];
+const COL_ART = { 'two-players': 'scene-two', 'first-meeting': 'scene-first-meet', 'with-kids': 'scene-family', holiday: 'scene-generations', 'big-group': 'scene-friends', 'party-room': 'scene-workshop', quick: 'ico-quick', 'strategy-night': 'scene-strategy' };
+const guide = (name, who, text) => `<div class="guide">${pic(name, '', 'guide-pic')}<p><b>${who}</b> ${text}</p></div>`;
+
 // ---------- 놀이판 그림 (전통놀이) ----------
 function yutBoard() {
   const S = 300, P = 30;
@@ -240,7 +267,7 @@ function footer() {
 <a href="/about/">${esc(cfg.siteName)} 소개</a>
 <button type="button" class="link-btn" data-report="">틀린 곳 알려 주기</button>
 </nav>
-<p class="foot-note">게임 이름과 상표는 각 권리자의 것이에요. ${esc(cfg.siteName)}의 설명은 직접 해 보고 우리 말로 다시 쓴 것이며, 상자 속 공식 룰북을 대신하지 않아요.</p>
+<p class="foot-note">게임 이름과 상표는 각 권리자의 것이에요. ${esc(cfg.siteName)}의 설명은 규칙을 우리 말로 다시 쓴 것이며, 상자 속 공식 룰북을 대신하지 않아요.</p>
 <p class="foot-copy">© ${new Date().getFullYear()} ${esc(cfg.siteName)}</p>
 </div>
 </footer>`;
@@ -363,7 +390,10 @@ function gamePage(g) {
   const name = g.name;
   const statusNote = g.status === 'checked'
     ? `<p class="status status-ok">${icon('i-check')}<span>검수 완료${g.checked && g.checked.date ? ` (${esc(g.checked.date)}${g.checked.by ? `, ${esc(g.checked.by)}` : ''})` : ''}. 그래도 다른 곳이 보이면 알려 주세요.</span></p>`
-    : `<p class="status status-draft"><span>아직 검수 중인 설명이에요. 상자 속 룰북과 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`;
+    : g.status === 'reviewed'
+      ? `<p class="status status-rev">${icon('i-check')}<span>자료 대조 완료${g.reviewed && g.reviewed.date ? ` (${esc(g.reviewed.date)})` : ''}. ${g.kind === 'traditional' ? '백과사전과 널리 쓰이는 규칙에' : '공식 규칙서와 출판사 안내에'} 맞춰 봤어요. 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`
+      : `<p class="status status-draft"><span>아직 검수 중인 설명이에요. 상자 속 룰북과 다른 곳이 보이면 알려 주세요.</span><button type="button" class="link-btn" data-report="${g.slug}">틀린 곳 알려 주기</button></p>`;
+  const refs = (g.refs || []).length ? `<p><b>맞춰 본 자료</b> ${g.refs.map((r) => (r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener nofollow">${esc(r.title)}</a>` : esc(r.title))).join(', ')}</p>` : '';
 
   const comps = g.components.length ? `<h3 class="h3">구성물 확인</h3>
 <ul class="checklist" data-store="comp-${g.slug}">${g.components.map((c, i) => `<li><label><input type="checkbox" data-i="${i}"><span>${fmt(c)}</span></label></li>`).join('')}</ul>` : '';
@@ -404,7 +434,7 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 </section>` : '';
 
   const related = g.related.length ? `<section class="related wrap-narrow">
-<h2 class="h2">비슷한 게임</h2>
+<h2 class="h2 h2-pic">${pic('card-recommend', '', 'h2-char')}비슷한 게임</h2>
 <div class="gcards">${g.related.map((s) => gameCard(bySlug[s])).join('')}</div>
 </section>` : '';
 
@@ -433,6 +463,7 @@ ${vis.length ? '<button role="tab" id="tab-visual" aria-controls="visual" aria-s
 ${visPanel}
 <section class="panel" id="summary" role="tabpanel" aria-labelledby="tab-summary">
 <h2 class="h2">${esc(name)} 1분 요약</h2>
+${guide('dice-explain', '다이스', '이 세 가지만 알면 첫 판을 시작할 수 있어요.')}
 <div class="rcard">
 <div class="rcard-row"><p class="rcard-k">이기는 법</p><p class="rcard-v">${fmt(g.summary.goal)}</p></div>
 <div class="rcard-row"><p class="rcard-k">내 차례</p><ol class="rcard-v turn">${g.summary.turn.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol></div>
@@ -446,6 +477,7 @@ ${visPanel}
 
 <section class="panel" id="learn" role="tabpanel" aria-labelledby="tab-learn">
 <h2 class="h2">${esc(name)} 하는 법: 따라하기</h2>
+${guide('domi-order', '도미', '위에서부터 순서대로 따라 하면 돼요.')}
 ${comps}
 ${diagram}
 <h3 class="h3">준비하기</h3>
@@ -456,6 +488,7 @@ ${scoring}
 
 <section class="panel" id="detail" role="tabpanel" aria-labelledby="tab-detail">
 <h2 class="h2">${esc(name)} 자세한 규칙</h2>
+${guide('book-warn', '북', '하다가 막히면 여기서 찾아보세요.')}
 ${(g.rules || []).length > 1 ? `<label class="rule-find"><span class="sr">규칙에서 찾기</span>${icon('i-search')}<input type="search" placeholder="규칙에서 찾기 (예: 동점, 2명)" data-rule-find></label>` : ''}
 <div class="rules">${rules}</div>
 ${(g.tricky || []).length ? `<h3 class="h3">헷갈리는 상황</h3>${qaList(g.tricky)}` : ''}
@@ -466,7 +499,8 @@ ${house}
 
 <aside class="source">
 <p><b>설명 기준</b> ${esc(g.edition || (g.kind === 'traditional' ? '널리 쓰이는 공통 규칙' : '한국어판'))}</p>
-<p><b>만든 방법</b> ${esc(g.source || '직접 해 보고 우리 말로 다시 썼어요. 문장과 그림은 룰북에서 옮기지 않았어요.')}</p>
+<p><b>만든 방법</b> ${esc(g.source || '규칙을 우리 말로 다시 썼어요. 문장과 그림은 룰북에서 옮기지 않았어요.')}</p>
+${refs}
 <p><button type="button" class="link-btn" data-report="${g.slug}">${icon('i-flag')}틀린 곳 알려 주기</button></p>
 </aside>
 </div>
@@ -509,7 +543,7 @@ function homePage() {
 <div class="wrap">
 <div class="hero-grid">
 <div class="hero-main">
-<h1 class="hero-q">지금 몇 명이에요?</h1>
+<div class="hero-head"><h1 class="hero-q">지금 몇 명이에요?</h1>${pic('dice-hello', '손을 흔드는 룰룰 캐릭터 다이스', 'hero-char', true)}</div>
 <p class="hero-lead">인원과 시간만 고르면 바로 할 수 있는 게임을 골라 드려요. 하는 법은 그림 몇 장만 넘겨 보면 감이 와요.</p>
 <div class="picker" data-picker>
 <div class="tokens" role="radiogroup" aria-label="인원">
@@ -535,11 +569,21 @@ ${icon('i-search')}<input id="home-q" name="q" type="search" placeholder="게임
 </div>
 </section>
 
+<section class="how">
+<div class="wrap">
+<h2 class="sec-title">처음 하는 게임도 네 걸음이면 시작해요</h2>
+<ol class="how-grid">
+${[['ico-find', '고르기', '인원과 시간으로 오늘 할 게임을 골라요.', '/games/'], ['ico-setup', '준비하기', '그림을 보며 구성물을 펼쳐 놓아요.', '/games/halli-galli/#v-2'], ['ico-turn', '내 차례', '내 차례에 할 일을 한 장씩 넘겨 봐요.', '/games/halli-galli/#v-3'], ['ico-help', '막힐 때', '헷갈리는 상황은 그 자리에서 찾아요.', '/games/halli-galli/#detail']].map(([im, t, d, href], i) => `<li><a class="how-card" href="${href}">${pic(im, '', 'how-pic')}<span class="how-t"><span class="how-n">${i + 1}</span>${t}</span><span class="how-d">${d}</span></a></li>`).join('')}
+</ol>
+</div>
+</section>
+
 <section class="band">
 <div class="wrap">
 <h2 class="sec-title">이런 자리라면</h2>
 <div class="col-grid">
 ${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slug}/">
+${COL_ART[c.slug] ? `<span class="col-art">${pic(COL_ART[c.slug], '', '')}</span>` : ''}
 <span class="col-name">${esc(c.title)}</span>
 <span class="col-lead">${esc(c.lead)}</span>
 <span class="col-tiles">${c.games.slice(0, 4).map((s) => tile(bySlug[s], 'tile-sm')).join('')}<span class="col-count">${c.games.length}개</span></span>
@@ -569,6 +613,16 @@ ${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slu
 </div>
 </section>
 
+<section class="crew-band">
+<div class="wrap">
+<h2 class="sec-title">룰룰 친구들</h2>
+<p class="sec-lead">게임을 고를 때도, 규칙이 헷갈릴 때도 여덟 친구가 옆에서 도와줘요.</p>
+<ul class="crew">
+${CREW.map(([im, nm, role, line, href]) => `<li><a class="crew-card" href="${href}">${pic(im, '', 'crew-pic')}<span class="crew-name">${nm}</span><span class="crew-role">${role}</span><span class="crew-line">${line}</span></a></li>`).join('')}
+</ul>
+</div>
+</section>
+
 <section class="space-band">
 <div class="wrap space-grid">
 <div>
@@ -576,8 +630,8 @@ ${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slu
 <p class="sec-lead">보드게임카페, 파티룸, 펜션처럼 게임을 두는 공간이라면 매장 QR을 만들어 보세요. 손님이 QR을 찍으면 우리 매장에 있는 게임과 하는 법이 바로 열려요. 설명해 줄 직원이 없어도 괜찮아요.</p>
 <a class="btn btn-main" href="/space/">매장 QR 만들기</a>
 </div>
-<div class="space-art" aria-hidden="true">
-<div class="qr-mock">${icon('i-qr')}</div>
+<div class="space-art">
+${pic('scene-store', '매장 테이블에서 휴대폰으로 게임 설명을 보는 손님들', 'space-pic')}
 <div class="qr-steps"><span>QR 찍기</span><span>게임 고르기</span><span>그림 보고 시작</span></div>
 </div>
 </div>
@@ -596,9 +650,12 @@ ${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slu
 function gamesPage() {
   const allTags = [...new Set(games.flatMap((g) => g.tags || []))].sort(collator.compare);
   const body = `<section class="page-head">
-<div class="wrap">
+<div class="wrap page-head-grid">
+<div>
 <h1 class="page-title" id="search">게임 찾기</h1>
 <p class="page-lead">모인 인원과 시간으로 거르거나, 이름으로 찾아보세요. 초성(예: ㄹㅁㅋㅂ)으로도 찾을 수 있어요.</p>
+</div>
+${pic('ico-find', '', 'page-art page-art-sq', true)}
 </div>
 </section>
 <section class="finder wrap" data-finder>
@@ -632,6 +689,7 @@ ${[1, 2, 3].map((n) => `<button type="button" class="chip" role="radio" aria-che
 <div class="finder-bar"><p class="finder-count" aria-live="polite" data-count>게임 ${games.length}개</p><button type="button" class="link-btn" data-reset hidden>조건 지우기</button></div>
 <div class="gcards" data-list>${sortedGames.map((g) => gameCard(g)).join('')}</div>
 <div class="empty" data-empty hidden>
+${pic('fox-search', '', 'empty-pic')}
 <p>조건에 맞는 게임이 아직 없어요.</p>
 <p class="muted">인원이나 시간을 하나 풀어 보세요. 찾는 게임이 없다면 <button type="button" class="link-btn" data-report="">넣어 달라고 알려 주세요</button>.</p>
 </div>
@@ -648,11 +706,14 @@ ${[1, 2, 3].map((n) => `<button type="button" class="chip" role="radio" aria-che
 function collectionPage(c) {
   const list = c.games.map((s) => bySlug[s]);
   const body = `<section class="page-head">
-<div class="wrap">
+<div class="wrap page-head-grid">
+<div>
 <nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>이런 자리라면</span></nav>
 <h1 class="page-title">${esc(c.title)}</h1>
 <p class="page-lead">${esc(c.lead)}</p>
 ${c.tip ? `<p class="tip">${fmt(c.tip)}</p>` : ''}
+</div>
+${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', `page-art${COL_ART[c.slug].startsWith('scene-strategy') || COL_ART[c.slug].startsWith('ico-') ? ' page-art-sq' : ''}`, true) : ''}
 </div>
 </section>
 <section class="wrap list-sec">
@@ -674,12 +735,15 @@ function traditionalPage() {
   const groupsT = [
     ['판에서 두는 놀이', ['yutnori', 'janggi', 'baduk', 'omok', 'umul-gonu']],
     ['손으로 하는 놀이', ['gonggi', 'chilgyo']],
-    ['몸으로 하는 놀이', ['tuho', 'jegichagi', 'ttakji']],
+    ['몸으로 하는 놀이', ['tuho', 'jegichagi', 'ttakji', 'sabangchigi', 'biseokchigi', 'paengichigi', 'ttangttameokgi']],
   ];
   const body = `<section class="page-head">
-<div class="wrap">
+<div class="wrap page-head-grid">
+<div>
 <h1 class="page-title">전통놀이 하는 법</h1>
 <p class="page-lead">설과 추석에 3대가 함께 하기 좋은 전통놀이 ${trad.length}가지예요. 지역과 집안마다 규칙이 조금씩 달라서, 널리 쓰이는 공통 규칙을 먼저 쓰고 다른 방법은 ‘하우스룰’로 따로 표시했어요.</p>
+</div>
+${pic('scene-generations', '여러 세대가 한 테이블에서 놀이를 하는 모습', 'page-art', true)}
 </div>
 </section>
 <section class="wrap trad-page">
@@ -720,17 +784,22 @@ function learnPage() {
     ['우리끼리 정한 규칙은 처음에 말해 둬요', '공식 규칙이 정하지 않은 부분은 시작 전에 합의하세요. 끝나고 따지면 서로 기분이 상해요.'],
   ];
   const body = `<section class="page-head">
-<div class="wrap">
+<div class="wrap page-head-grid">
+<div>
 <h1 class="page-title">보드게임이 처음이라면</h1>
 <p class="page-lead">규칙을 다 외우고 시작하는 사람은 거의 없어요. 하면서 배우면 돼요. 처음 모임을 이끄는 분을 위한 순서와, 설명에 자주 나오는 말을 풀어 두었어요.</p>
+</div>
+${pic('ico-first', '', 'page-art page-art-sq', true)}
 </div>
 </section>
 <section class="wrap-narrow learn">
 <h2 class="h2">처음 모임, 이렇게 시작해요</h2>
+${guide('domi-order', '도미', '순서대로만 하면 돼요. 여섯 가지예요.')}
 <ol class="steps steps-big">${steps.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ol>
 <h2 class="h2">처음이라면 이 게임부터</h2>
 <div class="gcards">${['halli-galli', 'dobble', 'just-one', 'rummikub', 'yutnori', 'the-mind'].filter((s) => bySlug[s]).map((s) => gameCard(bySlug[s])).join('')}</div>
 <h2 class="h2" id="words">자주 나오는 말</h2>
+${guide('book-open', '북', '설명에 자주 나오는 말을 쉬운 말로 풀었어요.')}
 <dl class="glossary">${glossary.map((x) => `<div><dt>${esc(x.term)}</dt><dd>${fmt(x.desc)}</dd></div>`).join('')}</dl>
 </section>`;
   return layout({
@@ -744,9 +813,12 @@ function learnPage() {
 // ---------- 페이지: 공간 운영자 ----------
 function spacePage() {
   const body = `<section class="page-head">
-<div class="wrap">
+<div class="wrap page-head-grid">
+<div>
 <h1 class="page-title">매장 QR 만들기</h1>
 <p class="page-lead">보드게임카페, 파티룸, 게임파티룸, 펜션, 캠핑장처럼 게임을 두는 공간을 위한 기능이에요. 우리 매장에 있는 게임을 고르면 매장 전용 페이지와 QR이 바로 만들어져요. 가입도 비용도 필요 없어요.</p>
+</div>
+${pic('scene-store', '매장 테이블에서 휴대폰으로 게임 설명을 보는 손님들', 'page-art', true)}
 </div>
 </section>
 <section class="wrap space-page">
@@ -846,7 +918,7 @@ function aboutPage() {
     '설명은 ‘어떻게 이기나’와 ‘내 차례에 뭘 하나’부터 시작해요.',
     '모든 게임을 같은 틀로 써요. 한 게임을 익히면 다른 게임도 같은 자리에서 찾을 수 있어요.',
     '휴대폰을 테이블 위에 두고 보는 화면을 기준으로 만들어요.',
-    '룰북 문장을 옮기지 않아요. 직접 해 보고 우리 말로 다시 써요.',
+    '룰북 문장을 옮기지 않아요. 규칙을 우리 말로 다시 쓰고, 공식 자료와 맞춰 봐요.',
     '규칙 화면에는 광고를 넣지 않아요.',
     '모르는 것은 모른다고 써요. 공식 규칙이 정하지 않은 부분은 ‘하우스룰’로 따로 표시해요.',
   ];
@@ -857,16 +929,22 @@ function aboutPage() {
 </div>
 </section>
 <section class="wrap-narrow about">
+${pic('scene-phone', '테이블 위 휴대폰으로 규칙을 확인하는 모습', 'about-pic', true)}
 <h2 class="h2">여섯 가지 원칙</h2>
 <ol class="steps">${principles.map((x) => `<li>${x}</li>`).join('')}</ol>
 <h2 class="h2">검수 표시 읽는 법</h2>
 <ul class="list">
-<li><b>검수 완료</b>: 그 게임을 잘 아는 사람이 규칙을 확인했다는 뜻이에요. 확인한 날짜를 함께 적어요.</li>
-<li><b>검수 중</b>: 직접 해 보고 쓴 설명이지만 아직 다른 사람의 확인을 거치지 않았어요. 상자 속 룰북과 다르면 룰북을 따르고, 저희에게 알려 주세요.</li>
+<li><b>검수 완료</b>: 그 게임을 잘 아는 사람이 실제로 해 보며 규칙을 확인했다는 뜻이에요. 확인한 날짜를 함께 적어요.</li>
+<li><b>자료 대조 완료</b>: 공식 규칙서, 출판사 안내, 백과사전 같은 자료와 맞춰 본 설명이에요. 어떤 자료와 맞춰 봤는지 게임 페이지 아래에 적어요.</li>
+<li><b>검수 중</b>: 아직 자료 대조나 다른 사람의 확인을 거치지 않았어요. 상자 속 룰북과 다르면 룰북을 따르고, 저희에게 알려 주세요.</li>
 <li><b>하우스룰</b>: 공식 규칙은 아니지만 많이 쓰는 방법이에요. 시작 전에 쓸지 말지 정하세요.</li>
 </ul>
 <h2 class="h2">출판사와 제작사께</h2>
 <p>${esc(cfg.siteName)}의 설명은 게임을 하는 방법을 우리 말과 우리 구성으로 다시 쓴 것이에요. 룰북 문장, 그림, 상자 이미지는 쓰지 않아요. 공식 설명을 함께 만들거나 고칠 곳이 있다면 알려 주세요. 삭제를 요청하시면 바로 내리고 협의할게요.</p>
+<h2 class="h2">룰룰 친구들</h2>
+<ul class="crew crew-wrap">
+${CREW.map(([im, nm, role, line]) => `<li><span class="crew-card">${pic(im, '', 'crew-pic')}<span class="crew-name">${nm}</span><span class="crew-role">${role}</span><span class="crew-line">${line}</span></span></li>`).join('')}
+</ul>
 <div class="row-btns"><button type="button" class="btn btn-sub" data-report="">의견 보내기</button>${cfg.contactEmail ? `<a class="btn btn-ghost" href="mailto:${esc(cfg.contactEmail)}">${esc(cfg.contactEmail)}</a>` : ''}</div>
 </section>`;
   return layout({ title: `${cfg.siteName} 소개 - 설명을 만드는 원칙 | ${cfg.siteName}`, description: `${cfg.siteName}이 보드게임 설명을 만드는 원칙과 검수 표시, 출판사 문의 방법을 알려 드려요.`, path: '/about/', body });
@@ -899,6 +977,7 @@ function adminPage() {
 
 function notFoundPage() {
   const body = `<section class="page-head"><div class="wrap">
+${pic('dice-think', '', 'state-pic', true)}
 <h1 class="page-title">찾는 페이지가 없어요</h1>
 <p class="page-lead">주소가 바뀌었거나 아직 만들지 않은 게임일 수 있어요. 게임 이름으로 다시 찾아보세요.</p>
 <form class="search-box" action="/games/" role="search"><label class="sr" for="nf-q">게임 이름으로 찾기</label>${icon('i-search')}<input id="nf-q" name="q" type="search" placeholder="게임 이름이나 초성으로 찾기"><button class="btn btn-main" type="submit">찾기</button></form>
@@ -909,6 +988,7 @@ function notFoundPage() {
 
 function offlinePage() {
   const body = `<section class="page-head"><div class="wrap">
+${pic('tick-wait', '', 'state-pic', true)}
 <h1 class="page-title">인터넷에 연결되어 있지 않아요</h1>
 <p class="page-lead">한 번 열어 본 게임 페이지는 연결이 없어도 볼 수 있어요. 연결되면 다시 시도해 주세요.</p>
 <p class="center"><a class="btn btn-sub" href="/">처음 화면으로</a></p>
