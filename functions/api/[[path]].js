@@ -3,6 +3,7 @@
 // - POST /api/report, /api/event, /api/contact
 // - 회원: /api/me, /api/auth/(signup|login|logout|profile|password|delete)
 // - 커뮤니티: /api/community/home, /api/posts, /api/clubs, /api/events, /api/comments, /api/flag, /api/my
+// - 참여·성장: /api/games/:slug (별점·후기·저장), /api/reviews/:id/helpful, /api/checkin, /api/growth, /api/sync, /api/users/:nick, /api/rank, /api/notes
 // - 운영 관리: /api/admin/... (x-admin-key 헤더에 ADMIN_PASSWORD)
 //
 // Cloudflare 설정 (Pages 프로젝트 > 설정)
@@ -17,6 +18,8 @@ import { auth, currentUser, publicUser } from '../../server/auth.js';
 import { community } from '../../server/community.js';
 import { contact } from '../../server/contact.js';
 import { admin } from '../../server/admin.js';
+import { social } from '../../server/social.js';
+import { levelInfo } from '../../server/growth.js';
 
 const KINDS = ['wrong', 'unclear', 'typo', 'request', 'other'];
 const EVENTS = ['view', 'table', 'qr', 'venue', 'speak', 'share'];
@@ -57,6 +60,7 @@ async function postEvent(request, env) {
 }
 
 const COMMUNITY = new Set(['community', 'posts', 'clubs', 'events', 'comments', 'flag', 'my']);
+const SOCIAL = new Set(['games', 'reviews', 'checkin', 'growth', 'sync', 'users', 'rank', 'notes']);
 
 export async function onRequest(context) {
   const { request, env, params } = context;
@@ -79,9 +83,15 @@ export async function onRequest(context) {
       return await admin(request, env, parts.slice(1));
     }
     const me = await currentUser(request, env);
-    if (route === 'me') return json({ ok: true, user: publicUser(me) });
+    if (route === 'me') {
+      if (!me) return json({ ok: true, user: null });
+      const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM notes WHERE user_id = ? AND read = 0').bind(me.id).first();
+      const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+      return json({ ok: true, user: { ...publicUser(me), level: levelInfo(me.xp), unread: n ? n.n : 0, checked: me.last_checkin === today, streak: me.streak } });
+    }
     if (route === 'auth') return await auth(request, env, parts.slice(1), me);
     if (COMMUNITY.has(route)) return await community(request, env, route, parts.slice(1), me);
+    if (SOCIAL.has(route)) return await social(request, env, route, parts.slice(1), me);
     return fail('없는 주소예요.', 404);
   } catch (e) {
     if (env.DEBUG_ERRORS) return fail(`서버 오류: ${e.message}`, 500);

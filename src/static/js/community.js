@@ -6,7 +6,11 @@
   var $ = RS.$, $$ = RS.$$, esc = RS.esc, store = RS.store;
   var dataEl = document.getElementById('cm-data');
   var DATA = dataEl ? JSON.parse(dataEl.textContent) : { regions: [], cats: {} };
-  var REGIONS = DATA.regions, CATS = DATA.cats;
+  var REGIONS = DATA.regions, CATS = DATA.cats, USER_CATS = DATA.userCats || Object.keys(CATS);
+  var RRS = window.RRS || null;
+  var gain = function (g) { if (RRS && g) RRS.gain(g); };
+  // 다른 페이지로 넘어가는 동작의 점수 알림은 다음 페이지에서 보여 줘요
+  var gainLater = function (g) { if (g) try { sessionStorage.setItem('rr-gain', JSON.stringify(g)); } catch (e) { /* 넘어감 */ } };
   var KIND = { regular: '정모', flash: '번개' };
   var params = new URLSearchParams(location.search);
 
@@ -21,6 +25,7 @@
   }
   var mePromise = null;
   function getMe(force) {
+    if (RRS) return RRS.me(force);
     if (!mePromise || force) {
       mePromise = api('me').then(function (j) {
         var u = j && j.ok ? j.user : null;
@@ -32,6 +37,7 @@
     return mePromise;
   }
   function setMe(u) {
+    if (RRS) { RRS.setMe(u); return; }
     store.set('rr-me', u ? { nick: u.nick } : null);
     mePromise = Promise.resolve(u);
     if (RS.paintAccount) RS.paintAccount();
@@ -77,7 +83,7 @@
     var d = new Date(t + 9 * 3600e3);
     return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일';
   }
-  var nick = function (o) { return o.gone ? '탈퇴한 회원' : esc(o.nick); };
+  var nick = function (o) { return RRS ? RRS.who(o) : (o.gone ? '탈퇴한 회원' : esc(o.nick)); };
   var gameChips = function (list) {
     var arr = String(list || '').split(',').filter(Boolean);
     if (!arr.length) return '';
@@ -147,11 +153,12 @@
   });
 
   // ---------- 댓글 ----------
-  function commentsHTML(list, target, id, me, canWrite, label) {
+  function commentsHTML(list, target, id, me, canWrite, label, adoptable) {
     var h = '<section class="cm-comments" data-comments="' + target + ':' + id + '"><h2 class="h3">' + (label || '댓글') + ' <span class="muted">' + list.length + '</span></h2>';
     h += list.length ? '<ul class="cmt-list">' + list.map(function (c) {
-      return '<li class="cmt"><p class="cmt-meta"><b>' + nick(c) + '</b><span>' + ago(c.created_at) + '</span>' +
-        (c.mine ? '<button type="button" class="link-btn" data-cdel="' + c.id + '">지우기</button>' : (me && !c.hidden ? '<button type="button" class="link-btn" data-flag="comment" data-id="' + c.id + '">신고</button>' : '')) + '</p>' +
+      return '<li class="cmt' + (c.adopted ? ' adopted' : '') + '"><p class="cmt-meta">' + (c.adopted ? '<span class="adopt-tag">' + ico('i-check') + '채택된 답변</span>' : '') + '<b>' + nick(c) + '</b><span>' + ago(c.created_at) + '</span>' +
+        (adoptable && !c.mine && !c.hidden && !c.gone ? '<button type="button" class="link-btn adopt-btn" data-adopt="' + c.id + '">이 답변 채택하기</button>' : '') +
+        (c.mine && !c.adopted ? '<button type="button" class="link-btn" data-cdel="' + c.id + '">지우기</button>' : (me && !c.hidden && !c.mine ? '<button type="button" class="link-btn" data-flag="comment" data-id="' + c.id + '">신고</button>' : '')) + '</p>' +
         (c.hidden ? '<p class="cmt-body muted">운영 정책에 따라 가려진 댓글이에요.</p>' : '<p class="cmt-body">' + esc(c.body) + '</p>') + '</li>';
     }).join('') + '</ul>' : '<p class="muted">아직 ' + (label || '댓글') + '이 없어요.</p>';
     if (canWrite === true) {
@@ -172,7 +179,7 @@
         btn.disabled = true;
         api('comments', { method: 'POST', body: { target: target, id: id, body: form.body.value } }).then(function (j) {
           btn.disabled = false;
-          if (j.ok) reload(); else msg(m, j.message, true);
+          if (j.ok) { gain(j.gain); reload(); } else msg(m, j.message, true);
         });
       });
     }
@@ -202,8 +209,10 @@
       (c.next_at ? '<span class="ccard-next">' + ico('i-cal') + '다음 일정 ' + whenText(c.next_at) + '</span>' : '') + '</a>';
   }
   function postRow(p) {
-    return '<li><a class="prow" href="/community/post/?id=' + p.id + '"><span class="badge badge-cat">' + esc(CATS[p.cat] || '') + '</span><span class="prow-t">' + esc(p.title) +
-      (p.comments ? ' <span class="prow-c">[' + p.comments + ']</span>' : '') + '</span><span class="prow-meta">' + nick(p) + ' · ' + ago(p.created_at) + (p.likes ? ' · ' + ico('i-heart') + p.likes : '') + '</span></a></li>';
+    var plainNick = p.gone ? '탈퇴한 회원' : esc(p.nick);
+    var lv = RRS && !p.gone && !p.sys ? RRS.lvChip(p.xp) + ' ' : '';
+    return '<li><a class="prow' + (p.pinned ? ' prow-pin' : '') + '" href="/community/post/?id=' + p.id + '"><span class="badge badge-cat' + (p.cat === 'notice' ? ' badge-notice' : p.cat === 'poll' ? ' badge-poll' : '') + '">' + (p.pinned ? '고정 · ' : '') + esc(CATS[p.cat] || '') + '</span><span class="prow-t">' + esc(p.title) +
+      (p.comments ? ' <span class="prow-c">[' + p.comments + ']</span>' : '') + (p.adopted ? ' <span class="adopt-tag">해결</span>' : '') + '</span><span class="prow-meta">' + lv + plainNick + ' · ' + ago(p.created_at) + (p.likes ? ' · ' + ico('i-heart') + p.likes : '') + '</span></a></li>';
   }
 
   // ---------- 페이지: 커뮤니티 홈 ----------
@@ -212,17 +221,31 @@
       var j = r[0], me = r[1];
       if (!j.ok) { render('<p class="notice">' + esc(j.message) + '</p>'); return; }
       var c = j.counts || {};
+      var lvInfo = me && window.RRG ? window.RRG.level(me.xp) : null;
       render(
-        '<div class="cm-hello">' + (me ? '<p><b>' + esc(me.nick) + '</b>님, 반가워요. 오늘은 어떤 게임을 하나요?</p>' : '<p>로그인하면 모임에 가입하고 정모·번개에 참여할 수 있어요. <a href="' + loginLink() + '">로그인</a> · <a href="/account/?mode=signup">회원가입</a></p>') +
+        '<div class="cm-hello">' + (me ? '<div class="cm-me">' + (lvInfo ? window.RRG.emblem(lvInfo, 48) : '') + '<p><b>' + esc(me.nick) + '</b>님, 반가워요. ' + (lvInfo ? 'Lv.' + lvInfo.lv + ' ' + esc(lvInfo.name) + (lvInfo.next ? ', 다음 등급까지 ' + lvInfo.need + '점 남았어요.' : '.') : '') + '</p>' + (me.checked ? '<span class="tag tag-teal">오늘 출석 완료</span>' : '<button type="button" class="btn btn-coral btn-sm" data-hub-checkin>출석 체크 +2점</button>') + '</div>' : '<p>로그인하면 모임에 가입하고 정모·번개에 참여할 수 있어요. 활동할수록 등급이 오르고 배지를 받아요. <a href="' + loginLink() + '">로그인</a> · <a href="/account/?mode=signup">회원가입</a></p>') +
         '<div class="row-btns"><a class="btn btn-main" href="/community/write/?t=event">' + ico('i-cal') + '번개 열기</a><a class="btn btn-sub" href="/community/write/?t=club">' + ico('i-people') + '모임 만들기</a><a class="btn btn-sub" href="/community/write/?t=post">' + ico('i-chat') + '글쓰기</a></div></div>' +
         '<p class="cm-stats"><span>회원 <b>' + (c.users || 0) + '</b></span><span>모임 <b>' + (c.clubs || 0) + '</b></span><span>다가오는 일정 <b>' + (c.events || 0) + '</b></span><span>게시글 <b>' + (c.posts || 0) + '</b></span></p>' +
+        '<div class="live-grid cm-live"><div class="live-card" data-hub-poll></div><div class="live-card"><h3>' + ico('i-trophy') + '이달의 활동왕</h3>' + ((j.top || []).length ? '<ol class="rank-list">' + j.top.map(function (x, i) { return '<li><span class="rank-n">' + (i + 1) + '</span>' + nick(x) + '<span class="rank-s">' + x.s + '점</span></li>'; }).join('') + '</ol>' : '<p class="muted">이달의 첫 활동왕이 되어 보세요.</p>') + '<a class="more-link" href="/community/rank/">랭킹 전체 보기</a></div></div>' +
         '<div class="sec-row"><h2 class="h2">다가오는 정모·번개</h2><a class="more-link" href="/community/events/">모두 보기</a></div>' +
         (j.events.length ? '<div class="ecards">' + j.events.map(eventCard).join('') + '</div>' : '<div class="cm-empty"><p>아직 열린 일정이 없어요. 첫 번개를 열어 보세요.</p></div>') +
         '<div class="sec-row"><h2 class="h2">보드게임 모임</h2><a class="more-link" href="/community/clubs/">모두 보기</a></div>' +
         (j.clubs.length ? '<div class="ccards">' + j.clubs.map(clubCard).join('') + '</div>' : '<div class="cm-empty"><p>아직 만들어진 모임이 없어요. 우리 동네 첫 모임을 만들어 보세요.</p></div>') +
-        '<div class="sec-row"><h2 class="h2">자유게시판 새 글</h2><a class="more-link" href="/community/board/">모두 보기</a></div>' +
+        '<div class="sec-row"><h2 class="h2">게시판 새 글</h2><a class="more-link" href="/community/board/">모두 보기</a></div>' +
         (j.posts.length ? '<ul class="plist">' + j.posts.map(postRow).join('') + '</ul>' : '<div class="cm-empty"><p>아직 글이 없어요. 규칙이 헷갈렸던 게임부터 물어보세요.</p></div>')
       );
+      var hb = bodyEl();
+      var pb = $('[data-hub-poll]', hb);
+      if (pb && RRS) RRS.renderPoll(pb, j.poll, me);
+      var hc = $('[data-hub-checkin]', hb);
+      if (hc) hc.addEventListener('click', function () {
+        hc.disabled = true;
+        api('checkin', { method: 'POST' }).then(function (x) {
+          if (!x.ok) { hc.disabled = false; RS.toast(x.message); return; }
+          if (!x.already) gain(x.gain);
+          hc.outerHTML = '<span class="tag tag-teal">오늘 출석 완료 · ' + (x.streak || 1) + '일째</span>';
+        });
+      });
     });
   }
 
@@ -278,12 +301,35 @@
           '<p class="cm-author">연 사람 <b>' + nick(e) + '</b> · ' + ago(e.created_at) + '</p>' +
           '<div class="cm-actions">' + action + '<button type="button" class="btn btn-ghost" data-share-url>링크 보내기</button>' +
           (e.mine ? '<a class="btn btn-ghost" href="/community/write/?t=event&id=' + e.id + '">고치기</a><button type="button" class="btn btn-ghost" data-del>지우기</button>' : (me ? '<button type="button" class="link-btn" data-flag="event" data-id="' + e.id + '">신고</button>' : '')) + '</div>' +
-          '<section class="cm-people"><h2 class="h3">참여하는 사람 <span class="muted">' + j.people.length + '</span></h2><p class="people">' + j.people.map(function (p) { return '<span>' + esc(p.nick) + '</span>'; }).join('') + '</p></section>' +
+          '<section class="cm-people"><h2 class="h3">참여하는 사람 <span class="muted">' + j.people.length + '</span></h2><p class="people">' + j.people.map(function (p) { return '<span>' + nick(p) + '</span>'; }).join('') + '</p></section>' +
+          (j.manner && j.manner.people.length ? '<section class="manner-box" data-manner><h2>함께한 사람들, 매너는 어땠나요?</h2><p class="small muted">일정이 끝나고 14일 안에 남길 수 있어요. 점수는 상대에게 이름 없이 평균으로만 보여요.</p>' + j.manner.people.map(function (p) { return '<div class="manner-row" data-mnick="' + esc(p.nick) + '"><b>' + esc(p.nick) + '</b><div class="star-pick" role="radiogroup" aria-label="' + esc(p.nick) + ' 매너 별점">' + [1, 2, 3, 4, 5].map(function (k) { return '<button type="button" role="radio" aria-checked="' + (p.score === k) + '" aria-label="' + k + '점" data-ms="' + k + '" class="' + (k <= p.score ? 'on' : '') + '"><svg aria-hidden="true"><use href="#i-star"/></svg></button>'; }).join('') + '</div></div>'; }).join('') + (j.manner.people.every(function (p) { return p.score; }) ? '<p class="small" style="font-weight:800">모두 평가했어요. 고마워요!</p>' : '<div class="row-btns" style="margin-top:4px"><button type="button" class="btn btn-main" data-manner-save>매너 별점 남기기</button></div>') + '</section>' : '') +
           '</article>' + commentsHTML(j.comments, 'event', id, me, me ? true : false, '댓글')
         );
         var b = bodyEl();
         var join = $('[data-join]', b), leave = $('[data-leave]', b), del = $('[data-del]', b);
-        if (join) join.addEventListener('click', function () { api('events/' + id + '/join', { method: 'POST' }).then(function (x) { if (x.ok) { RS.toast('참여 신청했어요.'); load(); } else RS.toast(x.message); }); });
+        if (join) join.addEventListener('click', function () { api('events/' + id + '/join', { method: 'POST' }).then(function (x) { if (x.ok) { if (x.gain) gain(x.gain); else RS.toast('참여 신청했어요.'); load(); } else RS.toast(x.message); }); });
+        var mb = $('[data-manner]', b);
+        if (mb) {
+          $$('.manner-row', mb).forEach(function (row) {
+            $$('[data-ms]', row).forEach(function (s) {
+              s.addEventListener('click', function () {
+                var v = Number(s.dataset.ms); row.dataset.score = v;
+                $$('[data-ms]', row).forEach(function (x) { var k = Number(x.dataset.ms); x.classList.toggle('on', k <= v); x.setAttribute('aria-checked', String(k === v)); });
+              });
+            });
+          });
+          var msave = $('[data-manner-save]', mb);
+          if (msave) msave.addEventListener('click', function () {
+            var scores = {};
+            $$('.manner-row', mb).forEach(function (row) { if (row.dataset.score) scores[row.dataset.mnick] = Number(row.dataset.score); });
+            if (!Object.keys(scores).length) { RS.toast('별을 눌러 점수를 골라 주세요.'); return; }
+            api('events/' + id + '/manner', { method: 'POST', body: { scores: scores } }).then(function (x) {
+              if (!x.ok) { RS.toast(x.message); return; }
+              if (x.gain) gain(x.gain); else RS.toast('매너 별점을 남겼어요.');
+              load();
+            });
+          });
+        }
         if (leave) leave.addEventListener('click', function () { if (confirm('참여를 취소할까요?')) api('events/' + id + '/leave', { method: 'POST' }).then(function (x) { if (x.ok) load(); else RS.toast(x.message); }); });
         if (del) del.addEventListener('click', function () { if (confirm('이 일정을 지울까요? 참여 신청과 댓글도 함께 지워져요.')) api('events/' + id, { method: 'DELETE' }).then(function (x) { if (x.ok) location.href = e.club_id ? '/community/club/?id=' + e.club_id : '/community/events/'; else RS.toast(x.message); }); });
         $('[data-share-url]', b).addEventListener('click', function () { RS.shareOrCopy({ title: e.title, text: KIND[e.kind] + ' · ' + whenText(e.starts_at) + ' · ' + e.place, url: location.href }); });
@@ -401,18 +447,35 @@
           '<h1 class="cm-title">' + esc(p.title) + '</h1>' +
           '<p class="cm-author"><b>' + nick(p) + '</b> · ' + ago(p.created_at) + (p.updated_at !== p.created_at ? ' (고침)' : '') + ' · 조회 ' + p.views + '</p>' +
           (p.hidden ? '<p class="notice">운영 정책에 따라 다른 사람에게는 가려진 글이에요.</p>' : '') +
-          '<div class="cm-text">' + esc(p.body) + '</div>' +
+          (p.body ? '<div class="cm-text">' + esc(p.body) + '</div>' : '') +
+          (j.poll ? '<div class="cm-poll" data-post-poll></div>' : '') +
+          (p.cat === 'qna' ? (p.adopted ? '<p class="status status-ok">' + ico('i-check') + '<span>답변이 채택된 질문이에요.</span></p>' : '<p class="tip">' + (p.mine ? '도움이 된 댓글에 ‘이 답변 채택하기’를 누르면 답한 사람이 점수와 별 3개를 받아요.' : '정확한 답을 달아 채택되면 +' + (window.RRG ? window.RRG.RULES.adopted[0] : 15) + '점과 별 3개를 받아요.') + '</p>') : '') +
           '<div class="cm-actions"><button type="button" class="btn ' + (p.liked ? 'btn-main' : 'btn-sub') + '" data-like aria-pressed="' + p.liked + '">' + ico('i-heart') + '좋아요 ' + p.likes + '</button>' +
           '<button type="button" class="btn btn-ghost" data-share-url>링크 보내기</button>' +
           (p.mine ? '<a class="btn btn-ghost" href="/community/write/?t=post&id=' + p.id + '">고치기</a><button type="button" class="btn btn-ghost" data-del>지우기</button>' : (me ? '<button type="button" class="link-btn" data-flag="post" data-id="' + p.id + '">신고</button>' : '')) + '</div>' +
-          '</article>' + commentsHTML(j.comments, 'post', id, me, me ? true : false, '댓글') +
+          '</article>' + commentsHTML(j.comments, 'post', id, me, me ? true : false, p.cat === 'qna' ? '답변' : '댓글', p.cat === 'qna' && p.mine && !p.adopted) +
           '<p class="center"><a class="btn btn-sub" href="/community/board/">목록으로</a></p>'
         );
         var b = bodyEl();
+        var pp = $('[data-post-poll]', b);
+        if (pp && RRS) {
+          var paintPoll = function (poll) { poll.id = id; pp.innerHTML = RRS.pollHTML(poll, me); RRS.bindPoll(pp, poll, me, paintPoll); };
+          paintPoll(j.poll);
+        }
+        $$('[data-adopt]', b).forEach(function (a) {
+          a.addEventListener('click', function () {
+            if (!confirm('이 댓글을 답변으로 채택할까요? 한 번 채택하면 바꿀 수 없어요.')) return;
+            api('posts/' + id + '/adopt', { method: 'POST', body: { comment: Number(a.dataset.adopt) } }).then(function (x) {
+              if (!x.ok) { RS.toast(x.message); return; }
+              if (x.gain) gain(x.gain); else RS.toast('답변을 채택했어요.');
+              load();
+            });
+          });
+        });
         $('[data-like]', b).addEventListener('click', function () {
           if (!me) { location.href = loginLink(); return; }
           api('posts/' + id + '/like', { method: 'POST' }).then(function (x) {
-            if (!x.ok) { RS.toast(x.message); return; }
+            if (!x.ok) { if (RRS) RRS.notice(esc(x.message)); else RS.toast(x.message); return; }
             var btn = $('[data-like]', b);
             btn.className = 'btn ' + (x.liked ? 'btn-main' : 'btn-sub');
             btn.setAttribute('aria-pressed', String(x.liked));
@@ -473,10 +536,13 @@
         var form = '';
         if (t === 'post') {
           var cat = old.cat || params.get('cat') || 'free';
-          form = '<label class="field"><span>말머리</span><select name="cat">' + Object.keys(CATS).map(function (k) { return '<option value="' + k + '"' + (k === cat ? ' selected' : '') + '>' + CATS[k] + '</option>'; }).join('') + '</select></label>' +
+          if (USER_CATS.indexOf(cat) < 0) cat = 'free';
+          var catKeys = id ? USER_CATS.filter(function (k) { return (k === 'poll') === (cat === 'poll'); }) : USER_CATS;
+          form = '<label class="field"><span>말머리</span><select name="cat" data-cat>' + catKeys.map(function (k) { return '<option value="' + k + '"' + (k === cat ? ' selected' : '') + '>' + CATS[k] + '</option>'; }).join('') + '</select></label>' +
             '<label class="field"><span>제목</span><input name="title" maxlength="60" required value="' + esc(old.title || '') + '"></label>' +
             '<div class="field"><span>어떤 게임 이야기인가요? (선택)</span>' + gamePicker('game', old.game || params.get('game') || '', 1) + '</div>' +
-            '<label class="field"><span>내용</span><textarea name="body" rows="12" maxlength="5000" required placeholder="규칙 질문이라면 어떤 판(에디션)인지, 몇 명이서 했는지 함께 적어 주면 답하기 쉬워요.">' + esc(old.body || '') + '</textarea></label>';
+            (id ? '' : '<div class="field" data-poll-fields' + (cat === 'poll' ? '' : ' hidden') + '><span>투표 보기 (2~6개)</span><div class="opt-rows">' + [0, 1, 2, 3].map(function (i) { return '<input data-opt maxlength="40" placeholder="보기 ' + (i + 1) + (i < 2 ? ' (꼭 적어 주세요)' : ' (선택)') + '">'; }).join('') + '</div><div class="row-btns" style="margin-top:8px"><button type="button" class="btn btn-ghost btn-sm" data-add-opt>보기 더하기</button><label class="field field-inline" style="margin:0"><span>투표 기간</span><select name="days"><option value="3">3일</option><option value="7" selected>7일</option><option value="14">14일</option><option value="30">30일</option></select></label></div></div>') +
+            '<label class="field"><span data-body-label>' + (cat === 'poll' ? '설명 (선택)' : '내용') + '</span><textarea name="body" rows="' + (cat === 'poll' ? 4 : 12) + '" maxlength="5000"' + (cat === 'poll' ? '' : ' required') + ' placeholder="규칙 질문이라면 어떤 판(에디션)인지, 몇 명이서 했는지 함께 적어 주면 답하기 쉬워요.">' + esc(old.body || '') + '</textarea></label>';
         } else if (t === 'club') {
           form = '<label class="field"><span>모임 이름</span><input name="name" maxlength="30" required value="' + esc(old.name || '') + '" placeholder="예: 신촌 퇴근길 보드게임"></label>' +
             '<div class="field-row"><label class="field"><span>지역</span><select name="region" required>' + regionOptions(old.region || me.region || '', '골라 주세요') + '</select></label>' +
@@ -508,6 +574,21 @@
           '<p class="form-msg" role="status" aria-live="polite"></p><div class="row-btns"><button class="btn btn-main" type="submit">' + (id ? '고친 내용 저장' : '올리기') + '</button><a class="btn btn-ghost" href="javascript:history.back()">취소</a></div></form>');
         var f = $('[data-wform]');
         bindGamePicker(f, t === 'post' ? 1 : 8);
+        var catSel = $('[data-cat]', f), pf = $('[data-poll-fields]', f);
+        if (catSel && pf) {
+          catSel.addEventListener('change', function () {
+            var isPoll = catSel.value === 'poll';
+            pf.hidden = !isPoll;
+            f.body.required = !isPoll; f.body.rows = isPoll ? 4 : 12;
+            $('[data-body-label]', f).textContent = isPoll ? '설명 (선택)' : '내용';
+          });
+          $('[data-add-opt]', f).addEventListener('click', function (ev) {
+            var rows = $('.opt-rows', f), n = $$('[data-opt]', rows).length;
+            if (n >= 6) { ev.target.disabled = true; return; }
+            rows.insertAdjacentHTML('beforeend', '<input data-opt maxlength="40" placeholder="보기 ' + (n + 1) + ' (선택)">');
+            if (n + 1 >= 6) ev.target.disabled = true;
+          });
+        }
         var kp = $('[data-kindpick]', f);
         if (kp) $$('[data-k]', kp).forEach(function (c) { c.addEventListener('click', function () { f.kind.value = c.dataset.k; $$('[data-k]', kp).forEach(function (x) { x.setAttribute('aria-checked', String(x === c)); }); }); });
         f.addEventListener('submit', function (e) {
@@ -516,11 +597,16 @@
           var body = {};
           Array.prototype.forEach.call(f.elements, function (el) { if (el.name) body[el.name] = el.value; });
           if (t === 'post') body.game = body.game || '';
+          if (t === 'post' && body.cat === 'poll' && !id) {
+            body.options = $$('[data-opt]', f).map(function (x) { return x.value.trim(); }).filter(Boolean);
+            if (body.options.length < 2) { msg(m, '투표 보기를 두 개 이상 적어 주세요.', true); return; }
+          }
           btn.disabled = true; msg(m, '올리는 중이에요');
           var path = (t === 'post' ? 'posts' : t === 'club' ? 'clubs' : 'events') + (id ? '/' + id : '');
           api(path, { method: 'POST', body: body }).then(function (j) {
             btn.disabled = false;
             if (!j.ok) { msg(m, j.message || '올리지 못했어요.', true); if (j._status === 401) setTimeout(function () { location.href = loginLink(); }, 800); return; }
+            gainLater(j.gain);
             location.href = (t === 'post' ? '/community/post/?id=' : t === 'club' ? '/community/club/?id=' : '/community/event/?id=') + j.id;
           });
         });
@@ -584,7 +670,7 @@
         msg(m, '가입하는 중이에요');
         api('auth/signup', { method: 'POST', body: { login: sf.login.value.trim().toLowerCase(), nick: sf.nick.value.trim(), password: sf.password.value, region: sf.region.value, age14: sf.age14.checked, terms: sf.terms.checked, privacy: sf.privacy.checked, website: sf.website.value } }).then(function (j) {
           if (!j.ok) { msg(m, j.message, true); return; }
-          setMe(j.user); RS.toast('가입을 환영해요!'); location.href = next;
+          setMe(j.user); gainLater(j.gain || { pts: 0, badges: [] }); RS.toast('가입을 환영해요!'); location.href = next;
         });
       });
     });
@@ -594,6 +680,8 @@
     Promise.all([api('my'), loadGames()]).then(function (r) {
       var j = r[0] || {};
       render('<h1 class="cm-title">' + esc(me.nick) + '님의 정보</h1>' +
+        '<div class="my-growth" data-growth></div>' +
+        '<p style="margin:14px 0 24px"><a class="btn btn-sub btn-sm" href="/community/user/?n=' + encodeURIComponent(me.nick) + '">다른 사람에게 보이는 내 프로필</a> <a class="btn btn-ghost btn-sm" href="/saved/">저장한 게임</a></p>' +
         '<div class="my-grid"><section class="my-box"><h2 class="h3">내 모임</h2>' + ((j.clubs || []).length ? '<ul class="list">' + j.clubs.map(function (c) { return '<li><a href="/community/club/?id=' + c.id + '">' + esc(c.name) + '</a> <span class="muted small">' + esc(c.region) + ' · ' + c.member_count + '명' + (c.role === 'owner' ? ' · 모임장' : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="muted">가입한 모임이 없어요. <a href="/community/clubs/">모임 찾기</a></p>') + '</section>' +
         '<section class="my-box"><h2 class="h3">참여할 일정</h2>' + ((j.events || []).length ? '<ul class="list">' + j.events.map(function (e) { return '<li><a href="/community/event/?id=' + e.id + '">' + esc(e.title) + '</a> <span class="muted small">' + whenText(e.starts_at) + ' · ' + KIND[e.kind] + '</span></li>'; }).join('') + '</ul>' : '<p class="muted">참여 신청한 일정이 없어요. <a href="/community/events/">일정 보기</a></p>') + '</section>' +
         '<section class="my-box"><h2 class="h3">내가 쓴 글</h2>' + ((j.posts || []).length ? '<ul class="list">' + j.posts.map(function (p) { return '<li><a href="/community/post/?id=' + p.id + '">' + esc(p.title) + '</a> <span class="muted small">' + ago(p.created_at) + (p.comments ? ' · 댓글 ' + p.comments : '') + (p.hidden ? ' · 가려짐' : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="muted">아직 쓴 글이 없어요.</p>') + '</section></div>' +
@@ -611,10 +699,11 @@
         '<label class="field"><span>비밀번호를 한 번 더 입력해 주세요</span><input type="password" name="password" autocomplete="current-password" required></label>' +
         '<p class="form-msg" role="status"></p><button class="btn btn-main" type="submit">탈퇴하기</button></form>');
       var b = bodyEl();
+      if (RRS) RRS.renderGrowth($('[data-growth]', b), me);
       var pf = $('[data-profile]', b);
       pf.addEventListener('submit', function (e) {
         e.preventDefault();
-        api('auth/profile', { method: 'POST', body: { nick: pf.nick.value.trim(), region: pf.region.value, bio: pf.bio.value } }).then(function (x) {
+        api('auth/profile', { method: 'POST', body: { nick: pf.nick.value.trim(), region: pf.region.value, bio: pf.bio.value, badge: me.badge || '' } }).then(function (x) {
           if (x.ok) { setMe(x.user); msg($('.form-msg', pf), '저장했어요.'); } else msg($('.form-msg', pf), x.message, true);
         });
       });

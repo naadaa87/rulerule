@@ -57,7 +57,7 @@
     c.width = c.height = size;
     var x = c.getContext('2d');
     x.fillStyle = '#fff'; x.fillRect(0, 0, size, size);
-    x.fillStyle = '#1c2230';
+    x.fillStyle = '#233552';
     for (var r = 0; r < n; r++) for (var col = 0; col < n; col++) {
       if (qr.isDark(r, col)) x.fillRect((col + quiet) * scale, (r + quiet) * scale, scale, scale);
     }
@@ -69,8 +69,8 @@
     c.width = W; c.height = H;
     var x = c.getContext('2d');
     x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
-    x.fillStyle = '#e4572e'; x.fillRect(0, 0, W, 18);
-    x.fillStyle = '#1c2230'; x.textAlign = 'center';
+    x.fillStyle = '#f05b48'; x.fillRect(0, 0, W, 18);
+    x.fillStyle = '#233552'; x.textAlign = 'center';
     x.font = '800 76px ' + FONT;
     x.fillText(name, W / 2, 150, W - 120);
     x.fillStyle = '#5f6675'; x.font = '600 40px ' + FONT;
@@ -78,9 +78,9 @@
     var q = qrCanvas(url, 'M', 24);
     x.imageSmoothingEnabled = false;
     x.drawImage(q, (W - 980) / 2, 280, 980, 980);
-    x.fillStyle = '#1c2230'; x.font = '700 42px ' + FONT;
+    x.fillStyle = '#233552'; x.font = '700 42px ' + FONT;
     x.fillText('휴대폰 카메라로 찍으면 우리 매장 게임이 열려요', W / 2, 1340, W - 120);
-    x.fillStyle = '#e4572e'; x.font = '800 38px ' + FONT;
+    x.fillStyle = '#f05b48'; x.font = '800 38px ' + FONT;
     x.fillText('룰룰 | 보드게임 룰 하는법 설명서', W / 2, 1420, W - 120);
     return c.toDataURL('image/png');
   }

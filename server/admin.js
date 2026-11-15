@@ -1,10 +1,10 @@
 // 운영 관리 (x-admin-key 헤더에 ADMIN_PASSWORD)
-import { json, fail, readBody, kstDay, oneLine } from './util.js';
+import { json, fail, readBody, kstDay, oneLine, clip, nowIso, systemUserId } from './util.js';
 import { adminShop } from './shop.js';
 import { deleteClub, deleteEvent, deletePost, deleteUser, hashPassword } from './auth.js';
-import { removeComment } from './community.js';
+import { removeComment, removeReview } from './community.js';
 
-const TABLE = { post: 'posts', event: 'events', club: 'clubs', comment: 'comments' };
+const TABLE = { post: 'posts', event: 'events', club: 'clubs', comment: 'comments', review: 'reviews' };
 
 export async function admin(request, env, parts) {
   const url = new URL(request.url);
@@ -79,21 +79,22 @@ export async function admin(request, env, parts) {
   if (section === 'community') {
     if (id === 'flags' && m === 'GET') {
       const { results } = await db.prepare(`SELECT f.target, f.target_id, COUNT(*) AS n, MAX(f.created_at) AS last_at, GROUP_CONCAT(f.reason, ' / ') AS reasons,
-          CASE f.target WHEN 'post' THEN (SELECT title FROM posts WHERE id = f.target_id) WHEN 'event' THEN (SELECT title FROM events WHERE id = f.target_id) WHEN 'club' THEN (SELECT name FROM clubs WHERE id = f.target_id) ELSE (SELECT substr(body, 1, 80) FROM comments WHERE id = f.target_id) END AS label,
-          CASE f.target WHEN 'post' THEN (SELECT hidden FROM posts WHERE id = f.target_id) WHEN 'event' THEN (SELECT hidden FROM events WHERE id = f.target_id) WHEN 'club' THEN (SELECT hidden FROM clubs WHERE id = f.target_id) ELSE (SELECT hidden FROM comments WHERE id = f.target_id) END AS hidden,
-          CASE f.target WHEN 'comment' THEN (SELECT target || ':' || target_id FROM comments WHERE id = f.target_id) ELSE '' END AS parent
+          CASE f.target WHEN 'post' THEN (SELECT title FROM posts WHERE id = f.target_id) WHEN 'event' THEN (SELECT title FROM events WHERE id = f.target_id) WHEN 'club' THEN (SELECT name FROM clubs WHERE id = f.target_id) WHEN 'review' THEN (SELECT slug || ' · ' || substr(body, 1, 70) FROM reviews WHERE id = f.target_id) ELSE (SELECT substr(body, 1, 80) FROM comments WHERE id = f.target_id) END AS label,
+          CASE f.target WHEN 'post' THEN (SELECT hidden FROM posts WHERE id = f.target_id) WHEN 'event' THEN (SELECT hidden FROM events WHERE id = f.target_id) WHEN 'club' THEN (SELECT hidden FROM clubs WHERE id = f.target_id) WHEN 'review' THEN (SELECT hidden FROM reviews WHERE id = f.target_id) ELSE (SELECT hidden FROM comments WHERE id = f.target_id) END AS hidden,
+          CASE f.target WHEN 'comment' THEN (SELECT target || ':' || target_id FROM comments WHERE id = f.target_id) WHEN 'review' THEN (SELECT 'game:' || slug FROM reviews WHERE id = f.target_id) ELSE '' END AS parent
         FROM flags f WHERE f.status = 'new' GROUP BY f.target, f.target_id ORDER BY n DESC, last_at DESC LIMIT 100`).all();
       return json({ ok: true, flags: results });
     }
     if (id === 'recent' && m === 'GET') {
-      const [posts, events, clubs, users] = await db.batch([
-        db.prepare("SELECT p.id, p.title, p.cat, p.created_at, p.hidden, u.nick, u.id AS uid FROM posts p JOIN users u ON u.id = p.user_id ORDER BY p.id DESC LIMIT 30"),
+      const [posts, events, clubs, users, reviews] = await db.batch([
+        db.prepare("SELECT p.id, p.title, p.cat, p.created_at, p.hidden, p.pinned, u.nick, u.id AS uid FROM posts p JOIN users u ON u.id = p.user_id ORDER BY p.id DESC LIMIT 30"),
         db.prepare('SELECT e.id, e.title, e.kind, e.starts_at, e.hidden, u.nick, u.id AS uid FROM events e JOIN users u ON u.id = e.user_id ORDER BY e.id DESC LIMIT 30'),
         db.prepare('SELECT c.id, c.name AS title, c.region, c.created_at, c.hidden, u.nick, u.id AS uid FROM clubs c JOIN users u ON u.id = c.owner_id ORDER BY c.id DESC LIMIT 30'),
-        db.prepare("SELECT id, login, nick, status, created_at, last_at FROM users WHERE status != 'deleted' ORDER BY id DESC LIMIT 50"),
+        db.prepare("SELECT id, login, nick, status, created_at, last_at, xp, stars FROM users WHERE status NOT IN ('deleted', 'system') ORDER BY id DESC LIMIT 50"),
+        db.prepare('SELECT r.id, r.slug, r.rating, substr(r.body, 1, 80) AS body, r.hidden, r.created_at, u.nick FROM reviews r JOIN users u ON u.id = r.user_id ORDER BY r.id DESC LIMIT 30'),
       ]);
       const cnt = await db.prepare("SELECT COUNT(*) AS n FROM users WHERE status = 'ok'").first();
-      return json({ ok: true, posts: posts.results, events: events.results, clubs: clubs.results, users: users.results, userCount: cnt.n });
+      return json({ ok: true, posts: posts.results, events: events.results, clubs: clubs.results, users: users.results, reviews: reviews.results, userCount: cnt.n });
     }
     if (id === 'hide' && m === 'POST') {
       const b = await readBody(request, 500) || {};
@@ -115,8 +116,32 @@ export async function admin(request, env, parts) {
       else if (b.target === 'event') await deleteEvent(env, n);
       else if (b.target === 'club') await deleteClub(env, n);
       else if (b.target === 'comment') await removeComment(env, n, null, true);
+      else if (b.target === 'review') await removeReview(env, n);
       else return fail('대상을 알 수 없어요.');
       await db.prepare("UPDATE flags SET status = 'done' WHERE target = ? AND target_id = ?").bind(b.target, n).run();
+      return json({ ok: true });
+    }
+    // 운영팀 이름으로 공지나 투표 올리기
+    if (id === 'post' && m === 'POST') {
+      const b = await readBody(request, 20000) || {};
+      const cat = b.cat === 'poll' ? 'poll' : 'notice';
+      const title = oneLine(b.title, 60), body = clip(b.body, 5000);
+      if (title.length < 2) return fail('제목을 적어 주세요.');
+      const sid = await systemUserId(db);
+      let ends = '';
+      const opts = (Array.isArray(b.options) ? b.options : []).map((x) => oneLine(x, 40)).filter(Boolean).slice(0, 6);
+      if (cat === 'poll') {
+        if (opts.length < 2) return fail('투표 보기를 두 개 이상 적어 주세요.');
+        ends = new Date(Date.now() + 9 * 3600e3 + Math.min(Math.max(Number(b.days) || 7, 1), 60) * 86400e3).toISOString().slice(0, 10);
+      }
+      const r = await db.prepare('INSERT INTO posts (user_id, cat, game, title, body, created_at, updated_at, pinned, poll_ends) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(sid, cat, '', title, body, nowIso(), nowIso(), b.pinned ? 1 : 0, ends).run();
+      const pid = r.meta.last_row_id;
+      if (opts.length && cat === 'poll') await db.batch(opts.map((o, i) => db.prepare('INSERT INTO poll_options (post_id, idx, label) VALUES (?, ?, ?)').bind(pid, i, o)));
+      return json({ ok: true, id: pid });
+    }
+    if (id === 'pin' && m === 'POST') {
+      const b = await readBody(request, 300) || {};
+      await db.prepare('UPDATE posts SET pinned = ? WHERE id = ?').bind(b.pinned ? 1 : 0, Number(b.id)).run();
       return json({ ok: true });
     }
     if (id === 'user' && /^\d+$/.test(sub || '') && m === 'POST') {

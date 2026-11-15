@@ -127,6 +127,8 @@
   window.RS.cho = cho;
 
   var gamesData = null;
+  window.RS.cardHTML = function (g, href) { return cardHTML(g, href); };
+  window.RS.firstSyl = firstSyl;
   function loadGames() {
     if (gamesData) return Promise.resolve(gamesData);
     return fetch('/data/games.json').then(function (r) { return r.json(); }).then(function (d) { gamesData = d; return d; });
@@ -154,42 +156,55 @@
   }
   window.RS.radioGroup = radioGroup;
 
-  // ---------- 처음 화면: 인원과 시간으로 바로 고르기 ----------
-  var picker = $('[data-picker]');
-  if (picker) {
-    var pick = { p: 0, m: 0 };
+  // ---------- 처음 화면: 인원, 시간, 난이도로 바로 고르기 ----------
+  var hf = $('[data-hero-filters]');
+  if (hf) {
     var deal = $('[data-deal]'), dealTitle = $('[data-deal-title]'), dealMore = $('[data-deal-more]');
+    var LV = { 1: '쉬운', 2: '보통 난이도', 3: '어려운' };
     var render = function () {
-      if (!pick.p) return;
+      var pick = {};
+      $$('select[data-hf]', hf).forEach(function (s) { pick[s.dataset.hf] = s.value; s.parentNode.classList.toggle('on', !!s.value); });
+      var p = Number(pick.p) || 0, m = Number(pick.m) || 0, l = Number(pick.l) || 0;
+      if (!p && !m && !l) {
+        dealTitle.textContent = '요즘 많이 여는 게임이에요. 위에서 인원과 시간을 고르면 바로 바뀌어요.';
+        dealMore.href = '/games/'; dealMore.textContent = '게임 전체 보기';
+      }
       loadGames().then(function (d) {
         var pop = d.popular || [];
         var list = d.games.filter(function (g) {
-          var okP = pick.p >= 6 ? g.p[1] >= 6 : (g.p[0] <= pick.p && pick.p <= g.p[1]);
-          var okM = !pick.m || g.m[0] <= pick.m;
-          return okP && okM;
+          var okP = !p || (p >= 7 ? g.p[1] >= 7 : (g.p[0] <= p && p <= g.p[1]));
+          return okP && (!m || g.m[0] <= m) && (!l || g.l === l);
         }).sort(function (a, b) {
           var ia = pop.indexOf(a.s), ib = pop.indexOf(b.s);
           if (ia < 0) ia = 999; if (ib < 0) ib = 999;
           return ia - ib || a.l - b.l;
         });
-        var who = pick.p >= 6 ? '6명 이상' : pick.p + '명';
-        var when = pick.m ? (pick.m === 60 ? '1시간' : pick.m + '분') + ' 안에' : '';
-        dealTitle.textContent = who + '이 ' + (when ? when + ' ' : '') + '할 수 있는 게임 ' + list.length + '개';
+        if (!p && !m && !l) list = pop.map(function (s) { return d.games.filter(function (g) { return g.s === s; })[0]; }).filter(Boolean);
+        else {
+          var who = p ? (p >= 7 ? '7명 이상' : p + '명') + '이' : '';
+          var when = m ? (m === 60 ? '1시간' : m + '분') + ' 안에' : '';
+          dealTitle.textContent = [who, when, l ? LV[l] : ''].filter(Boolean).join(' ') + ' 할 수 있는 게임 ' + list.length + '개';
+          var q = new URLSearchParams();
+          if (p) q.set('p', String(p)); if (m) q.set('m', String(m)); if (l) q.set('l', String(l));
+          dealMore.href = '/games/?' + q.toString();
+          dealMore.textContent = list.length > 6 ? '나머지 ' + (list.length - 6) + '개까지 보기' : '게임 찾기에서 더 고르기';
+        }
         if (!list.length) {
-          deal.innerHTML = '<p class="deal-empty">조건에 맞는 게임이 없어요. 시간을 조금 늘려 보세요.</p>';
+          deal.innerHTML = '<p class="deal-empty">조건에 맞는 게임이 없어요. 시간이나 난이도를 조금 바꿔 보세요.</p>';
         } else {
           deal.innerHTML = list.slice(0, 6).map(function (g) { return cardHTML(g); }).join('');
           $$('.gcard', deal).forEach(function (el, i) { el.classList.add('deal-in'); el.style.animationDelay = (i * 45) + 'ms'; });
         }
-        var q = new URLSearchParams();
-        q.set('p', pick.p >= 6 ? '6' : String(pick.p));
-        if (pick.m) q.set('m', String(pick.m));
-        dealMore.href = '/games/?' + q.toString();
-        dealMore.textContent = list.length > 6 ? '나머지 ' + (list.length - 6) + '개까지 보기' : '게임 찾기에서 더 고르기';
       }).catch(function () { dealTitle.textContent = '게임 목록을 불러오지 못했어요. 게임 찾기에서 골라 주세요.'; });
     };
-    radioGroup($('.tokens', picker), function (b) { pick.p = Number(b.dataset.p); render(); });
-    radioGroup($('.chips', picker), function (b) { pick.m = Number(b.dataset.m); render(); });
+    $$('select[data-hf]', hf).forEach(function (s) {
+      s.addEventListener('change', function () {
+        render();
+        var sec = $('#picked');
+        if (sec && sec.getBoundingClientRect().top > window.innerHeight * 0.85) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    if ($$('select[data-hf]', hf).some(function (s) { return s.value; })) render();
   }
 
   // ---------- 게임 찾기 ----------
@@ -328,11 +343,13 @@
           else if (r > chipBar.scrollLeft + chipBar.clientWidth) chipBar.scrollLeft = r - chipBar.clientWidth + 8;
         }
         if (countEl) countEl.textContent = (cur + 1) + ' / ' + total;
+        $$('.vis-bar i', vis).forEach(function (b, i) { b.classList.toggle('on', i === cur); if (i < cur) b.classList.add('seen'); });
+        try { document.dispatchEvent(new CustomEvent('rr:vis', { detail: { i: cur, n: total } })); } catch (e) { /* 오래된 브라우저 */ }
         // 지금 보는 장의 높이에 맞춰 아래 버튼이 바로 붙게 해요
         var hh = steps[cur] ? steps[cur].offsetHeight : 0;
         visTrack.style.height = !vis.classList.contains('all') && hh ? (hh + 8) + 'px' : '';
         prevB.disabled = cur === 0;
-        nextB.textContent = cur === total - 1 ? '처음부터' : '다음';
+        nextB.textContent = cur === total - 1 ? '처음부터' : '다음 단계';
       };
       // 버튼으로 넘겼는데 그림 윗부분이 탭 아래로 가려져 있으면 단계 목록이 보이게 올려 줘요
       var reveal = function () {

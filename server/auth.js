@@ -1,5 +1,6 @@
 // 회원: 가입, 로그인, 로그아웃, 내 정보
 import { json, fail, readBody, clip, oneLine, nowIso, randomToken, sha256Hex, b64u, unb64u, ipHashOf, tooMany, logAction, REGIONS } from './util.js';
+import { grow } from './growth.js';
 
 const COOKIE = 'rr_sid';
 const DAYS = 30;
@@ -41,13 +42,13 @@ export async function currentUser(request, env) {
   const token = readCookie(request, COOKIE);
   if (!token || token.length > 80) return null;
   const th = await sha256Hex(token);
-  const row = await env.DB.prepare(`SELECT u.id, u.login, u.nick, u.region, u.bio, u.status, s.expires_at FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ?`).bind(th).first();
+  const row = await env.DB.prepare(`SELECT u.id, u.login, u.nick, u.region, u.bio, u.status, u.xp, u.stars, u.badge, u.last_checkin, u.streak, s.expires_at FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ?`).bind(th).first();
   if (!row || row.status !== 'ok' || row.expires_at < nowIso()) return null;
   // 15일 안에 끝나면 30일로 늘려요
   if (new Date(row.expires_at) - Date.now() < 15 * 86400e3) {
     await env.DB.prepare('UPDATE sessions SET expires_at = ? WHERE token = ?').bind(new Date(Date.now() + DAYS * 86400e3).toISOString(), th).run();
   }
-  return { id: row.id, login: row.login, nick: row.nick, region: row.region, bio: row.bio };
+  return { id: row.id, login: row.login, nick: row.nick, region: row.region, bio: row.bio, xp: row.xp || 0, stars: row.stars || 0, badge: row.badge || '', last_checkin: row.last_checkin || '', streak: row.streak || 0 };
 }
 
 async function startSession(env, userId) {
@@ -64,7 +65,7 @@ export const checkLogin = (s) => /^[a-z0-9_]{4,20}$/.test(s);
 export const checkNick = (s) => /^[가-힣a-zA-Z0-9_]{2,12}$/.test(s) && !RESERVED.test(s);
 const checkPw = (s) => typeof s === 'string' && s.length >= 8 && s.length <= 64 && /[A-Za-z]/.test(s) && /[0-9]/.test(s);
 
-export const publicUser = (u) => (u ? { id: u.id, login: u.login, nick: u.nick, region: u.region, bio: u.bio } : null);
+export const publicUser = (u) => (u ? { id: u.id, login: u.login, nick: u.nick, region: u.region, bio: u.bio, xp: u.xp || 0, stars: u.stars || 0, badge: u.badge || '' } : null);
 
 export async function auth(request, env, parts, me) {
   const action = parts[0];
@@ -92,7 +93,8 @@ export async function auth(request, env, parts, me) {
     await logAction(env.DB, ipk, 'signup');
     const id = r.meta.last_row_id;
     const cookie = await startSession(env, id);
-    return json({ ok: true, user: { id, login, nick, region, bio: '' } }, 200, { 'set-cookie': cookie });
+    const gain = await grow(env, request, id, 'welcome', 'welcome', ['welcome']);
+    return json({ ok: true, user: { id, login, nick, region, bio: '', xp: gain ? gain.pts : 0, stars: 0, badge: '' }, gain }, 200, { 'set-cookie': cookie });
   }
 
   if (action === 'login' && request.method === 'POST') {
@@ -137,8 +139,13 @@ export async function auth(request, env, parts, me) {
     }
     const region = REGIONS.includes(b.region) ? b.region : '';
     const bio = oneLine(b.bio, 80);
-    await env.DB.prepare('UPDATE users SET nick = ?, region = ?, bio = ? WHERE id = ?').bind(nick, region, bio, me.id).run();
-    return json({ ok: true, user: { ...me, nick, region, bio } });
+    let badge = String(b.badge || '');
+    if (badge) {
+      const has = await env.DB.prepare('SELECT 1 FROM user_badges WHERE user_id = ? AND badge = ?').bind(me.id, badge).first();
+      if (!has) return fail('받은 배지만 달 수 있어요.');
+    }
+    await env.DB.prepare('UPDATE users SET nick = ?, region = ?, bio = ?, badge = ? WHERE id = ?').bind(nick, region, bio, badge, me.id).run();
+    return json({ ok: true, user: publicUser({ ...me, nick, region, bio, badge }) });
   }
 
   if (action === 'password' && request.method === 'POST') {
@@ -178,8 +185,14 @@ export async function deleteUser(env, id) {
     db.prepare('DELETE FROM event_members WHERE user_id = ?').bind(id),
     db.prepare('UPDATE posts SET likes = likes - 1 WHERE id IN (SELECT post_id FROM post_likes WHERE user_id = ?)').bind(id),
     db.prepare('DELETE FROM post_likes WHERE user_id = ?').bind(id),
+    db.prepare('UPDATE reviews SET helpful = helpful - 1 WHERE id IN (SELECT review_id FROM review_helpful WHERE user_id = ?)').bind(id),
+    db.prepare('DELETE FROM review_helpful WHERE user_id = ?').bind(id),
+    db.prepare('DELETE FROM marks WHERE user_id = ?').bind(id),
+    db.prepare('DELETE FROM notes WHERE user_id = ?').bind(id),
+    db.prepare('DELETE FROM user_badges WHERE user_id = ?').bind(id),
+    db.prepare('DELETE FROM points WHERE user_id = ?').bind(id),
     db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id),
-    db.prepare(`UPDATE users SET login = ?, nick = ?, pw = '', region = '', bio = '', status = 'deleted' WHERE id = ?`).bind(`deleted_${id}`, `탈퇴한회원${id}`, id),
+    db.prepare(`UPDATE users SET login = ?, nick = ?, pw = '', region = '', bio = '', status = 'deleted', xp = 0, stars = 0, badge = '', streak = 0, last_checkin = '' WHERE id = ?`).bind(`deleted_${id}`, `탈퇴한회원${id}`, id),
   ]);
 }
 
@@ -206,6 +219,8 @@ export async function deletePost(env, postId) {
   await db.batch([
     db.prepare("DELETE FROM comments WHERE target = 'post' AND target_id = ?").bind(postId),
     db.prepare('DELETE FROM post_likes WHERE post_id = ?').bind(postId),
+    db.prepare('DELETE FROM poll_options WHERE post_id = ?').bind(postId),
+    db.prepare('DELETE FROM poll_votes WHERE post_id = ?').bind(postId),
     db.prepare('DELETE FROM posts WHERE id = ?').bind(postId),
   ]);
 }

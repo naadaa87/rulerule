@@ -270,12 +270,13 @@
   });
 
   // ---------- 커뮤니티 관리 ----------
-  var TARGET = { post: '글', event: '일정', club: '모임', comment: '댓글' };
+  var TARGET = { post: '글', event: '일정', club: '모임', comment: '댓글', review: '후기' };
   var linkOf = function (t, id, parent) {
     if (t === 'post') return '/community/post/?id=' + id;
     if (t === 'event') return '/community/event/?id=' + id;
     if (t === 'club') return '/community/club/?id=' + id;
     var pp = String(parent || '').split(':');
+    if (pp[0] === 'game') return '/games/' + pp[1] + '/#reviews';
     return pp[0] ? linkOf(pp[0], pp[1]) : '#';
   };
   function loadCm() {
@@ -291,16 +292,37 @@
         return '<span class="row-btns" data-u="' + u.id + '">' + (u.status === 'banned' ? '<button type="button" class="btn btn-ghost btn-sm" data-ua="unban">제한 풀기</button>' : '<button type="button" class="btn btn-ghost btn-sm" data-ua="ban">이용 제한</button>') +
           '<button type="button" class="btn btn-ghost btn-sm" data-ua="reset">임시 비밀번호</button></span>';
       };
-      p.innerHTML = '<div class="stat-grid"><div class="stat"><b>' + c.userCount + '</b><span>회원</span></div><div class="stat"><b>' + f.flags.length + '</b><span>확인할 신고</span></div></div>' +
+      var CATN = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천', poll: '투표', notice: '공지' };
+      p.innerHTML = '<div class="stat-grid"><div class="stat"><b>' + c.userCount + '</b><span>회원</span></div><div class="stat"><b>' + f.flags.length + '</b><span>확인할 신고</span></div><div class="stat"><b>' + (c.reviews || []).length + '</b><span>최근 후기</span></div></div>' +
+        '<form class="cm-form" data-sysform style="max-width:640px;margin:18px 0"><h2 class="h3" style="margin-top:0">공지·투표 올리기</h2><p class="muted small">‘룰룰 운영팀’ 이름으로 올라가요. 고정하면 게시판과 커뮤니티 홈 맨 위에 보여요.</p>' +
+        '<div class="row-btns" role="radiogroup" data-syscat><button type="button" class="chip" role="radio" aria-checked="true" data-c="notice">공지</button><button type="button" class="chip" role="radio" aria-checked="false" data-c="poll">투표</button></div>' +
+        '<label class="field"><span>제목</span><input name="title" maxlength="60" required></label>' +
+        '<label class="field"><span>내용</span><textarea name="body" rows="5" maxlength="5000"></textarea></label>' +
+        '<div class="field" data-sysopts hidden><span>투표 보기 (한 줄에 하나, 2~6개)</span><textarea name="options" rows="4" placeholder="윷놀이\n공기놀이\n제기차기"></textarea><label class="field field-inline"><span>기간</span><select name="days"><option value="3">3일</option><option value="7" selected>7일</option><option value="14">14일</option><option value="30">30일</option></select></label></div>' +
+        '<label class="check"><input type="checkbox" name="pinned" checked><span>맨 위에 고정하기</span></label>' +
+        '<p class="form-msg" role="status"></p><button class="btn btn-main" type="submit">올리기</button></form>' +
         '<h2 class="h3">확인할 신고</h2>' + (f.flags.length ? '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>대상</th><th>신고</th><th>사유</th><th></th></tr></thead><tbody>' + f.flags.map(function (x) {
           return '<tr><td>' + TARGET[x.target] + ' · <a href="' + linkOf(x.target, x.target_id, x.parent) + '" target="_blank">' + esc(x.label || '(지워짐)') + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : '') + '</td><td>' + x.n + '</td><td class="small">' + esc(x.reasons || '') + '</td><td>' + act(x.target, x.target_id, x.hidden) +
             '<span class="row-btns" data-t="' + x.target + '" data-i="' + x.target_id + '"><button type="button" class="btn btn-ghost btn-sm" data-dismiss>문제없음</button></span></td></tr>';
         }).join('') + '</tbody></table></div>' : '<p class="muted">확인할 신고가 없어요.</p>') +
-        '<h2 class="h3">최근 글</h2>' + table(c.posts, function (x) { return [esc(({ free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천' })[x.cat] || x.cat), '<a href="/community/post/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('post', x.id, x.hidden)]; }) +
+        '<h2 class="h3">최근 글</h2>' + table(c.posts, function (x) { return [esc(CATN[x.cat] || x.cat), '<a href="/community/post/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.pinned ? ' <span class="badge">고정</span>' : '') + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('post', x.id, x.hidden) + '<span class="row-btns" data-pin="' + x.id + '"><button type="button" class="btn btn-ghost btn-sm" data-pinv="' + (x.pinned ? 0 : 1) + '">' + (x.pinned ? '고정 풀기' : '고정') + '</button></span>']; }) +
+        '<h2 class="h3">최근 후기</h2>' + table(c.reviews, function (x) { return [esc(gamesBySlug[x.slug] ? gamesBySlug[x.slug].n : x.slug) + ' · ' + '★'.repeat(x.rating), '<a href="/games/' + x.slug + '/#reviews" target="_blank">' + esc(x.body || '(별점만)') + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('review', x.id, x.hidden)]; }) +
         '<h2 class="h3">최근 일정</h2>' + table(c.events, function (x) { return [x.kind === 'regular' ? '정모' : '번개', '<a href="/community/event/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('event', x.id, x.hidden)]; }) +
         '<h2 class="h3">최근 모임</h2>' + table(c.clubs, function (x) { return [esc(x.region), '<a href="/community/club/?id=' + x.id + '" target="_blank">' + esc(x.title) + '</a>' + (x.hidden ? ' <span class="badge">가려짐</span>' : ''), esc(x.nick), act('club', x.id, x.hidden)]; }) +
         '<h2 class="h3">최근 가입한 회원</h2>' + table(c.users, function (u) { return [esc(u.login), esc(u.nick) + (u.status === 'banned' ? ' <span class="badge">제한</span>' : ''), esc(fmtTime(u.created_at)), userAct(u)]; }) +
         '<p class="muted small">임시 비밀번호는 비밀번호를 잊은 회원이 문의했을 때 본인인지 확인한 뒤 알려 주세요. 회원은 로그인 후 내 정보에서 비밀번호를 바꿀 수 있어요.</p>';
+      var sf = $('[data-sysform]', p), syscat = 'notice';
+      RS.radioGroup($('[data-syscat]', sf), function (b) { syscat = b.dataset.c; $('[data-sysopts]', sf).hidden = syscat !== 'poll'; });
+      sf.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var m = $('.form-msg', sf);
+        var el = sf.elements;
+        var body = { cat: syscat, title: el.title.value.trim(), body: el.body.value, pinned: el.pinned.checked, days: Number(el.days.value), options: el.options.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean) };
+        post('community/post', body).then(function (j) {
+          if (!j.ok) { m.className = 'form-msg err'; m.textContent = j.message || '올리지 못했어요.'; return; }
+          RS.toast('올렸어요'); loadCm();
+        });
+      });
     });
   }
   function table(rows, cols) {
@@ -309,7 +331,8 @@
   }
   $('#a-cm').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
-    var box = b.closest('[data-t]'), ub = b.closest('[data-u]');
+    var box = b.closest('[data-t]'), ub = b.closest('[data-u]'), pin = b.closest('[data-pin]');
+    if (pin) { post('community/pin', { id: Number(pin.dataset.pin), pinned: b.dataset.pinv === '1' }).then(function (j) { RS.toast(j.ok ? (b.dataset.pinv === '1' ? '고정했어요' : '고정을 풀었어요') : '바꾸지 못했어요'); loadCm(); }); return; }
     if (box) {
       var body = { target: box.dataset.t, id: Number(box.dataset.i) };
       if (b.hasAttribute('data-hide')) { body.hidden = b.dataset.hide === '1'; post('community/hide', body).then(function (j) { RS.toast(j.ok ? (body.hidden ? '가렸어요' : '다시 보이게 했어요') : '바꾸지 못했어요'); loadCm(); }); }

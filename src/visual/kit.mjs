@@ -6,9 +6,9 @@ export const W = 480;
 export const H = 300;
 
 export const C = {
-  ink: '#1C2230', ink2: '#3A4152', muted: '#5F6675', line: '#C9CDD6', line2: '#E2E5EA',
-  mist: '#F3F4F6', table: '#E7EAEE', paper: '#FFFFFF', pt: '#E4572E', ptTint: '#FDECE6',
-  ok: '#1F7A52', okTint: '#E5F4EC',
+  ink: '#233552', ink2: '#3A4D6E', muted: '#5F6675', line: '#C9CDD6', line2: '#E2E5EA',
+  mist: '#F7F2EA', table: '#E7EAEE', paper: '#FFFFFF', pt: '#F05B48', ptTint: '#FDE4DF',
+  ok: '#2B8C7B', okTint: '#DCF1EC',
   red: '#D8413F', blue: '#3B6FC0', yellow: '#F2B42E', green: '#3D9A5E', purple: '#7E55BE',
   black: '#2A2F3A', orange: '#EE8A34', brown: '#A8693A', sky: '#79AEE3', pink: '#EF8FA8',
   cream: '#FFF6E6', wood: '#E8C38F', woodDark: '#B98A52', skin: '#FFD8C2', gold: '#F2C14E', silver: '#D5DAE1',

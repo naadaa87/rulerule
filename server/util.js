@@ -74,10 +74,12 @@ export async function logAction(db, key, act) {
 }
 
 export const REGIONS = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주', '온라인'];
-export const POST_CATS = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천해 주세요' };
+export const POST_CATS = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천해 주세요', poll: '투표', notice: '공지' };
+export const USER_CATS = ['free', 'qna', 'review', 'recommend', 'poll'];
 
 let schemaReady = false;
 export async function ensureSchema(db) {
+  // 처음 한 번만 실행돼요 (같은 서버 안에서)
   if (schemaReady) return;
   const T = (sql) => db.prepare(sql);
   await db.batch([
@@ -111,8 +113,73 @@ export async function ensureSchema(db) {
     T('CREATE INDEX IF NOT EXISTS idx_inquiries_status ON inquiries (status, id)'),
     T(`CREATE TABLE IF NOT EXISTS shop_links (id TEXT PRIMARY KEY, url TEXT NOT NULL, updated_at TEXT NOT NULL)`),
     T(`CREATE TABLE IF NOT EXISTS shop_clicks (day TEXT NOT NULL, id TEXT NOT NULL, src TEXT NOT NULL DEFAULT '', n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, id, src))`),
+    // 성장과 참여 (2026-11-16)
+    T(`CREATE TABLE IF NOT EXISTS points (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, act TEXT NOT NULL, ref TEXT NOT NULL DEFAULT '', pts INTEGER NOT NULL, day TEXT NOT NULL, created_at TEXT NOT NULL, UNIQUE (user_id, act, ref))`),
+    T('CREATE INDEX IF NOT EXISTS idx_points_day ON points (user_id, act, day)'),
+    T('CREATE INDEX IF NOT EXISTS idx_points_time ON points (created_at)'),
+    T(`CREATE TABLE IF NOT EXISTS user_badges (user_id INTEGER NOT NULL, badge TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, badge))`),
+    T(`CREATE TABLE IF NOT EXISTS marks (user_id INTEGER NOT NULL, slug TEXT NOT NULL, kind TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (user_id, slug, kind))`),
+    T('CREATE INDEX IF NOT EXISTS idx_marks_slug ON marks (slug, kind)'),
+    T(`CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT NOT NULL, user_id INTEGER NOT NULL, rating INTEGER NOT NULL, best TEXT NOT NULL DEFAULT '', diff INTEGER NOT NULL DEFAULT 0, body TEXT NOT NULL DEFAULT '', helpful INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, hidden INTEGER NOT NULL DEFAULT 0, UNIQUE (slug, user_id))`),
+    T('CREATE INDEX IF NOT EXISTS idx_reviews_slug ON reviews (slug, hidden, id)'),
+    T('CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews (user_id)'),
+    T(`CREATE TABLE IF NOT EXISTS review_helpful (review_id INTEGER NOT NULL, user_id INTEGER NOT NULL, PRIMARY KEY (review_id, user_id))`),
+    T(`CREATE TABLE IF NOT EXISTS poll_options (post_id INTEGER NOT NULL, idx INTEGER NOT NULL, label TEXT NOT NULL, votes INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (post_id, idx))`),
+    T(`CREATE TABLE IF NOT EXISTS poll_votes (post_id INTEGER NOT NULL, user_id INTEGER NOT NULL, idx INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (post_id, user_id))`),
+    T(`CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, kind TEXT NOT NULL, text TEXT NOT NULL, link TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, read INTEGER NOT NULL DEFAULT 0)`),
+    T('CREATE INDEX IF NOT EXISTS idx_notes_user ON notes (user_id, read, id)'),
+    T(`CREATE TABLE IF NOT EXISTS manner (event_id INTEGER NOT NULL, from_id INTEGER NOT NULL, to_id INTEGER NOT NULL, score INTEGER NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY (event_id, from_id, to_id))`),
+    T(`CREATE TABLE IF NOT EXISTS kv (k TEXT PRIMARY KEY, v TEXT NOT NULL DEFAULT '')`),
   ]);
+  // 이미 있는 표에 새 칸 더하기
+  const ADD = {
+    users: [['xp', 'INTEGER NOT NULL DEFAULT 0'], ['stars', 'INTEGER NOT NULL DEFAULT 0'], ['badge', "TEXT NOT NULL DEFAULT ''"], ['streak', 'INTEGER NOT NULL DEFAULT 0'], ['last_checkin', "TEXT NOT NULL DEFAULT ''"], ['checkins', 'INTEGER NOT NULL DEFAULT 0'], ['manner_sum', 'INTEGER NOT NULL DEFAULT 0'], ['manner_n', 'INTEGER NOT NULL DEFAULT 0']],
+    posts: [['pinned', 'INTEGER NOT NULL DEFAULT 0'], ['adopted', 'INTEGER NOT NULL DEFAULT 0'], ['poll_ends', "TEXT NOT NULL DEFAULT ''"]],
+  };
+  for (const [table, cols] of Object.entries(ADD)) {
+    const { results } = await db.prepare(`PRAGMA table_info(${table})`).all();
+    const have = new Set(results.map((r) => r.name));
+    for (const [c, def] of cols) {
+      if (!have.has(c)) {
+        try { await db.prepare(`ALTER TABLE ${table} ADD COLUMN ${c} ${def}`).run(); } catch (e) { /* 다른 요청이 먼저 더했으면 넘어가요 */ }
+      }
+    }
+  }
+  try { await db.prepare('CREATE INDEX IF NOT EXISTS idx_users_xp ON users (status, xp)').run(); } catch (e) { /* 넘어가요 */ }
+  await seed(db);
   schemaReady = true;
+}
+
+// 운영팀 계정과 첫 공지·투표 (한 번만)
+export const SYSTEM_LOGIN = 'rulerule_team';
+export async function systemUserId(db) {
+  let u = await db.prepare('SELECT id FROM users WHERE login = ?').bind(SYSTEM_LOGIN).first();
+  if (u) return u.id;
+  await db.prepare("INSERT OR IGNORE INTO users (login, nick, pw, status, created_at, xp) VALUES (?, '룰룰 운영팀', '', 'system', ?, 0)").bind(SYSTEM_LOGIN, nowIso()).run();
+  u = await db.prepare('SELECT id FROM users WHERE login = ?').bind(SYSTEM_LOGIN).first();
+  return u.id;
+}
+async function seed(db) {
+  const done = await db.prepare("SELECT v FROM kv WHERE k = 'seed1'").first();
+  if (done) return;
+  const r = await db.prepare("INSERT OR IGNORE INTO kv (k, v) VALUES ('seed1', ?)").bind(nowIso()).run();
+  if (!r.meta.changes) return;
+  const sid = await systemUserId(db);
+  const now = nowIso();
+  const notice = `룰룰 커뮤니티를 열었어요. 이곳에서 활동하면 점수가 쌓이고 등급이 올라가요.
+
+· 출석 체크, 게임 별점과 후기, 해 봤어요 체크, 글과 댓글, 투표, 모임 참여로 점수를 모아요.
+· 점수가 쌓이면 ‘첫 판’에서 ‘룰룰 레전드’까지 10단계 등급이 올라가요.
+· 다른 사람이 내 글에 좋아요를, 내 후기에 도움돼요를 누르면 별을 받아요.
+· 일주일 개근, 도감 10, 규칙 해결사 같은 배지 17가지를 모아 보세요. 마음에 드는 배지는 닉네임 옆에 달 수 있어요.
+
+자세한 규칙은 ‘등급과 배지 안내’ 페이지에 정리해 두었어요.`;
+  const p1 = await db.prepare("INSERT INTO posts (user_id, cat, game, title, body, created_at, updated_at, pinned) VALUES (?, 'notice', '', ?, ?, ?, ?, 1)").bind(sid, '룰룰 커뮤니티 이용 안내: 등급, 별, 배지', notice, now, now).run();
+  const ends = new Date(Date.now() + 14 * 86400e3 + 9 * 3600e3).toISOString().slice(0, 10);
+  const p2 = await db.prepare("INSERT INTO posts (user_id, cat, game, title, body, created_at, updated_at, pinned, poll_ends) VALUES (?, 'poll', '', ?, ?, ?, ?, 1, ?)").bind(sid, '이번 주말 모임, 어떤 게임이 가장 하고 싶나요?', '한 표씩 골라 주세요. 결과는 다음 모임 추천에 반영할게요. 다른 게임이 있다면 댓글로 알려 주세요.', now, now, ends).run();
+  const opts = ['루미큐브', '할리갈리', '다빈치 코드', '스플렌더', '아발론'];
+  await db.batch(opts.map((o, i) => db.prepare('INSERT INTO poll_options (post_id, idx, label) VALUES (?, ?, ?)').bind(p2.meta.last_row_id, i, o)));
+  void p1;
 }
 
 // 빌드 결과물(정적 파일)에서 JSON 읽기

@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VISUALS, frameSVG } from '../src/visual/index.mjs';
+import { LEVELS as GROW_LEVELS, RULES as GROW_RULES, BADGES as GROW_BADGES, levelOf, glyph, emblemSVG, badgeSVG } from '../server/growth-data.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'public');
@@ -154,6 +155,17 @@ const SPRITE = `<svg width="0" height="0" style="position:absolute" aria-hidden=
 <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
 <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17L12 16.5l-5.5 4z" fill="var(--fill, none)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .8-4.4 4.1 1.1 6L12 16.7l-5.3 2.9 1.1-6-4.4-4.1 6-.8z" fill="currentColor"/></symbol>
+<symbol id="i-star-o" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .8-4.4 4.1 1.1 6L12 16.7l-5.3 2.9 1.1-6-4.4-4.1 6-.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2H4.5zM10 20.5a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H14.5v-5.5h-5V20H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0zM7.5 6H4.5a3 3 0 0 0 3 4M16.5 6h3a3 3 0 0 1-3 4M12 13.5V17m-4 3.5h8M9.5 17h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+<symbol id="i-thumb" viewBox="0 0 24 24"><path d="M7.5 10.5v9H4v-9zM7.5 10.5 11 4c1.6 0 2.5 1 2.2 2.6L12.6 9.5h5.2a2 2 0 0 1 2 2.4l-1.3 6a2 2 0 0 1-2 1.6H7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4.5M12 16.5V21M3 12h4.5M16.5 12H21M6 6l2.8 2.8M15.2 15.2 18 18M18 6l-2.8 2.8M8.8 15.2 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5zM12 6v13.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-poll" viewBox="0 0 24 24"><path d="M5 20V12M10 20V5M15 20v-6M20 20V9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12m0 0-5-5m5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </defs></svg>`;
 
@@ -162,7 +174,9 @@ const icon = (id, cls = '') => `<svg class="ico ${cls}" aria-hidden="true"><use 
 const PIPS = { 1: [[12, 12]], 2: [[8, 8], [16, 16]], 3: [[7.5, 7.5], [12, 12], [16.5, 16.5]] };
 const die = (level, cls = '') => `<svg class="die ${cls}" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>${PIPS[level].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="currentColor"/>`).join('')}</svg>`;
 
-const BRAND = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8" fill="#E4572E"/><circle cx="10" cy="10" r="3" fill="#fff"/><circle cx="16" cy="16" r="3" fill="#fff"/><circle cx="22" cy="22" r="3" fill="#fff"/></svg>`;
+// 로고 옆과 큰 제목 끝에 붙는 짧은 세 줄 (무드보드의 반짝 표시)
+const SPARK = '<svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.5 2.5 6M11 7V2.5M17 9.5l2.5-3.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>';
+const BRAND = '';
 
 const tile = (g, cls = '') => `<div class="tile ${cls}" data-g="${g.group}" aria-hidden="true"><span>${esc(firstSyllable(g.name))}</span></div>`;
 
@@ -172,6 +186,8 @@ const BRAND_IMG = {
   'dice-hello': [520, 446], 'dice-explain': [520, 473], 'dice-ok': [495, 560], 'dice-think': [356, 560], 'pawn-map': [285, 560], 'card-recommend': [500, 560], 'book-open': [417, 560], 'book-warn': [432, 560], 'tick-wait': [428, 560], 'domi-order': [332, 560], 'fox-explain': [225, 560], 'fox-search': [214, 560], 'cat-hello': [244, 560],
   'hero-main': [1200, 600], 'hero-search': [1200, 600], 'scene-phone': [1200, 675], 'scene-variety': [960, 720],
   'ico-find': [640, 640], 'ico-players': [640, 640], 'ico-quick': [640, 640], 'ico-first': [640, 640], 'ico-setup': [640, 640], 'ico-turn': [640, 640], 'ico-help': [640, 640], 'ico-joy': [640, 640],
+  'hero-pop': [1100, 831], 'cat-cards': [320, 310], 'cat-dominoes': [320, 310], 'cat-pawns': [320, 271], 'cat-tangram': [320, 311], 'cat-blocks': [320, 290], 'cat-rulebook': [320, 237],
+  'dice-search': [520, 407], 'pawn-book': [520, 294],
   'scene-friends': [960, 720], 'scene-family': [960, 720], 'scene-two': [960, 720], 'scene-store': [960, 720], 'scene-first-meet': [960, 720], 'scene-strategy': [800, 800], 'scene-coop': [960, 720], 'scene-shelf': [960, 720], 'scene-workshop': [960, 720], 'scene-picnic': [960, 720], 'scene-generations': [960, 720],
 };
 const pic = (name, alt = '', cls = '', eager = false) => {
@@ -209,15 +225,15 @@ function yutBoard() {
   const corners = [[P, P], [S - P, P], [S - P, S - P], [P, S - P], [c, c]];
   const isCorner = (x, y) => corners.some(([a, b]) => Math.abs(a - x) < 1 && Math.abs(b - y) < 1);
   const dots = [...uniq.values()].map(([x, y]) => isCorner(x, y)
-    ? `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="#1C2230" stroke-width="3"/>`
-    : `<circle cx="${x}" cy="${y}" r="7" fill="#1C2230"/>`).join('');
+    ? `<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="#233552" stroke-width="3"/>`
+    : `<circle cx="${x}" cy="${y}" r="7" fill="#233552"/>`).join('');
   return `<svg class="diagram" viewBox="0 0 ${S} ${S + 34}" role="img" aria-label="윷판 그림. 바깥 네모 둘레에 20칸, 두 대각선에 9칸, 모두 29칸입니다. 오른쪽 아래가 출발점이고 반시계 방향으로 돕니다.">
 <rect x="${P}" y="${P}" width="${S - 2 * P}" height="${S - 2 * P}" fill="none" stroke="#C9CDD6" stroke-width="3"/>
 <path d="M${P} ${P}L${S - P} ${S - P}M${S - P} ${P}L${P} ${S - P}" stroke="#C9CDD6" stroke-width="3"/>
 ${dots}
-<circle cx="${S - P}" cy="${S - P}" r="11" fill="#E4572E" stroke="#1C2230" stroke-width="3"/>
-<path d="M${S - 8} ${S - P - 40}v-50m0 0-7 10m7-10 7 10" fill="none" stroke="#E4572E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="${S - P}" y="${S + 22}" text-anchor="middle" font-size="16" font-weight="700" fill="#E4572E">출발</text>
+<circle cx="${S - P}" cy="${S - P}" r="11" fill="#F05B48" stroke="#233552" stroke-width="3"/>
+<path d="M${S - 8} ${S - P - 40}v-50m0 0-7 10m7-10 7 10" fill="none" stroke="#F05B48" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="${S - P}" y="${S + 22}" text-anchor="middle" font-size="16" font-weight="700" fill="#F05B48">출발</text>
 <text x="${c}" y="${c - 20}" text-anchor="middle" font-size="14" font-weight="700" fill="#5F6675">방</text>
 </svg>`;
 }
@@ -227,11 +243,11 @@ function umulGonuBoard() {
 <path d="M40 40H260M40 40V260M260 40V260M40 40L260 260M260 40L40 260" stroke="#C9CDD6" stroke-width="4" stroke-linecap="round"/>
 <ellipse cx="150" cy="268" rx="38" ry="16" fill="#E8F0FB" stroke="#7FA3D6" stroke-width="3"/>
 <text x="150" y="334" text-anchor="middle" font-size="15" font-weight="700" fill="#4C79B8">우물 (지나갈 수 없어요)</text>
-<circle cx="150" cy="150" r="10" fill="#fff" stroke="#1C2230" stroke-width="3"/>
-<circle cx="40" cy="40" r="17" fill="#1C2230"/><circle cx="40" cy="260" r="17" fill="#1C2230"/>
-<circle cx="260" cy="40" r="17" fill="#fff" stroke="#1C2230" stroke-width="3"/><circle cx="260" cy="260" r="17" fill="#fff" stroke="#1C2230" stroke-width="3"/>
-<circle cx="40" cy="260" r="25" fill="none" stroke="#E4572E" stroke-width="3" stroke-dasharray="5 5"/>
-<text x="14" y="306" font-size="14" font-weight="700" fill="#E4572E">첫 수에 움직이지 않는 말</text>
+<circle cx="150" cy="150" r="10" fill="#fff" stroke="#233552" stroke-width="3"/>
+<circle cx="40" cy="40" r="17" fill="#233552"/><circle cx="40" cy="260" r="17" fill="#233552"/>
+<circle cx="260" cy="40" r="17" fill="#fff" stroke="#233552" stroke-width="3"/><circle cx="260" cy="260" r="17" fill="#fff" stroke="#233552" stroke-width="3"/>
+<circle cx="40" cy="260" r="25" fill="none" stroke="#F05B48" stroke-width="3" stroke-dasharray="5 5"/>
+<text x="14" y="306" font-size="14" font-weight="700" fill="#F05B48">첫 수에 움직이지 않는 말</text>
 </svg>`;
 }
 
@@ -239,9 +255,9 @@ function chilgyoBoard() {
   const u = 70, o = 10;
   const p = (pts) => pts.map(([x, y]) => `${o + x * u},${o + y * u}`).join(' ');
   const pieces = [
-    { pts: [[0, 0], [4, 0], [2, 2]], fill: '#E4572E', name: '큰 삼각형' },
+    { pts: [[0, 0], [4, 0], [2, 2]], fill: '#F05B48', name: '큰 삼각형' },
     { pts: [[0, 0], [2, 2], [0, 4]], fill: '#F08A6A', name: '큰 삼각형' },
-    { pts: [[2, 4], [4, 2], [4, 4]], fill: '#1C2230', name: '중간 삼각형' },
+    { pts: [[2, 4], [4, 2], [4, 4]], fill: '#233552', name: '중간 삼각형' },
     { pts: [[4, 0], [4, 2], [3, 1]], fill: '#7C8494', name: '작은 삼각형' },
     { pts: [[2, 2], [3, 3], [1, 3]], fill: '#AEB4C0', name: '작은 삼각형' },
     { pts: [[2, 2], [3, 1], [4, 2], [3, 3]], fill: '#F6C3B2', name: '정사각형' },
@@ -266,22 +282,30 @@ const NAV = [
 function header(current) {
   return `<header class="site-head">
 <div class="wrap head-row">
-<a class="brand" href="/" aria-label="${esc(cfg.siteName)} 처음 화면">${BRAND}<span>${esc(cfg.siteName)}</span>${cfg.tagline ? `<small class="brand-tag">${esc(cfg.tagline)}</small>` : ''}</a>
+<a class="brand" href="/" aria-label="${esc(cfg.siteName)} 처음 화면"><span>${esc(cfg.siteName)}</span>${SPARK}${cfg.tagline ? `<small class="brand-tag">${esc(cfg.tagline)}</small>` : ''}</a>
 <nav class="nav" id="site-nav" aria-label="주요 메뉴">
 ${NAV.map(([href, label]) => `<a href="${href}"${current.startsWith(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('\n')}
 </nav>
 <a class="icon-btn" href="/games/#search" aria-label="게임 찾기">${icon('i-search')}</a>
-<a class="icon-btn acct-btn" href="/account/" data-acct aria-label="로그인">${icon('i-user')}<span class="acct-nick" data-acct-nick></span></a>
+<a class="icon-btn head-saved" href="/saved/" aria-label="저장한 게임">${icon('i-bookmark')}</a>
+<a class="icon-btn acct-btn" href="/account/" data-acct aria-label="로그인"><span class="acct-ico" data-acct-ico>${icon('i-user')}</span><span class="acct-nick" data-acct-nick></span><span class="dot" data-unread hidden></span></a>
 <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">${icon('i-menu')}</button>
 </div>
 </header>`;
+}
+
+// 휴대폰 아래 탭
+const TABS = [['/', '홈', 'i-home'], ['/games/', '게임 찾기', 'i-search'], ['/community/', '커뮤니티', 'i-chat'], ['/saved/', '저장', 'i-bookmark'], ['/account/', '내 정보', 'i-user']];
+function tabbar(current) {
+  const on = (h) => (h === '/' ? current === '/' : current.startsWith(h) || (h === '/games/' && current.startsWith('/collections/')));
+  return `<nav class="tabbar" aria-label="아래 메뉴">${TABS.map(([h, l, ic]) => `<a href="${h}"${on(h) ? ' aria-current="page"' : ''}${h === '/account/' ? ' data-tab-acct' : ''}>${icon(ic)}<span>${l}</span>${h === '/account/' ? '<i class="dot" data-unread hidden></i>' : ''}</a>`).join('')}</nav>`;
 }
 
 function footer() {
   return `<footer class="site-foot">
 <div class="wrap foot-grid">
 <div>
-<a class="brand brand-foot" href="/">${BRAND}<span>${esc(cfg.siteName)}</span></a>${cfg.tagline ? `<p class="foot-tag">${esc(cfg.tagline)}</p>` : ''}
+<a class="brand brand-foot" href="/"><span>${esc(cfg.siteName)}</span>${SPARK}</a>${cfg.tagline ? `<p class="foot-tag">${esc(cfg.tagline)}</p>` : ''}
 <p class="foot-lead">보드게임과 전통놀이, 처음 하는 사람도 3분 안에 시작할 수 있게 설명해요.</p>
 </div>
 <nav class="foot-nav" aria-label="바닥 메뉴">
@@ -367,10 +391,7 @@ ${cfg.googleSiteVerification ? `<meta name="google-site-verification" content="$
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="${esc(cfg.siteName)} 보드게임 하는법" href="/rss.xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&amp;display=swap">
 <link rel="stylesheet" href="/assets/css/app.css?v=${BUILD}">
 <script>document.documentElement.classList.add('js')</script>
 ${ld}
@@ -383,8 +404,11 @@ ${header(p)}
 ${body}
 </main>
 ${footer()}
+${tabbar(p)}
 ${reportDialog()}
 <script src="/assets/js/app.js?v=${BUILD}" defer></script>
+<script src="/assets/js/growth.js?v=${BUILD}" defer></script>
+<script src="/assets/js/social.js?v=${BUILD}" defer></script>
 ${scripts.map((s) => `<script src="/assets/js/${s}?v=${BUILD}" defer></script>`).join('\n')}
 </body>
 </html>`;
@@ -508,6 +532,7 @@ function gamePage(g) {
   const visPanel = vis.length ? `<section class="panel" id="visual" role="tabpanel" aria-labelledby="tab-visual">
 <div class="vis" data-vis>
 <div class="vis-top"><h2 class="h2">${esc(seo.n)} 하는법 그림 설명</h2><button type="button" class="vis-mode" data-vis-mode aria-pressed="false">모두 펼치기</button></div>
+<div class="vis-bar" aria-hidden="true">${vis.map(() => '<i></i>').join('')}</div>
 <ol class="vis-steps" aria-label="단계 목록">${vis.map((f, i) => `<li><button type="button" data-vis-go="${i}"><span>${i + 1}</span>${esc(f.k)}</button></li>`).join('')}</ol>
 <ol class="vis-track" tabindex="0" aria-label="${esc(name)} 그림 설명 ${vis.length}장" data-vis-track>
 ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} / ${vis.length}">
@@ -515,7 +540,7 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 <figcaption class="vis-cap"><p class="vis-k"><span class="vis-n">${i + 1}</span>${esc(f.k)}</p><h3 class="vis-t">${esc(f.t)}</h3><p class="vis-d">${esc(f.d)}</p></figcaption></figure>
 </li>`).join('\n')}
 </ol>
-<div class="vis-nav"><button type="button" class="vis-btn" data-vis-prev>이전</button><span class="vis-count" aria-live="polite">1 / ${vis.length}</span><button type="button" class="vis-btn vis-next" data-vis-next>다음</button></div>
+<div class="vis-nav"><button type="button" class="vis-btn" data-vis-prev>이전</button><span class="vis-count" aria-live="polite">1 / ${vis.length}</span><button type="button" class="vis-btn vis-next" data-vis-next>다음 단계</button></div>
 <p class="vis-after">글로 차근차근 보려면 <a href="#learn">따라하기</a>, 규칙을 찾아보려면 <a href="#detail">자세히</a>를 눌러요.</p>
 </div>
 </section>` : '';
@@ -532,24 +557,44 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 <button type="button" class="btn btn-sub" data-house-make>규칙 카드 만들기</button>
 </section>` : '';
 
-  const related = g.related.length ? `<section class="related wrap-narrow">
+  const related = g.related.length ? `<section class="related wrap">
 <h2 class="h2 h2-pic">${pic('card-recommend', '', 'h2-char')}비슷한 게임</h2>
 <div class="gcards">${g.related.map((s) => gameCard(bySlug[s])).join('')}</div>
 </section>` : '';
 
+  const startHref = vis.length ? '#visual' : '#learn';
+  const kindTag = g.status === 'checked' ? '<span class="tag tag-teal">검수 완료</span>' : g.status === 'reviewed' ? '<span class="tag tag-teal">자료 대조 완료</span>' : '';
   const body = `<article class="game" data-slug="${g.slug}">
-<div class="wrap-narrow">
+<section class="game-hero">
+<div class="wrap game-hero-grid">
+<div class="game-cover">${vis.length ? frameSVG(vis[0].art, `${name} 그림: ${vis[0].t}`) : `<div class="game-cover-tile">${tile(g, 'tile-lg')}</div>`}</div>
+<div class="game-hero-copy">
 <nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="${g.kind === 'traditional' ? '/traditional/' : '/games/'}">${g.kind === 'traditional' ? '전통놀이' : '게임 찾기'}</a></nav>
-<header class="game-head">
-${tile(g, 'tile-lg')}
-<div class="game-title">
+<p class="game-kind"><span class="tag tag-navy">${KINDS[g.kind]}</span><span class="tag">${GROUPS[g.group]}</span>${kindTag}</p>
 <h1 class="game-name">${esc(name)}<span class="game-h1-sub">하는법·룰</span></h1>
 ${g.original || seo.alt.length ? `<p class="game-orig">${[g.original, ...seo.alt.filter((a) => a !== g.original && !GENERIC_ALIAS.test(a))].filter(Boolean).slice(0, 3).map(esc).join(' · ')}</p>` : ''}
 <p class="game-one">${fmt(g.oneLine)}</p>
+<ul class="game-meta" aria-label="기본 정보">
+<li>${icon('i-people')}${playersText(g.players)}${g.best ? ` <small>추천 ${esc(g.best)}</small>` : ''}</li>
+<li>${icon('i-time')}${minutesText(g.minutes)}</li>
+<li>${icon('i-age')}${ageText(g.age)}</li>
+<li>${die(g.level)}${LEVELS[g.level]}</li>
+</ul>
+<p class="game-rate" data-game-rate></p>
+<div class="game-actions">
+<a class="btn btn-main" href="${startHref}" data-start>규칙 따라하기</a>
+<div class="react" data-react="${g.slug}" role="group" aria-label="이 게임 표시하기">
+<button type="button" data-k="saved" aria-pressed="false">${icon('i-bookmark')}저장<em></em></button>
+<button type="button" data-k="played" aria-pressed="false">${icon('i-check')}해 봤어요<em></em></button>
+<button type="button" data-k="want" aria-pressed="false">${icon('i-heart')}하고 싶어요<em></em></button>
 </div>
-</header>
-${facts(g)}
-<nav class="jump" aria-label="이 페이지 바로가기"><a href="#faq">자주 묻는 질문</a>${hasBuy ? `<a href="#buy">${icon('i-cart')}구매하기</a>` : ''}<a href="/community/board/?game=${g.slug}">${icon('i-chat')}이야기 나누기</a></nav>
+</div>
+</div>
+</div>
+</section>
+<div class="wrap game-body">
+<div class="game-main">
+<nav class="jump" aria-label="이 페이지 바로가기"><a href="#reviews">${icon('i-star')}후기·별점</a><a href="#faq">자주 묻는 질문</a>${hasBuy ? `<a href="#buy">${icon('i-cart')}구매하기</a>` : ''}<a href="/community/board/?game=${g.slug}">${icon('i-chat')}이야기 나누기</a></nav>
 ${g.intro ? `<p class="game-intro">${fmt(g.intro)}</p>` : ''}
 ${g.compare ? `<p class="compare">${fmt(g.compare)}</p>` : ''}
 ${statusNote}
@@ -563,12 +608,13 @@ ${vis.length ? '<button role="tab" id="tab-visual" aria-controls="visual" aria-s
 ${visPanel}
 <section class="panel" id="summary" role="tabpanel" aria-labelledby="tab-summary">
 <h2 class="h2">${esc(seo.n)} 룰 1분 요약</h2>
-${guide('dice-explain', '다이스', '이 세 가지만 알면 첫 판을 시작할 수 있어요.')}
-<div class="rcard">
-<div class="rcard-row"><p class="rcard-k">이기는 법</p><p class="rcard-v">${fmt(g.summary.goal)}</p></div>
-<div class="rcard-row"><p class="rcard-k">내 차례</p><ol class="rcard-v turn">${g.summary.turn.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol></div>
-<div class="rcard-row"><p class="rcard-k">끝나는 때</p><p class="rcard-v">${fmt(g.summary.end)}</p></div>
+<p class="muted">먼저 이것만 알아 두세요. 세 가지면 첫 판을 시작할 수 있어요.</p>
+<div class="know" style="margin-top:14px">
+<div class="know-card"><p class="know-h"><i>1</i>이기는 법</p><p>${fmt(g.summary.goal)}</p></div>
+<div class="know-card"><p class="know-h"><i>2</i>내 차례</p><ol class="turn">${g.summary.turn.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol></div>
+<div class="know-card"><p class="know-h"><i>3</i>끝나는 때</p><p>${fmt(g.summary.end)}</p></div>
 </div>
+<p class="flow"><span class="flow-k">한 판 흐름</span><span>준비</span><b aria-hidden="true">›</b><span>내 차례</span><b aria-hidden="true">›</b><span>다음 사람</span><b aria-hidden="true">›</b><span>끝</span></p>
 <div class="row-btns">
 <button type="button" class="btn btn-sub" data-speak>${icon('i-speaker')}소리 내 읽기</button>
 <button type="button" class="btn btn-ghost" data-share>${icon('i-share')}링크 보내기</button>
@@ -601,6 +647,14 @@ ${house}
 <h2 class="h2" id="faq-title">${esc(seo.n)} 자주 묻는 질문</h2>
 <div class="faq-list">${faqItems.map((x, i) => `<details class="faq"${i < 2 ? ' open' : ''}><summary>${esc(x.q)}</summary><p>${esc(x.a)}</p></details>`).join('')}</div>
 </section>
+<section class="reviews" id="reviews" data-reviews="${g.slug}" aria-labelledby="rv-title">
+<div class="sec-row"><h2 class="h2" id="rv-title" style="margin:0">${esc(seo.n)} 후기와 별점</h2><a class="more-link" href="/community/levels/">후기를 쓰면 +${GROW_RULES.review[0] + GROW_RULES.rate[0]}점</a></div>
+<div data-rv-body><div class="live-skel"></div></div>
+</section>
+<section class="game-talk" data-talk="${g.slug}" hidden>
+<div class="sec-row"><h2 class="h2" style="margin:0">${esc(seo.n)} 이야기</h2><a class="more-link" href="/community/board/?game=${g.slug}">게시판에서 더 보기</a></div>
+<ul class="plist" data-talk-list></ul>
+</section>
 ${buyBox(g)}
 <aside class="source">
 <p><b>설명 기준</b> ${esc(g.edition || (g.kind === 'traditional' ? '널리 쓰이는 공통 규칙' : '한국어판'))}</p>
@@ -608,6 +662,20 @@ ${buyBox(g)}
 ${refs}
 <p><b>많이 찾는 검색어</b> <span class="kw">${seo.kw.slice(0, 10).map((k) => `<span>${esc(k)}</span>`).join('')}</span></p>
 <p><button type="button" class="link-btn" data-report="${g.slug}">${icon('i-flag')}틀린 곳 알려 주기</button> <a href="/community/board/?game=${g.slug}">${icon('i-chat')}커뮤니티에서 ${esc(seo.n)} 이야기 보기</a></p>
+</aside>
+</div>
+<aside class="play-side" aria-label="플레이 중이라면">
+<div class="side-card">
+<h2>플레이 중이라면</h2>
+<div class="side-links">
+<button type="button" data-table>${icon('i-table')}테이블 모드로 보기</button>
+${(g.tricky || []).length ? `<a href="#detail">${icon('i-book')}헷갈리는 상황 찾기</a>` : `<a href="#detail">${icon('i-search')}자세한 규칙 찾기</a>`}
+<a href="#summary">${icon('i-check')}끝나는 때 다시 보기</a>
+${(g.houseRules || []).length ? `<a href="#house">${icon('i-people')}우리 집 규칙 정하기</a>` : ''}
+<a href="#reviews">${icon('i-star')}해 본 사람들 후기</a>
+</div>
+</div>
+<div class="side-help">${pic('pawn-book', '', '')}<div><b>규칙이 헷갈리나요?</b><p>게시판 ‘규칙 질문’에 올리면 먼저 해 본 사람들이 답해 줘요.</p><a class="more-link" href="/community/write/?t=post&amp;cat=qna&amp;game=${g.slug}">질문 올리기</a></div></div>
 </aside>
 </div>
 ${related}
@@ -655,59 +723,99 @@ ${related}
 }
 
 // ---------- 페이지: 홈 ----------
+// 상황별 카테고리: 무드보드 아이콘 그림 + 모음 페이지
+const CATS = [
+  ['cat-cards', '/collections/party-room/', '분위기 띄우기', '여럿이 웃고 떠드는 파티 게임', 'cat-coral', 'party-room'],
+  ['cat-pawns', '/collections/with-kids/', '아이와 함께', '규칙이 쉬운 가족 게임', 'cat-butter', 'with-kids'],
+  ['cat-blocks', '/collections/two-players/', '둘이서', '연인, 친구와 마주 앉아', 'cat-teal', 'two-players'],
+  ['cat-dominoes', '/collections/quick/', '15분 한 판', '짧게 여러 판 돌리기', 'cat-butter', 'quick'],
+  ['cat-tangram', '/collections/strategy-night/', '제대로 한 판', '머리 쓰는 전략 게임', 'cat-navy', 'strategy-night'],
+  ['cat-rulebook', '/rules/', '룰 모음', '헷갈리는 규칙만 빠르게', 'cat-teal', ''],
+];
+const HOT = ['rummikub', 'davinci-code', 'halli-galli', 'yutnori', 'splendor'];
+
 function homePage() {
   const popular = content.popular.map((s) => bySlug[s]);
   const trad = tradGames();
-  const body = `<section class="hero">
-<div class="wrap">
-<div class="hero-grid">
-<div class="hero-main">
-<div class="hero-head"><h1 class="hero-q">지금 몇 명이에요?</h1>${pic('dice-hello', '손을 흔드는 룰룰 캐릭터 다이스', 'hero-char', true)}</div>
-<p class="hero-lead">인원과 시간만 고르면 바로 할 수 있는 게임을 골라 드려요. 하는 법은 그림 몇 장만 넘겨 보면 감이 와요.</p>
-<div class="picker" data-picker>
-<div class="tokens" role="radiogroup" aria-label="인원">
-${[2, 3, 4, 5, 6].map((n) => `<button type="button" class="token" role="radio" aria-checked="false" data-p="${n}">${n === 6 ? '6+' : n}</button>`).join('')}
-</div>
-<p class="picker-label" id="time-label">시간은요?</p>
-<div class="chips" role="radiogroup" aria-labelledby="time-label">
-${[[15, '15분'], [30, '30분'], [60, '1시간'], [0, '상관없어요']].map(([m, l]) => `<button type="button" class="chip" role="radio" aria-checked="${m === 0 ? 'true' : 'false'}" data-m="${m}">${l}</button>`).join('')}
-</div>
-</div>
-<form class="search-box" action="/games/" role="search">
+  const colBy = Object.fromEntries(content.collections.map((c) => [c.slug, c]));
+  const sel = (key, label, opts) => `<label class="sel-pill"><span class="sr">${label}</span><select data-hf="${key}" aria-label="${label}">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></label>`;
+  const lvStrip = GROW_LEVELS.map((l) => `<li>${emblemSVG(levelOf(l.min, GROW_LEVELS), 54, glyph)}<b>${esc(l.name)}</b><small>${l.min}점</small></li>`).join('');
+  const pts = [['review', '후기 쓰기'], ['rate', '별점 남기기'], ['adopted', '답변 채택'], ['post', '글쓰기'], ['checkin', '출석 체크'], ['join', '정모 참여']].map(([k, l]) => `<span>${l}<b>+${GROW_RULES[k][0]}</b></span>`).join('');
+  const body = `<section class="hero-pop">
+<div class="wrap hero-pop-grid">
+<div class="hero-copy">
+<h1 class="hero-title">룰이 궁금한 순간,<br><span class="mark">룰룰</span>${SPARK}</h1>
+<p class="hero-sub">보드게임과 전통놀이 ${games.length}가지, 그림 몇 장이면 바로 시작해요.</p>
+<form class="search-pop" action="/games/" role="search">
 <label class="sr" for="home-q">게임 이름으로 찾기</label>
-${icon('i-search')}<input id="home-q" name="q" type="search" placeholder="게임 이름이나 초성으로 찾기" autocomplete="off">
-<button class="btn btn-main" type="submit">찾기</button>
+${icon('i-search')}<input id="home-q" name="q" type="search" placeholder="게임 이름이나 초성으로 찾기 (예: ㄹㅁㅋㅂ)" autocomplete="off">
+<button type="submit" aria-label="찾기">${icon('i-search')}</button>
 </form>
+<div class="hero-filters" data-hero-filters>
+${sel('p', '인원', [['', '인원'], ['2', '2명'], ['3', '3명'], ['4', '4명'], ['5', '5명'], ['6', '6명'], ['7', '7명 이상']])}
+${sel('m', '시간', [['', '시간'], ['15', '15분 안'], ['30', '30분 안'], ['60', '1시간 안']])}
+${sel('l', '난이도', [['', '난이도'], ['1', '쉬움'], ['2', '보통'], ['3', '어려움']])}
 </div>
-<div class="hero-side">
-<p class="deal-title" aria-live="polite" data-deal-title>요즘 많이 여는 게임</p>
+<p class="hero-hot"><b>많이 찾는 룰</b>${HOT.filter((s) => bySlug[s]).map((s) => `<a href="/games/${s}/">${esc(bySlug[s].name)}</a>`).join('')}</p>
+</div>
+<div class="hero-art">${pic('hero-pop', '주사위, 카드, 말과 보드게임 상자가 놓인 테이블', '', true)}</div>
+</div>
+</section>
+
+<section class="sec" id="picked">
+<div class="wrap">
+<div class="sec-row"><h2 class="sec-title">오늘 함께할 게임</h2><a class="more-link" href="/games/" data-deal-more>게임 전체 보기</a></div>
+<p class="picked-title" aria-live="polite" data-deal-title>요즘 많이 여는 게임이에요. 위에서 인원과 시간을 고르면 바로 바뀌어요.</p>
 <div class="deal" data-deal>${popular.slice(0, 6).map((g) => gameCard(g)).join('')}</div>
-<a class="more-link" href="/games/" data-deal-more>게임 전체 보기</a>
 </div>
+</section>
+
+<section class="sec" data-recent-sec hidden>
+<div class="wrap">
+<div class="sec-row"><h2 class="sec-title">최근 본 게임</h2><a class="more-link" href="/saved/?tab=recent">모두 보기</a></div>
+<div data-resume></div>
+<div class="recent-row" data-recent></div>
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="sec-row"><h2 class="sec-title">어떤 자리인가요?</h2><a class="more-link" href="/games/">조건으로 찾기</a></div>
+<div class="cats">
+${CATS.map(([im, href, t, d, tone, col]) => `<a class="cat ${tone}" href="${href}">${pic(im, '', '')}<span class="cat-t">${t}</span><span class="cat-d">${d}</span><span class="cat-c">${col && colBy[col] ? `게임 ${colBy[col].games.length}개` : `${games.length}개 게임`}</span></a>`).join('\n')}
+</div>
+<div class="cat-more">${['first-meeting', 'holiday', 'big-group'].filter((c) => colBy[c]).map((c) => `<a class="pill" href="/collections/${c}/">${esc(colBy[c].title)}</a>`).join('')}<a class="pill" href="/traditional/">전통놀이 ${trad.length}가지</a></div>
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="start-band">
+${pic('dice-search', '', '')}
+<div><b>처음이라면, 여기부터</b><p>보드게임이 처음인 사람도 따라 할 수 있게, 차례와 순서부터 천천히 알려 드려요.</p></div>
+<a class="btn btn-main" href="/learn/">처음이라면 보기</a>
 </div>
 </div>
 </section>
 
-<section class="how">
+<section class="sec">
 <div class="wrap">
-<h2 class="sec-title">처음 하는 게임도 네 걸음이면 시작해요</h2>
-<ol class="how-grid">
-${[['ico-find', '고르기', '인원과 시간으로 오늘 할 게임을 골라요.', '/games/'], ['ico-setup', '준비하기', '그림을 보며 구성물을 펼쳐 놓아요.', '/games/halli-galli/#v-2'], ['ico-turn', '내 차례', '내 차례에 할 일을 한 장씩 넘겨 봐요.', '/games/halli-galli/#v-3'], ['ico-help', '막힐 때', '헷갈리는 상황은 그 자리에서 찾아요.', '/games/halli-galli/#detail']].map(([im, t, d, href], i) => `<li><a class="how-card" href="${href}">${pic(im, '', 'how-pic')}<span class="how-t"><span class="how-n">${i + 1}</span>${t}</span><span class="how-d">${d}</span></a></li>`).join('')}
-</ol>
+<div class="sec-row"><h2 class="sec-title">룰룰 사람들은 지금</h2><a class="more-link" href="/community/">커뮤니티로</a></div>
+<div class="live-grid" data-live>
+<div class="live-card" data-live-poll><h3>${icon('i-poll')}이번 주 투표</h3><div class="live-skel"></div></div>
+<div class="live-card" data-live-reviews><h3>${icon('i-star')}새로 올라온 후기</h3><div class="live-skel"></div></div>
+<div class="live-card" data-live-top><h3>${icon('i-trophy')}이달의 활동왕</h3><div class="live-skel"></div></div>
+</div>
 </div>
 </section>
 
-<section class="band">
+<section class="grow-band">
 <div class="wrap">
-<h2 class="sec-title">이런 자리라면</h2>
-<div class="col-grid">
-${content.collections.map((c) => `<a class="col-card" href="/collections/${c.slug}/">
-${COL_ART[c.slug] ? `<span class="col-art">${pic(COL_ART[c.slug], '', '')}</span>` : ''}
-<span class="col-name">${esc(c.title)}</span>
-<span class="col-lead">${esc(c.lead)}</span>
-<span class="col-tiles">${c.games.slice(0, 4).map((s) => tile(bySlug[s], 'tile-sm')).join('')}<span class="col-count">${c.games.length}개</span></span>
-</a>`).join('')}
-</div>
+<h2 class="sec-title">하면 할수록, 등급이 올라가요</h2>
+<p class="sec-lead">후기를 쓰고, 규칙 질문에 답하고, 정모에 나가면 점수가 쌓여요. ‘첫 판’에서 시작해 ‘룰룰 레전드’까지 열 단계, 배지는 ${GROW_BADGES.length}가지예요.</p>
+<ol class="lv-strip">${lvStrip}</ol>
+<div class="grow-points">${pts}</div>
+<div class="row-btns"><a class="btn btn-main" href="/account/?mode=signup">회원가입하고 시작하기</a><a class="btn btn-sub" href="/community/levels/">등급과 배지 보기</a></div>
 </div>
 </section>
 
@@ -723,12 +831,11 @@ ${COL_ART[c.slug] ? `<span class="col-art">${pic(COL_ART[c.slug], '', '')}</span
 </div>
 </section>
 
-<section class="band band-white">
+<section class="sec">
 <div class="wrap">
-<h2 class="sec-title">게임 전체</h2>
-<p class="sec-lead">보드게임 ${games.filter((g) => g.kind === 'board').length}가지와 전통놀이 ${trad.length}가지가 있어요. 모든 게임을 ‘이기는 법, 내 차례, 끝나는 때’ 순서로 설명해요.</p>
-<div class="gcards">${popular.map((g) => gameCard(g)).join('')}</div>
-<p class="center"><a class="btn btn-sub" href="/games/">게임 ${games.length}개 모두 보기</a></p>
+<div class="sec-row"><h2 class="sec-title">게임 전체</h2><a class="more-link" href="/games/">게임 ${games.length}개 모두 보기</a></div>
+<p class="sec-lead">보드게임 ${games.filter((g) => g.kind === 'board').length}가지와 전통놀이 ${trad.length}가지. 모든 게임을 ‘이기는 법, 내 차례, 끝나는 때’ 순서로 설명해요.</p>
+<div class="gcards" style="margin-top:20px">${popular.map((g) => gameCard(g)).join('')}</div>
 </div>
 </section>
 
@@ -752,17 +859,7 @@ ${SHOP.shelves.slice(0, 6).map((sh) => `<a class="shelf-card" href="/shop/#${sh.
 <ul class="cm-points">
 <li>${icon('i-people')}<span><b>모임</b>지역별 보드게임 모임에 가입하고 정모 일정을 받아요.</span></li>
 <li>${icon('i-cal')}<span><b>정모·번개</b>날짜, 장소, 인원을 정해 올리면 참여 신청을 받아요.</span></li>
-<li>${icon('i-chat')}<span><b>자유게시판</b>규칙 질문, 게임 후기, 추천 부탁을 나눠요.</span></li>
-</ul>
-</div>
-</section>
-
-<section class="crew-band">
-<div class="wrap">
-<h2 class="sec-title">룰룰 친구들</h2>
-<p class="sec-lead">게임을 고를 때도, 규칙이 헷갈릴 때도 여덟 친구가 옆에서 도와줘요.</p>
-<ul class="crew">
-${CREW.map(([im, nm, role, line, href]) => `<li><a class="crew-card" href="${href}">${pic(im, '', 'crew-pic')}<span class="crew-name">${nm}</span><span class="crew-role">${role}</span><span class="crew-line">${line}</span></a></li>`).join('')}
+<li>${icon('i-chat')}<span><b>게시판과 투표</b>규칙 질문, 게임 후기, 추천 부탁, 투표를 나눠요.</span></li>
 </ul>
 </div>
 </section>
@@ -1159,9 +1256,9 @@ ${SHOP.shelves.map((sh) => `<section class="shelf" id="${sh.slug}" aria-labelled
 
 // ---------- 페이지: 커뮤니티 ----------
 const REGIONS = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주', '온라인'];
-const POST_CATS = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천해 주세요' };
-const cmTabs = (cur) => `<nav class="cm-tabs" aria-label="커뮤니티 메뉴">${[['/community/', '홈'], ['/community/events/', '정모·번개'], ['/community/clubs/', '모임'], ['/community/board/', '자유게시판']].map(([h, l]) => `<a href="${h}"${cur === h ? ' aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
-const cmData = `<script type="application/json" id="cm-data">${JSON.stringify({ regions: REGIONS, cats: POST_CATS })}</script>`;
+const POST_CATS = { free: '자유', qna: '규칙 질문', review: '게임 후기', recommend: '추천해 주세요', poll: '투표', notice: '공지' };
+const cmTabs = (cur) => `<nav class="cm-tabs" aria-label="커뮤니티 메뉴">${[['/community/', '홈'], ['/community/board/', '게시판'], ['/community/events/', '정모·번개'], ['/community/clubs/', '모임'], ['/community/rank/', '랭킹'], ['/community/levels/', '등급 안내']].map(([h, l]) => `<a href="${h}"${cur === h ? ' aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
+const cmData = `<script type="application/json" id="cm-data">${JSON.stringify({ regions: REGIONS, cats: POST_CATS, userCats: ['free', 'qna', 'review', 'recommend', 'poll'] })}</script>`;
 const NOJS = '<noscript><p class="notice">커뮤니티는 자바스크립트를 켜야 쓸 수 있어요.</p></noscript>';
 function cmPage({ p, title, h1, lead, kind, desc, noindex = false, side = '' }) {
   const body = `<section class="page-head cm-head">
@@ -1199,7 +1296,76 @@ const communityPages = () => [
   ['community/post/index.html', cmPage({ p: '/community/post/', kind: 'post', title: '게시글', h1: '', lead: '', noindex: true })],
   ['community/write/index.html', cmPage({ p: '/community/write/', kind: 'write', title: '글쓰기', h1: '', lead: '', noindex: true })],
   ['account/index.html', cmPage({ p: '/account/', kind: 'account', title: '로그인·회원가입', h1: '', lead: '', noindex: true })],
+  ['community/rank/index.html', cmPage({ p: '/community/rank/', kind: 'rank', title: '보드게임 커뮤니티 랭킹', h1: '룰룰 랭킹', lead: '이달에 가장 열심히 활동한 사람, 받은 별이 많은 사람, 후기를 많이 쓴 사람, 규칙 질문을 많이 해결한 사람이에요.', desc: '룰룰 커뮤니티의 이달의 활동왕, 누적 등급 순위, 후기왕, 규칙 해결사 순위를 볼 수 있어요.' })],
+  ['community/user/index.html', cmPage({ p: '/community/user/', kind: 'user', title: '회원 프로필', h1: '', lead: '', noindex: true })],
 ];
+
+// ---------- 페이지: 등급과 배지 안내 ----------
+function levelsPage() {
+  const rows = GROW_LEVELS.map((l, i) => {
+    const info = levelOf(l.min, GROW_LEVELS);
+    const next = GROW_LEVELS[i + 1];
+    return `<li class="lv-row">${emblemSVG(info, 52, glyph)}<div><b>Lv.${l.lv} ${esc(l.name)}</b><p>${esc(l.line)}</p></div><span>${next ? `${l.min}–${next.min - 1}점` : `${l.min}점 이상`}</span></li>`;
+  }).join('');
+  const ruleRows = Object.entries(GROW_RULES).filter(([k]) => k !== 'welcome').map(([, [pt, cap, label]]) => { const per = label.includes('게임마다') ? '게임마다 한 번' : ''; return `<tr><td>${esc(label.replace(/ \([^)]*\)/, ''))}</td><td>+${pt}점</td><td>${[per, cap ? `하루 ${cap}번까지` : ''].filter(Boolean).join(', ') || '제한 없음'}</td></tr>`; }).join('');
+  const badges = GROW_BADGES.map((b) => `<div class="badge-cell">${badgeSVG(b, 52, false, glyph)}<b>${esc(b.name)}</b><small>${esc(b.desc)}</small></div>`).join('');
+  const body = `<section class="page-head cm-head">
+<div class="wrap">
+${cmTabs('/community/levels/')}
+<h1 class="page-title">등급과 배지${SPARK}</h1>
+<p class="page-lead">룰룰에서 활동하면 점수가 쌓이고 등급이 올라가요. 내 글과 후기가 다른 사람에게 도움이 되면 별을 받고, 특별한 일을 해내면 배지를 받아요.</p>
+</div>
+</section>
+<section class="wrap cm levels-page">
+<div class="cm-body">
+<h2 class="h2" style="margin-top:0">열 단계 등급</h2>
+<p class="muted">닉네임 옆에 등급 표시가 붙어요. 가입하면 바로 ${GROW_RULES.welcome[0]}점을 받고 ‘첫 판’부터 시작해요.</p>
+<ol class="lv-table" style="margin-top:14px">${rows}</ol>
+
+<h2 class="h2">점수를 얻는 방법</h2>
+<p class="muted">같은 게시물로 점수를 여러 번 받을 수는 없어요. 글이나 후기를 지우면 받았던 점수도 함께 빠져요.</p>
+<div class="table-wrap" style="margin-top:12px"><table class="rule-table"><thead><tr><th>활동</th><th>점수</th><th>횟수</th></tr></thead><tbody>${ruleRows}</tbody></table></div>
+
+<h2 class="h2">받은 별과 매너 별점</h2>
+<div class="know">
+<div class="know-card"><p class="know-h"><i>${icon('i-star')}</i>받은 별</p><p>내 글이 좋아요를 받거나 후기가 ‘도움돼요’를 받으면 별이 하나씩 늘어요. 규칙 질문에서 내 댓글이 답변으로 채택되면 별 3개를 받아요.</p></div>
+<div class="know-card"><p class="know-h"><i>${icon('i-heart')}</i>매너 별점</p><p>정모와 번개가 끝나면 함께한 사람끼리 1~5점으로 매너를 남겨요. 세 사람 넘게 평가하면 프로필에 평균이 보여요.</p></div>
+<div class="know-card"><p class="know-h"><i>${icon('i-trophy')}</i>랭킹</p><p>매달 1일에 이달의 점수가 새로 시작돼요. 누적 등급, 후기왕, 규칙 해결사 순위도 <a href="/community/rank/">랭킹</a>에서 볼 수 있어요.</p></div>
+</div>
+
+<h2 class="h2">배지 ${GROW_BADGES.length}가지</h2>
+<p class="muted">받은 배지 가운데 하나를 대표 배지로 고르면 닉네임 옆에 함께 보여요. <a href="/account/">내 정보</a>에서 고를 수 있어요.</p>
+<div class="badge-grid" style="margin-top:14px">${badges}</div>
+<div class="row-btns" style="margin-top:28px"><a class="btn btn-main" href="/account/?mode=signup">회원가입하고 시작하기</a><a class="btn btn-sub" href="/community/rules/">커뮤니티 이용 규칙</a></div>
+</div>
+</section>`;
+  return layout({ title: `등급과 배지 안내 - ${cfg.siteName}`, description: `룰룰 보드게임 커뮤니티의 열 단계 등급, 점수 얻는 방법, 받은 별과 매너 별점, 배지 ${GROW_BADGES.length}가지를 안내해요.`, path: '/community/levels/', body });
+}
+
+// ---------- 페이지: 저장한 게임 ----------
+function savedPage() {
+  const body = `<section class="page-head">
+<div class="wrap">
+<h1 class="page-title">저장한 게임</h1>
+<p class="page-lead">저장한 게임, 최근 본 게임, 해 본 게임을 한곳에서 봐요. 로그인하면 다른 기기에서도 그대로 보여요.</p>
+<div class="saved-tabs" role="tablist" aria-label="목록 고르기" data-saved-tabs>
+<button type="button" role="tab" aria-selected="true" data-tab="saved">저장</button>
+<button type="button" role="tab" aria-selected="false" data-tab="recent">최근 본</button>
+<button type="button" role="tab" aria-selected="false" data-tab="played">해 본 게임</button>
+<button type="button" role="tab" aria-selected="false" data-tab="want">하고 싶어요</button>
+</div>
+</div>
+</section>
+<section class="wrap list-sec" data-saved>
+<noscript><p class="notice">저장한 게임은 자바스크립트를 켜야 볼 수 있어요.</p></noscript>
+<div data-saved-body><div class="skel-grid"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div></div>
+<template data-empty="saved"><div class="state">${pic('dice-search', '', '')}<h2>아직 저장한 게임이 없어요</h2><p>게임 페이지에서 ‘저장’을 누르면 여기에 모여요.</p><a class="btn btn-main" href="/games/">게임 찾으러 가기</a></div></template>
+<template data-empty="recent"><div class="state">${pic('dice-search', '', '')}<h2>아직 본 게임이 없어요</h2><p>게임 페이지를 열면 여기에 차례로 쌓여요. 보던 단계부터 이어서 볼 수 있어요.</p><a class="btn btn-main" href="/games/">게임 찾으러 가기</a></div></template>
+<template data-empty="played"><div class="state">${pic('pawn-book', '', '')}<h2>해 본 게임을 체크해 보세요</h2><p>게임마다 ‘해 봤어요’를 누르면 나만의 보드게임 도감이 채워지고 배지도 받아요.</p><a class="btn btn-main" href="/account/">로그인하기</a></div></template>
+<template data-empty="want"><div class="state">${pic('pawn-book', '', '')}<h2>하고 싶은 게임을 모아 보세요</h2><p>다음 모임에서 해 보고 싶은 게임에 ‘하고 싶어요’를 눌러 두면 여기서 바로 볼 수 있어요.</p><a class="btn btn-main" href="/games/">게임 찾으러 가기</a></div></template>
+</section>`;
+  return layout({ title: `저장한 게임 - ${cfg.siteName}`, description: '저장한 게임과 최근 본 게임, 해 본 게임을 모아 봐요.', path: '/saved/', body, noindex: true });
+}
 
 // ---------- 페이지: 제휴·문의 ----------
 const INQUIRY_KINDS = { partner: '제휴·협업 제안', ad: '광고·입점 문의', store: '매장(공간) 등록·QR', game: '게임 설명 추가 요청', bug: '오류·불편 신고', etc: '그 밖의 문의' };
@@ -1419,6 +1585,26 @@ copyDir(path.join(STATIC, 'css'), path.join(OUT, 'assets', 'css'));
 copyDir(path.join(STATIC, 'js'), path.join(OUT, 'assets', 'js'));
 copyDir(path.join(STATIC, 'img'), path.join(OUT, 'assets', 'img'));
 
+// 등급과 배지 자료: 서버(server/growth-data.js)와 같은 것을 화면에서도 써요
+write('assets/js/growth.js', `/* 룰룰 등급·배지 (server/growth-data.js에서 만들어져요. 직접 고치지 마세요) */
+(function () {
+var LEVELS = ${JSON.stringify(GROW_LEVELS)};
+var RULES = ${JSON.stringify(GROW_RULES)};
+var BADGES = ${JSON.stringify(GROW_BADGES)};
+var levelOf = ${levelOf.toString()};
+var glyph = ${glyph.toString()};
+var emblemSVG = ${emblemSVG.toString()};
+var badgeSVG = ${badgeSVG.toString()};
+var BY = {}; BADGES.forEach(function (b) { BY[b.key] = b; });
+window.RRG = {
+  LEVELS: LEVELS, RULES: RULES, BADGES: BADGES, BY: BY,
+  level: function (xp) { return levelOf(xp || 0, LEVELS); },
+  emblem: function (info, size) { return emblemSVG(info, size, glyph); },
+  badge: function (b, size, locked) { return badgeSVG(b, size, locked, glyph); },
+  glyph: glyph
+};
+})();
+`);
 write('index.html', homePage());
 write('games/index.html', gamesPage());
 for (const g of games) write(`games/${g.slug}/index.html`, gamePage(g));
@@ -1433,6 +1619,8 @@ write('rules/index.html', rulesPage());
 write('shop/index.html', shopPage());
 for (const [f, html] of communityPages()) write(f, html);
 write('contact/index.html', contactPage());
+write('community/levels/index.html', levelsPage());
+write('saved/index.html', savedPage());
 write('terms/index.html', termsPage());
 write('privacy/index.html', privacyPage());
 write('community/rules/index.html', communityRulesPage());
@@ -1477,7 +1665,7 @@ const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 const gameDay = (g) => (g.checked && g.checked.date) || (g.reviewed && g.reviewed.date) || today;
 const urls = [
   ['/', 'daily', '1.0'], ['/games/', 'weekly', '0.9'], ['/rules/', 'weekly', '0.9'], ['/traditional/', 'weekly', '0.8'], ['/shop/', 'weekly', '0.7'],
-  ['/community/', 'daily', '0.6'], ['/community/events/', 'daily', '0.5'], ['/community/clubs/', 'daily', '0.5'], ['/community/board/', 'daily', '0.5'],
+  ['/community/', 'daily', '0.6'], ['/community/events/', 'daily', '0.5'], ['/community/clubs/', 'daily', '0.5'], ['/community/board/', 'daily', '0.5'], ['/community/rank/', 'daily', '0.4'], ['/community/levels/', 'monthly', '0.4'],
   ['/learn/', 'monthly', '0.6'], ['/space/', 'monthly', '0.5'], ['/about/', 'monthly', '0.4'], ['/contact/', 'yearly', '0.4'],
   ['/terms/', 'yearly', '0.2'], ['/privacy/', 'yearly', '0.2'], ['/community/rules/', 'yearly', '0.2'],
   ...games.map((g) => [`/games/${g.slug}/`, 'weekly', '0.9', gameDay(g)]),

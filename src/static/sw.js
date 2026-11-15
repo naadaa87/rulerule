@@ -11,6 +11,8 @@ const CORE = [
   '/assets/css/app.css?v=' + VERSION,
   '/assets/js/app.js?v=' + VERSION,
   '/assets/js/table.js?v=' + VERSION,
+  '/assets/js/growth.js?v=' + VERSION,
+  '/assets/js/social.js?v=' + VERSION,
   '/assets/img/favicon.svg',
   '/assets/img/icon-192.png',
 ];
