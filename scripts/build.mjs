@@ -482,6 +482,10 @@ function gameFaq(g) {
 }
 
 const SHOP_KIND = { game: '본판', edition: '다른 판', expansion: '확장', goods: '용품', set: '세트' };
+// 상품 사진: 쿠팡 상품 사진 주소(content/shop.json의 img)를 크기만 바꿔 씀
+const CP_IMG = (path, n) => `https://thumbnail.coupangcdn.com/thumbnails/remote/${n}x${n}ex/${path}`;
+const cpProductUrl = (it) => (it.cp ? `https://www.coupang.com/vp/products/${it.cp.p}${it.cp.i ? `?itemId=${it.cp.i}${it.cp.v ? `&vendorItemId=${it.cp.v}` : ''}` : ''}` : '');
+const shopImg = (it, n = 320, cls = 'pimg', eager = false) => (it.img ? `<img class="${cls}" src="${CP_IMG(it.img, n)}" srcset="${CP_IMG(it.img, n)} 1x, ${CP_IMG(it.img, Math.round(n * 1.5))} 2x" width="${n}" height="${n}" alt="${esc(it.name)} 상품 사진" loading="${eager ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer">` : '');
 const goHref = (id, from) => `/go/${id}${from ? `?from=${from}` : ''}`;
 const buyLink = (id, from, label = '쿠팡에서 보기', cls = 'btn btn-buy') => `<a class="${cls}" href="${goHref(id, from)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}">${label}</a>`;
 const shopItemsOf = (g) => {
@@ -499,7 +503,7 @@ function buyBox(g) {
 <h2 class="h2" id="buy-title">${esc(n)} 구매하기</h2>
 <p class="muted small">판매처의 가격과 구성은 수시로 바뀌어요. 상자 속 구성물이 이 설명과 같은지 상품 페이지에서 한 번 더 확인하세요.</p>
 <ul class="buy-list">
-${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item"><span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span><span class="buy-text"><b>${esc(it.name)}</b><small>${esc(it.note || '')}</small></span>${buyLink(id, g.slug)}</li>`; }).join('\n')}
+${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item${it.img ? ' has-img' : ''}">${it.img ? `<a class="buy-img" href="${goHref(id, g.slug)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}" tabindex="-1" aria-hidden="true">${shopImg(it, 96, 'pimg')}</a>` : ''}<span class="buy-text"><span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span><b>${esc(it.name)}</b><small>${esc(it.note || '')}</small></span>${buyLink(id, g.slug)}</li>`; }).join('\n')}
 </ul>
 <p class="buy-more"><a href="/shop/">${icon('i-cart')}룰룰 보드게임몰에서 더 보기</a></p>
 </section>`;
@@ -844,7 +848,7 @@ ${pic('dice-search', '', '')}
 <div class="band-head"><h2 class="sec-title">룰룰 보드게임몰</h2><a class="more-link" href="/shop/">전체 보기</a></div>
 <p class="sec-lead">하는 법을 읽고 마음에 들었다면 바로 구할 수 있게, 상황별로 골라 두었어요.</p>
 <div class="shelf-cards">
-${SHOP.shelves.slice(0, 6).map((sh) => `<a class="shelf-card" href="/shop/#${sh.slug}"><span class="shelf-t">${esc(sh.title)}</span><span class="shelf-d">${esc(sh.lead)}</span><span class="col-tiles">${sh.items.map((id) => SHOP.items[id].game).filter((gs, i, a) => gs && bySlug[gs] && a.indexOf(gs) === i).slice(0, 4).map((gs) => tile(bySlug[gs], 'tile-sm')).join('')}<span class="col-count">${sh.items.length}개</span></span></a>`).join('\n')}
+${SHOP.shelves.slice(0, 6).map((sh) => `<a class="shelf-card" href="/shop/#${sh.slug}"><span class="shelf-t">${esc(sh.title)}</span><span class="shelf-d">${esc(sh.lead)}</span><span class="shelf-imgs">${sh.items.filter((id) => SHOP.items[id].img).slice(0, 3).map((id) => shopImg(SHOP.items[id], 96, 'pimg')).join('')}<span class="col-count">${sh.items.length}개</span></span></a>`).join('\n')}
 </div>
 </div>
 </section>
@@ -1208,8 +1212,8 @@ const GOODS_ICON = `<div class="tile tile-sm tile-goods" aria-hidden="true">${ic
 function productCard(id, from) {
   const it = SHOP.items[id];
   const g = it.game && bySlug[it.game] && it.kind !== 'goods' ? bySlug[it.game] : null;
-  return `<li class="pcard">
-<div class="pcard-top">${g ? tile(g, 'tile-sm') : GOODS_ICON}<span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span></div>
+  return `<li class="pcard${it.img ? ' has-img' : ''}">
+${it.img ? `<a class="pcard-img" href="${goHref(id, from)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}" tabindex="-1" aria-hidden="true">${shopImg(it, 320)}<span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span></a>` : `<div class="pcard-top">${g ? tile(g, 'tile-sm') : GOODS_ICON}<span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span></div>`}
 <h3 class="pcard-name">${esc(it.name)}</h3>
 <p class="pcard-note">${esc(it.note || '')}</p>
 ${g ? `<p class="pcard-meta">${playersText(g.players)} · ${minutesText(g.minutes)} · ${ageText(g.age)} · ${LEVELS[g.level]}</p>` : ''}
@@ -1639,7 +1643,7 @@ const compact = sortedGames.map((g) => ({
 }));
 write('data/games.json', JSON.stringify({ build: BUILD, games: compact, popular: content.popular }));
 // 구매 버튼(/go/)이 읽는 상품 목록: id -> 이름, 쿠팡 검색어, 고정 링크
-write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || '', g: it.game || '' }])) }));
+write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || cpProductUrl(it), p: it.url || '', cu: cpProductUrl(it), img: it.img ? CP_IMG(it.img, 230) : '', g: it.game || '' }])) }));
 
 write('manifest.webmanifest', JSON.stringify({
   name: cfg.tagline ? `${cfg.siteName} | ${cfg.tagline}` : cfg.siteName,

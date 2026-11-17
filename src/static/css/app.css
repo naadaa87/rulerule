@@ -1443,3 +1443,20 @@ button.poll-opt:hover { border-color: var(--navy); }
   .page-head::after { width: 110px; height: 110px; right: -55px; top: -60px; }
   .hero-pop + .sec { padding-top: 26px; }
 }
+
+/* ---------- 상품 사진 (쿠팡 상품 이미지) ---------- */
+.pimg { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; background: #fff; }
+.pcard.has-img { padding: 0 0 16px; overflow: hidden; }
+.pcard.has-img > :not(.pcard-img) { margin-left: 16px; margin-right: 16px; }
+.pcard-img { position: relative; display: block; padding: 14px; background: #fff; border-bottom: 1.5px solid var(--line); }
+.pcard-img .pimg { max-width: 220px; margin: 0 auto; transition: transform .2s ease; }
+.pcard-img:hover .pimg { transform: scale(1.04); }
+.pcard-img .buy-kind { position: absolute; left: 12px; top: 12px; background: var(--butter-2); color: var(--navy); }
+@media (prefers-reduced-motion: reduce) { .pcard-img .pimg { transition: none; } .pcard-img:hover .pimg { transform: none; } }
+.buy-item.has-img { grid-template-columns: 76px minmax(0, 1fr); }
+.buy-img { display: block; width: 76px; height: 76px; border-radius: 12px; overflow: hidden; background: #fff; align-self: start; }
+.buy-img .pimg { width: 76px; height: 76px; }
+.buy-text .buy-kind { justify-self: start; margin: 0 0 4px; }
+.shelf-imgs { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
+.shelf-imgs .pimg { width: 56px; height: 56px; border-radius: 12px; border: 1px solid var(--line); }
+@media (max-width: 599px) { .shelf-imgs .pimg:nth-child(n+3) { display: none; } }

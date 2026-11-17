@@ -2,438 +2,934 @@
  "disclosure": "이 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
  "items": {
   "rummikub": {
-   "name": "루미큐브 오리지널",
+   "name": "루미큐브 클래식",
    "q": "루미큐브 오리지널",
    "note": "가장 많이 하는 기본판. 2~4명이 함께해요.",
    "kind": "game",
-   "game": "rummikub"
+   "game": "rummikub",
+   "cp": {
+    "p": "8488695436",
+    "i": "20355137891",
+    "v": "3001754339"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/5acd/1e615f6952be3ef3b338eacb59b4a49d5b4a0085f064bdd40f3f90a491bf.jpg",
+   "cpName": "루미큐브 클래식, 혼합색상, 1개",
+   "reviews": 17014
   },
   "rummikub-travel": {
    "name": "루미큐브 여행용",
    "q": "루미큐브 트래블",
    "note": "작은 판으로 들고 다니기 좋아요.",
    "kind": "edition",
-   "game": "rummikub"
+   "game": "rummikub",
+   "cp": {
+    "p": "7080574601",
+    "i": "47228656",
+    "v": "3918829221"
+   },
+   "img": "image/vendor_inventory/images/2018/08/30/13/1/f024f444-14fa-48ba-a0c6-d01696b88f99.jpg",
+   "cpName": "루미큐브 트래블 2007, 1",
+   "reviews": 2605
   },
   "halli-galli": {
    "name": "할리갈리",
    "q": "할리갈리 보드게임",
    "note": "종 하나와 과일 카드면 바로 시작해요.",
    "kind": "game",
-   "game": "halli-galli"
+   "game": "halli-galli",
+   "cp": {
+    "p": "201355",
+    "i": "373416",
+    "v": "3000278460"
+   },
+   "img": "image/vendor_inventory/f72f/b5d406f6b6a0893a1960ec7ecbe72eaeae0fdbc1c0aa8dac1cddc82e2103.jpg",
+   "cpName": "코리아보드게임즈 아미고 할리갈리 순발력 게임, 1개",
+   "reviews": 16405
   },
   "halli-galli-deluxe": {
    "name": "할리갈리 디럭스",
    "q": "할리갈리 디럭스",
    "note": "종이 커져서 여럿이 하기 좋은 판이에요.",
    "kind": "edition",
-   "game": "halli-galli"
+   "game": "halli-galli",
+   "cp": {
+    "p": "4356026116",
+    "i": "5117215912",
+    "v": "73731858235"
+   },
+   "img": "image/retail/images/18468972578161-cb54e6be-de37-4052-ac5e-aa98a0b87aa2.png",
+   "cpName": "아미고 코리아보드게임즈 할리갈리 딜럭스, 1개",
+   "reviews": 6796
   },
   "davinci-code": {
    "name": "다빈치 코드",
    "q": "다빈치코드 보드게임",
    "note": "숫자 타일로 하는 추리 게임 기본판.",
    "kind": "game",
-   "game": "davinci-code"
+   "game": "davinci-code",
+   "cp": {
+    "p": "1077166",
+    "i": "4631106",
+    "v": "3000165024"
+   },
+   "img": "image/vendor_inventory/8071/783decd6ec2e25020f9115a364d83352626abcd481e71654aef341428ec8.jpg",
+   "cpName": "코리아보드게임즈 다빈치 코드 추리 게임, 1개, 혼합색상",
+   "reviews": 11524
   },
   "uno": {
    "name": "우노 카드",
    "q": "우노 카드게임",
    "note": "기본 우노 카드 한 벌.",
    "kind": "game",
-   "game": "uno"
+   "game": "uno",
+   "cp": {
+    "p": "7578905440",
+    "i": "20002575319",
+    "v": "3000153208"
+   },
+   "img": "image/retail/images/1393129250267794-87b4c438-9fae-4cd0-8929-bbc4696f197e.png",
+   "cpName": "코리아보드게임즈 우노 카드게임, 1개, 혼합색상",
+   "reviews": 8519
   },
   "uno-flip": {
    "name": "우노 플립",
    "q": "우노 플립",
    "note": "카드를 뒤집으면 규칙이 바뀌는 판이에요.",
    "kind": "edition",
-   "game": "uno"
+   "game": "uno",
+   "cp": {
+    "p": "7069417490",
+    "i": "23806269463",
+    "v": "95893415334"
+   },
+   "img": "image/retail/images/2026/08/07/15/5/63b1f523-52c4-4091-bbb7-739ce5b5b657.png",
+   "cpName": "마텔 우노 플립, 1개",
+   "reviews": 162
   },
   "jenga": {
-   "name": "젠가 클래식",
+   "name": "원목 블록 쌓기 게임 (젠가형)",
    "q": "젠가 클래식",
-   "note": "나무 블록 54개짜리 기본판.",
+   "note": "젠가처럼 블록을 빼서 위에 올리는 원목 게임.",
    "kind": "game",
-   "game": "jenga"
+   "game": "jenga",
+   "cp": {
+    "p": "6056589719",
+    "i": "11120486114",
+    "v": "3047426581"
+   },
+   "img": "image/retail/images/91213811982010-4c052f56-5b1a-4970-973f-f4b1876ed8e3.jpg",
+   "cpName": "토도리브로 원목 게임블록 보드게임 박스형, 1개, 혼합색상",
+   "reviews": 5981
   },
   "jenga-giant": {
    "name": "대형 젠가",
    "q": "대형 젠가",
    "note": "야외나 파티룸에서 쓰는 큰 블록.",
    "kind": "edition",
-   "game": "jenga"
+   "game": "jenga",
+   "cp": {
+    "p": "6194958188",
+    "i": "12256001883",
+    "v": "79526591076"
+   },
+   "img": "image/vendor_inventory/aaa9/65d13f8adccc583d3b847a5dc270a1a97fbac893eb5da59e5e4260f23ef3.jpg",
+   "cpName": "후투티 대형 젠가 나무 블록 HUTUTI TUMBLE TOWER 21x7x4cm 60블록, 1개",
+   "reviews": 6
   },
   "dobble": {
    "name": "도블",
    "q": "도블 보드게임",
    "note": "둥근 틴 케이스에 카드 55장.",
    "kind": "game",
-   "game": "dobble"
+   "game": "dobble",
+   "cp": {
+    "p": "8479043887",
+    "i": "96658",
+    "v": "78421225247"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/fa42/658e45691554d309bdfd71eec7fc9d5cb7449ede55fcf10da0b90e114ba0.jpg",
+   "cpName": "코리아보드게임즈 도블 순발력 게임, 1개",
+   "reviews": 4258
   },
   "dobble-kids": {
-   "name": "도블 키즈",
+   "name": "도블 동물원 (어린이용)",
    "q": "도블 키즈",
    "note": "그림이 적어 어린아이와 하기 좋아요.",
    "kind": "edition",
-   "game": "dobble"
+   "game": "dobble",
+   "cp": {
+    "p": "35640290",
+    "i": "132226587",
+    "v": "78421227393"
+   },
+   "img": "image/retail/images/1219104572265105-5e5e7802-97c6-4b03-ae59-ac170cf51825.jpg",
+   "cpName": "도블 동물원 순발력게임, 혼합 색상, 1개",
+   "reviews": 4066
   },
   "chicken-chacha": {
    "name": "치킨차차",
    "q": "치킨차차 보드게임",
    "note": "기억력으로 하는 유아 보드게임.",
    "kind": "game",
-   "game": "chicken-chacha"
+   "game": "chicken-chacha",
+   "cp": {
+    "p": "282681258",
+    "i": "897375151",
+    "v": "71198292900"
+   },
+   "img": "image/retail/images/6267587977398-bf32a767-abb5-43c8-bdbb-7affed35838c.jpg",
+   "cpName": "조흐 치킨차차 보드게임, 혼합색상, 1개",
+   "reviews": 1185
   },
   "pop-up-pirate": {
    "name": "해적 룰렛 (통아저씨)",
    "q": "통아저씨 게임",
    "note": "칼을 꽂다 해적이 튀어나오면 끝.",
    "kind": "game",
-   "game": "pop-up-pirate"
+   "game": "pop-up-pirate",
+   "cp": {
+    "p": "5225488641",
+    "i": "24915981888",
+    "v": "74634961244"
+   },
+   "img": "image/retail/images/1756455164025480-b3a9c480-db5c-46e6-8605-445a1b94652c.jpg",
+   "cpName": "후크룰렛 해적룰렛게임 대, 혼합색상, 1개",
+   "reviews": 4020
   },
   "blokus": {
    "name": "블로커스",
    "q": "블로커스 보드게임",
    "note": "4명까지 하는 기본판.",
    "kind": "game",
-   "game": "blokus"
+   "game": "blokus",
+   "cp": {
+    "p": "7687560042",
+    "i": "20548785223",
+    "v": "3491694658"
+   },
+   "img": "image/vendor_inventory/19e2/6d835cc103b5b208c6b8034e010ec46d5a5cc12c30fd96c253c0d9336e45.jpg",
+   "cpName": "마텔 블로커스 2023 보드게임, 혼합색상, 1개",
+   "reviews": 1586
   },
   "blokus-duo": {
    "name": "블로커스 듀오",
    "q": "블로커스 듀오",
    "note": "둘이 하는 작은 판.",
    "kind": "edition",
-   "game": "blokus"
+   "game": "blokus",
+   "cp": {
+    "p": "7249757576",
+    "i": "21132472917",
+    "v": "95922367861"
+   },
+   "img": "image/vendor_inventory/1d54/3a2008f300b9b7c512ea25e1cd70c56c04a2303951fc9f46505324563528.jpg",
+   "cpName": "블로커스 듀오, 1개",
+   "reviews": 0
   },
   "king-of-tokyo": {
    "name": "킹 오브 도쿄",
    "q": "킹오브도쿄 보드게임",
    "note": "주사위 굴리는 괴수 싸움 게임.",
    "kind": "game",
-   "game": "king-of-tokyo"
+   "game": "king-of-tokyo",
+   "cp": {
+    "p": "8906257371",
+    "i": "26011591923",
+    "v": "93097142027"
+   },
+   "img": "image/vendor_inventory/406f/5ba3cac44e42f89416e50b0822e4f65582e72664354a5e38a0a2e7f3653e.jpg",
+   "cpName": "킹오브도쿄 오리진, 한올엠앤씨, 편집부 저",
+   "reviews": 3
   },
   "burumabul": {
    "name": "부루마불",
    "q": "부루마불 보드게임",
    "note": "세계 도시를 사고파는 국민 보드게임.",
    "kind": "game",
-   "game": "burumabul"
+   "game": "burumabul",
+   "cp": {
+    "p": "8880578712",
+    "i": "18698281112",
+    "v": "87108751855"
+   },
+   "img": "image/vendor_inventory/be8f/9c5765327a936bf9bdb5a38dcdc49e58ec99a3ddb692e4d90e5d43c0157c.jpg",
+   "cpName": "부루마불 36000 패밀리, 1세트, 혼합 색상",
+   "reviews": 3880
   },
   "burumabul-deluxe": {
-   "name": "부루마불 디럭스",
+   "name": "부루마불 클래식",
    "q": "부루마불 디럭스",
-   "note": "구성물이 큰 판이에요.",
+   "note": "기본판과 구성이 다른 큰 판. 상품 페이지에서 구성물을 확인하세요.",
    "kind": "edition",
-   "game": "burumabul"
+   "game": "burumabul",
+   "cp": {
+    "p": "278107455",
+    "i": "16186179009",
+    "v": "90830626131"
+   },
+   "img": "image/vendor_inventory/1675/f6c7c382d85805ff4c2c8bf30f54b4f19b598ddf8cd9bde5ca5ca1fd5cfa.jpg",
+   "cpName": "부루마블 클래식, 66000부루마불클래식, 1개",
+   "reviews": 2336
   },
   "clue": {
    "name": "클루",
    "q": "클루 보드게임",
    "note": "범인, 도구, 장소를 맞히는 추리 게임.",
    "kind": "game",
-   "game": "clue"
+   "game": "clue",
+   "cp": {
+    "p": "7779228591",
+    "i": "22193730217",
+    "v": "92395119537"
+   },
+   "img": "image/vendor_inventory/9d11/1c1e67000797f20c13a925ecdbfd79ea4565b71f9894e5600d5cd6aa9aaa.jpg",
+   "cpName": "해즈브로게이밍 클루 추리게임, 혼합색상, 1개",
+   "reviews": 2633
   },
   "tumbling-monkey": {
    "name": "텀블링 몽키",
    "q": "텀블링몽키 보드게임",
    "note": "막대를 빼면 원숭이가 떨어져요.",
    "kind": "game",
-   "game": "tumbling-monkey"
+   "game": "tumbling-monkey",
+   "cp": {
+    "p": "111115",
+    "i": "212372",
+    "v": "3000153207"
+   },
+   "img": "image/retail/images/195803235713168-2040b87f-a135-4996-bef5-2b28c4bf5875.jpg",
+   "cpName": "마텔게임 텀블링몽키 균형잡기 게임, 혼합색상, 1개",
+   "reviews": 1831
   },
   "playing-cards": {
    "name": "트럼프 카드",
    "q": "트럼프 카드",
    "note": "원카드, 포커처럼 여러 게임에 써요.",
    "kind": "goods",
-   "game": "one-card"
+   "game": "one-card",
+   "cp": {
+    "p": "8522932954",
+    "i": "25223215587",
+    "v": "91799879566"
+   },
+   "img": "image/vendor_inventory/55de/ac96aad7d4505a8d7052c684a0b865f175f1f3fdb2bd33d9500a528be06c.jpg",
+   "cpName": "제이로얄 트럼프카드 J ROYAL, 1개",
+   "reviews": 1974
   },
   "just-one": {
    "name": "저스트 원",
    "q": "저스트원 보드게임",
    "note": "힌트를 겹치지 않게 쓰는 협력 게임.",
    "kind": "game",
-   "game": "just-one"
+   "game": "just-one",
+   "cp": {
+    "p": "9614315929",
+    "i": "28706300063",
+    "v": "96195073394"
+   },
+   "img": "image/vendor_inventory/0683/ebdefd7ea27427d13f55f1444699202d199543198e3b2fb13508e603f7cd.jpg",
+   "cpName": "아크라이트 저스트 원 보드게임 3-7인용, 1개",
+   "reviews": 0
   },
   "the-mind": {
    "name": "더 마인드",
    "q": "더마인드 보드게임",
    "note": "말없이 숫자를 맞추는 협력 카드 게임.",
    "kind": "game",
-   "game": "the-mind"
+   "game": "the-mind",
+   "cp": {
+    "p": "8544752688",
+    "i": "24740619361",
+    "v": "92900284373"
+   },
+   "img": "image/vendor_inventory/dab1/25a3b4d3a7e8bfefc1a8fa603afa288861f8c3172e98533f7fe415ae082e.jpg",
+   "cpName": "[팝콘게임즈] 더마인드 한글판 보드게임 정식 라이센스 취득 정품, 1개",
+   "reviews": 140
   },
   "mafia-cards": {
-   "name": "마피아 게임 카드",
+   "name": "마피아 보드게임",
    "q": "마피아 게임 카드",
-   "note": "역할 카드가 있으면 진행이 쉬워요.",
+   "note": "역할 카드가 들어 있어 진행이 쉬워요.",
    "kind": "goods",
-   "game": "mafia"
+   "game": "mafia",
+   "cp": {
+    "p": "1423480899",
+    "i": "2462541306",
+    "v": "70456016715"
+   },
+   "img": "image/retail/images/2020/04/02/21/7/af9588b8-b0d2-4dfc-bcc3-f74c58261faa.jpg",
+   "cpName": "만두게임즈 오리지널 마피아 보드게임, 혼합색상, 1개",
+   "reviews": 133
   },
   "avalon": {
    "name": "레지스탕스 아발론",
    "q": "레지스탕스 아발론",
    "note": "5~10명이 하는 정체 숨기기 게임.",
    "kind": "game",
-   "game": "avalon"
+   "game": "avalon",
+   "cp": {
+    "p": "22008071",
+    "i": "20216817225",
+    "v": "3145810763"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/d572/6f28abd133bb8d73a4d86e377c9efe92efe1267ce8211a71e7cfa9403d06.jpg",
+   "cpName": "코리아보드게임즈 인디보드앤카드 레지스탕스 아발론 보드게임, 혼합색상, 1개",
+   "reviews": 863
   },
   "telestrations": {
    "name": "텔레스트레이션",
    "q": "텔레스트레이션 보드게임",
    "note": "그림과 말로 전하는 파티 게임.",
    "kind": "game",
-   "game": "telestrations"
+   "game": "telestrations",
+   "cp": {
+    "p": "7828100",
+    "i": "34246447",
+    "v": "94975935048"
+   },
+   "img": "image/vendor_inventory/4738/433d97a6c1e651c83a49bebd6cc269cc75142d51ab1e6489d0041fa20bc9.png",
+   "cpName": "코리아보드게임즈 텔레스트레이션 보드게임, 1개, 혼합색상",
+   "reviews": 2336
   },
   "dixit": {
    "name": "딕싯",
    "q": "딕싯 보드게임",
    "note": "그림 카드로 이야기하는 기본판.",
    "kind": "game",
-   "game": "dixit"
+   "game": "dixit",
+   "cp": {
+    "p": "5838348176",
+    "i": "10124618177",
+    "v": "77407376437"
+   },
+   "img": "image/rs_quotation_api/cndoc2cg/dfc0213512cc43b19800e27f4adbea82.png",
+   "cpName": "리벨루드 아스모디 딕싯 보드게임, 1개",
+   "reviews": 1357
   },
   "dixit-expansion": {
-   "name": "딕싯 확장",
+   "name": "딕싯 확장 퀘스트",
    "q": "딕싯 확장",
    "note": "그림 카드를 더 넣어 새롭게 즐겨요.",
    "kind": "expansion",
-   "game": "dixit"
+   "game": "dixit",
+   "cp": {
+    "p": "4921202",
+    "i": "22460260",
+    "v": "3032835977"
+   },
+   "img": "image/retail/images/2016/06/27/16/0/2d36f209-d1fb-4dca-9dd5-29a108888009.jpg",
+   "cpName": "딕싯 확장 퀘스트, 2인, 1개",
+   "reviews": 58
   },
   "codenames": {
    "name": "코드네임",
    "q": "코드네임 보드게임",
    "note": "팀으로 단어를 찾는 기본판.",
    "kind": "game",
-   "game": "codenames"
+   "game": "codenames",
+   "cp": {
+    "p": "7460290165",
+    "i": "23806386824",
+    "v": "91642218134"
+   },
+   "img": "image/vendor_inventory/6d68/6905badda39cc862bfd05fc7aaff7ec5e1d1832e9506a47ebefaecaeeb0b.jpg",
+   "cpName": "코드네임, 1개",
+   "reviews": 35
   },
   "codenames-duet": {
    "name": "코드네임 듀엣",
    "q": "코드네임 듀엣",
    "note": "둘이 함께 하는 협력판.",
    "kind": "edition",
-   "game": "codenames"
+   "game": "codenames",
+   "cp": {
+    "p": "7725881976",
+    "i": "20747282816",
+    "v": "91289726649"
+   },
+   "img": "image/vendor_inventory/27b2/3dc6214045e7d49bc9df280dfea1a6d8306872d225bfe667f69505540d0f.jpg",
+   "cpName": "코드네임 듀엣, 1개",
+   "reviews": 11
   },
   "6-nimmt": {
    "name": "젝스님트",
    "q": "젝스님트 보드게임",
    "note": "10명까지 하는 숫자 카드 게임.",
    "kind": "game",
-   "game": "6-nimmt"
+   "game": "6-nimmt",
+   "cp": {
+    "p": "4869230",
+    "i": "22184919",
+    "v": "3013990926"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/bffd/007726e929313177b191592abc7495811d5600c564d4747c8fd4264fa3a5.jpg",
+   "cpName": "아미고 젝스님트 두뇌트레이닝게임, 1개, 혼합색상",
+   "reviews": 1385
   },
   "coup": {
    "name": "쿠",
    "q": "쿠 보드게임",
    "note": "카드 15장으로 하는 짧은 블러핑 게임.",
    "kind": "game",
-   "game": "coup"
+   "game": "coup",
+   "cp": {
+    "p": "6273496219",
+    "i": "25177463343",
+    "v": "95416132317"
+   },
+   "img": "image/vendor_inventory/70fb/a883e18103f6ac622dcd357f8af8d51d1c293343326b34c8abdd2b63e793.jpg",
+   "cpName": "레지스탕스 쿠 COUP 카드게임보드게임 B456, 단품, 1개",
+   "reviews": 318
   },
   "sand-timer": {
-   "name": "모래시계 타이머 세트",
+   "name": "모래시계 타이머 5종",
    "q": "모래시계 타이머 세트",
    "note": "설명 시간, 토론 시간을 잴 때 써요.",
    "kind": "goods",
-   "game": "liar-game"
+   "game": "liar-game",
+   "cp": {
+    "p": "7091188485",
+    "i": "17671427199",
+    "v": "84836799963"
+   },
+   "img": "image/retail/images/4091198614315890-e26e22f6-5fe2-487e-96e5-e8a05f425d82.png",
+   "cpName": "바코젤 타이머 모래시계 5종, 블랙 + 블루 + 옐로우 + 그린 + 레드",
+   "reviews": 232
   },
   "dalmuti": {
    "name": "위대한 달무티",
    "q": "위대한 달무티",
    "note": "계급이 바뀌는 카드 게임.",
    "kind": "game",
-   "game": "dalmuti"
+   "game": "dalmuti",
+   "cp": {
+    "p": "6439875832",
+    "i": "13935327783",
+    "v": "3148459906"
+   },
+   "img": "image/vendor_inventory/efd9/f039678ff0ad90edb3d3266176291a7a11d6126a76c23feda1887fbc1443.jpg",
+   "cpName": "코리아보드게임즈 달무티 보드게임, 혼합색상, 1개",
+   "reviews": 5673
   },
   "bang": {
    "name": "뱅!",
    "q": "뱅 보드게임",
    "note": "서부 총잡이 정체 숨기기 게임.",
    "kind": "game",
-   "game": "bang"
+   "game": "bang",
+   "cp": {
+    "p": "1746995",
+    "i": "65639577",
+    "v": "3000165036"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/c226/6384bddeb41d57dfea8528b887bcbdcf673c3b2186dc868b3d29c566c4b0.jpg",
+   "cpName": "뱅 추리게임, 1개, 혼합색상",
+   "reviews": 3639
   },
   "love-letter": {
    "name": "러브레터",
    "q": "러브레터 보드게임",
    "note": "카드 16장으로 하는 짧은 게임.",
    "kind": "game",
-   "game": "love-letter"
+   "game": "love-letter",
+   "cp": {
+    "p": "1688007678",
+    "i": "22216392516",
+    "v": "76200920071"
+   },
+   "img": "image/vendor_inventory/image_audit/stage/manual/94982990040aa285867dcb6920ef725de97410a5acdc2fd4b1353c25529d_1784709960871.jpg",
+   "cpName": "러브 레터 신판, 혼합색상, 1개",
+   "reviews": 343
   },
   "cockroach-poker": {
    "name": "바퀴벌레 포커",
    "q": "바퀴벌레 포커",
    "note": "거짓말로 카드를 넘기는 파티 게임.",
    "kind": "game",
-   "game": "cockroach-poker"
+   "game": "cockroach-poker",
+   "cp": {
+    "p": "8674972076",
+    "i": "25183385539",
+    "v": "92228954185"
+   },
+   "img": "image/retail/images/2025/04/02/13/3/8fd0e6ac-3990-4afb-b7a5-d30518c90b72.jpg",
+   "cpName": "드라이메이어 바퀴벌레 포커 두뇌트레이닝게임, 혼합색상, 1개",
+   "reviews": 61
   },
   "saboteur": {
    "name": "사보타지",
    "q": "사보타지 보드게임",
    "note": "광부와 방해꾼으로 나뉘는 길 놓기 게임.",
    "kind": "game",
-   "game": "saboteur"
+   "game": "saboteur",
+   "cp": {
+    "p": "25149427",
+    "i": "97740042",
+    "v": "93117790092"
+   },
+   "img": "image/retail/images/2025/07/23/15/6/35929685-1682-4358-8d50-07c169a1e77b.jpg",
+   "cpName": "아미고 사보타지 추리게임, 혼합색상, 1개",
+   "reviews": 1812
   },
   "one-night-werewolf": {
    "name": "한밤의 늑대인간",
    "q": "한밤의 늑대인간 보드게임",
    "note": "10분이면 끝나는 늑대인간 게임.",
    "kind": "game",
-   "game": "one-night-werewolf"
+   "game": "one-night-werewolf",
+   "cp": {
+    "p": "53390359",
+    "i": "12410447361",
+    "v": "90830817028"
+   },
+   "img": "image/vendor_inventory/ab3e/6bd9694b6de756e9d3edc67fe2fa02e4413bd8225cc8ce5f6f7d7128bee3.jpg",
+   "cpName": "한밤의 늑대인간, 1개",
+   "reviews": 243
   },
   "skull-king": {
    "name": "스컬킹",
    "q": "스컬킹 보드게임",
    "note": "이길 횟수를 맞히는 해적 카드 게임.",
    "kind": "game",
-   "game": "skull-king"
+   "game": "skull-king",
+   "cp": {
+    "p": "8339499562",
+    "i": "25529746711",
+    "v": "92985459670"
+   },
+   "img": "image/vendor_inventory/6fbc/ba93d8d5014216ecea8f12d0b7e6ca1fb63ef8588f8f64534e1978eefaaa.jpg",
+   "cpName": "[팝콘게임즈] 스컬킹 본판 / 정식 한글판 정품 파티 눈치 카드보드게임, 1개",
+   "reviews": 123
   },
   "las-vegas": {
    "name": "라스베가스",
    "q": "라스베가스 보드게임",
    "note": "주사위로 카지노 돈을 차지해요.",
    "kind": "game",
-   "game": "las-vegas"
+   "game": "las-vegas",
+   "cp": {
+    "p": "7246268496",
+    "i": "18422370687",
+    "v": "85564254346"
+   },
+   "img": "image/retail/images/113578282937233-46bd9598-06e2-4f57-abb6-68ba89fdca5e.jpg",
+   "cpName": "라스베가스, 802364, 1개",
+   "reviews": 920
   },
   "incan-gold": {
    "name": "잉카의 황금",
    "q": "잉카의 황금 보드게임",
    "note": "갈까 말까 눈치 싸움 탐험 게임.",
    "kind": "game",
-   "game": "incan-gold"
+   "game": "incan-gold",
+   "cp": {
+    "p": "87928173",
+    "i": "275589691",
+    "v": "70653344136"
+   },
+   "img": "image/vendor_inventory/cd56/b5a440b60d303f98255f4981b273f83d5952f3022c8f8516bc1ef6929605.jpg",
+   "cpName": "잉카의 황금, 1개",
+   "reviews": 15
   },
   "splendor": {
    "name": "스플렌더",
    "q": "스플렌더 보드게임",
    "note": "보석을 모아 카드를 사는 기본판.",
    "kind": "game",
-   "game": "splendor"
+   "game": "splendor",
+   "cp": {
+    "p": "9452566284",
+    "i": "28121816433",
+    "v": "96283563548"
+   },
+   "img": "image/vendor_inventory/4df9/61b678e66151af5c83f616a061b9d9235592f968d789af419168ba84f4d7.jpg",
+   "cpName": "스플렌더 보드게임, 1개",
+   "reviews": 8519
   },
   "splendor-cities": {
    "name": "스플렌더 확장 도시",
    "q": "스플렌더 도시 확장",
    "note": "익숙해진 뒤 새 목표를 더해요.",
    "kind": "expansion",
-   "game": "splendor"
+   "game": "splendor",
+   "cp": {
+    "p": "45010441",
+    "i": "161040125",
+    "v": "90230156160"
+   },
+   "img": "image/vendor_inventory/c896/d52f568f7cf52e7bf8af8bdd335ff92d82979b7954d1059544b81f17dfe3.jpg",
+   "cpName": "스플렌더 확장 찬란한 도시 경영게임, 혼합 색상, 1개",
+   "reviews": 813
   },
   "catan": {
    "name": "카탄",
    "q": "카탄 보드게임",
    "note": "자원을 모아 마을을 짓는 기본판.",
    "kind": "game",
-   "game": "catan"
+   "game": "catan",
+   "cp": {
+    "p": "6713264452",
+    "i": "15592791441",
+    "v": "82811657938"
+   },
+   "img": "image/retail/images/437871644852040-75d3ea52-b185-43d8-a61d-e0b3ff013200.jpg",
+   "cpName": "코리아보드게임즈 카탄 보드게임, 혼합색상, 1개",
+   "reviews": 2056
   },
   "catan-56": {
    "name": "카탄 5-6인 확장",
    "q": "카탄 5-6인 확장",
    "note": "5~6명이 함께 하려면 필요해요.",
    "kind": "expansion",
-   "game": "catan"
+   "game": "catan",
+   "cp": {
+    "p": "8703599682",
+    "i": "27607291882",
+    "v": "94570501924"
+   },
+   "img": "image/vendor_inventory/5af6/17d155a562510c49badb988ada53e6341cbd41fc33b59f64b0834a97b7d5.jpg",
+   "cpName": "CATAN 카탄 5-6인 확장팩 보드게임, 1개",
+   "reviews": 3
   },
   "ticket-to-ride": {
    "name": "티켓 투 라이드",
    "q": "티켓투라이드 보드게임",
    "note": "기차 노선을 잇는 게임. 유럽판도 있어요.",
    "kind": "game",
-   "game": "ticket-to-ride"
+   "game": "ticket-to-ride",
+   "cp": {
+    "p": "6172322635",
+    "i": "12056833637",
+    "v": "79328973523"
+   },
+   "img": "image/retail/images/2021/11/10/9/8/e4c17e1a-b03d-4ded-8c43-0ca81069025d.jpg",
+   "cpName": "데이즈오브원더 티켓 투 라이드 보드게임, 혼합 색상, 1개",
+   "reviews": 230
   },
   "carcassonne": {
    "name": "카르카손",
    "q": "카르카손 보드게임",
    "note": "타일로 땅을 넓혀 가는 기본판.",
    "kind": "game",
-   "game": "carcassonne"
+   "game": "carcassonne",
+   "cp": {
+    "p": "22008082",
+    "i": "16766890602",
+    "v": "83948168439"
+   },
+   "img": "image/vendor_inventory/55f4/1315d88c815f01506896df375af5955f618b0cf2599c5bb6c306c5f53bd3.jpg",
+   "cpName": "코리아보드게임즈 카르카손 보드게임, 1개, 혼합색상",
+   "reviews": 687
   },
   "azul": {
    "name": "아줄",
    "q": "아줄 보드게임",
    "note": "타일로 벽을 꾸미는 기본판.",
    "kind": "game",
-   "game": "azul"
+   "game": "azul",
+   "cp": {
+    "p": "192176322",
+    "i": "549805296",
+    "v": "4442692188"
+   },
+   "img": "image/retail/images/1666749595003263-51fd7317-7475-4d5f-8919-84ae4ac2e608.jpg",
+   "cpName": "코리아보드게임즈 아줄, 혼합색상, 1개",
+   "reviews": 134
   },
   "quoridor": {
    "name": "쿼리도",
    "q": "쿼리도 보드게임",
    "note": "벽을 세워 길을 막는 2~4인 게임.",
    "kind": "game",
-   "game": "quoridor"
+   "game": "quoridor",
+   "cp": {
+    "p": "2170426646",
+    "i": "3692118689",
+    "v": "71416790362"
+   },
+   "img": "image/retail/images/167029687958440-34a19526-9693-4340-9934-8747de39ecfd.jpg",
+   "cpName": "기가믹 코리아보드게임즈 쿼리도 추상전략게임, 혼합색상, 1개",
+   "reviews": 1438
   },
   "patchwork": {
    "name": "패치워크",
    "q": "패치워크 보드게임",
    "note": "천 조각으로 이불을 만드는 2인 게임.",
    "kind": "game",
-   "game": "patchwork"
+   "game": "patchwork",
+   "cp": {
+    "p": "6616848390",
+    "i": "15027820756",
+    "v": "82250461220"
+   },
+   "img": "image/retail/images/3868749309844386-72706582-5050-4539-9310-073d802a22a7.jpg",
+   "cpName": "룩아웃게임즈 패치워크 보드게임, 브라운, 1개",
+   "reviews": 131
   },
   "hanabi": {
    "name": "하나비",
    "q": "하나비 보드게임",
    "note": "힌트로 불꽃을 쌓는 협력 카드 게임.",
    "kind": "game",
-   "game": "hanabi"
+   "game": "hanabi",
+   "cp": {
+    "p": "6209444904",
+    "i": "25132608730",
+    "v": "95647807538"
+   },
+   "img": "image/retail/images/2026/06/22/10/2/0e615b78-b953-43dc-9f51-d617e8433643.jpg",
+   "cpName": "행복한바오밥 하나비 거대한 불꽃 협력 보드게임, 1개",
+   "reviews": 46
   },
   "othello": {
    "name": "오셀로",
    "q": "오셀로 보드게임",
    "note": "흑백 돌을 뒤집는 기본판.",
    "kind": "game",
-   "game": "othello"
+   "game": "othello",
+   "cp": {
+    "p": "7185292145",
+    "i": "24251381701",
+    "v": "91268294353"
+   },
+   "img": "image/retail/images/2024/10/10/14/7/0b500b02-a429-418e-b68d-175669c92497.jpg",
+   "cpName": "UB 오델로 리버시 보드게임, 혼합색상, 1개",
+   "reviews": 254
   },
   "chess": {
    "name": "체스 세트",
    "q": "체스 세트",
    "note": "접이식 판에 기물을 담는 세트가 편해요.",
    "kind": "game",
-   "game": "chess"
+   "game": "chess",
+   "cp": {
+    "p": "173504289",
+    "i": "495517458",
+    "v": "4258914583"
+   },
+   "img": "image/vendor_inventory/a0a9/93019f8c1f3dd46a4428f831043f511f1eab6cf74577716e480b5a65ae81.jpg",
+   "cpName": "해피타운 휴대용 자석체스 대형, 혼합색상, 1개",
+   "reviews": 5328
   },
   "tichu": {
    "name": "티츄",
    "q": "티츄 보드게임",
    "note": "넷이 둘씩 편을 먹는 카드 게임.",
    "kind": "game",
-   "game": "tichu"
+   "game": "tichu",
+   "cp": {
+    "p": "6172322645",
+    "i": "12056833677",
+    "v": "79328973597"
+   },
+   "img": "image/retail/images/2021/11/10/9/5/27f64c66-e5a1-4447-9abe-b064d9708745.jpg",
+   "cpName": "코리아보드게임즈 티츄 블랙, 혼합색상, 1개",
+   "reviews": 378
   },
   "lexio": {
    "name": "렉시오",
    "q": "렉시오 보드게임",
    "note": "타일로 하는 족보 게임.",
    "kind": "game",
-   "game": "lexio"
+   "game": "lexio",
+   "cp": {
+    "p": "6714082145",
+    "i": "15596727682",
+    "v": "74052636431"
+   },
+   "img": "image/vendor_inventory/e8ee/5540e823ac2af3cb95f558b9a7ce3c945f02feb2ae4a8fb7111a3ad01898.jpg",
+   "cpName": "다고이게임즈 렉시오 보드게임, 블랙",
+   "reviews": 281
   },
   "pandemic": {
    "name": "팬데믹",
    "q": "팬데믹 보드게임",
    "note": "모두 한 편이 되는 협력 게임 기본판.",
    "kind": "game",
-   "game": "pandemic"
+   "game": "pandemic",
+   "cp": {
+    "p": "2129291",
+    "i": "9650289",
+    "v": "3013990782"
+   },
+   "img": "image/product/image/vendoritem/2019/04/10/3013990782/856815b0-7fde-4594-97ae-342181ee90c4.jpg",
+   "cpName": "제트맨게임즈 팬데믹 보드게임 8~12세, 혼합색상, 1개",
+   "reviews": 241
   },
   "yutnori": {
    "name": "윷놀이 세트",
    "q": "윷놀이 세트",
    "note": "윷, 윷판, 말이 함께 든 세트.",
    "kind": "game",
-   "game": "yutnori"
+   "game": "yutnori",
+   "cp": {
+    "p": "6713521944",
+    "i": "15594084913",
+    "v": "96306250981"
+   },
+   "img": "image/vendor_inventory/ed1a/4bd62767e743641f941eae52513aec628cd772b434db7a020b5091feb5b6.jpg",
+   "cpName": "세종사 박달나무 민속윷놀이세트, 혼합색상, 1세트",
+   "reviews": 1460
   },
   "yut-big": {
    "name": "대형 윷",
    "q": "대형 윷",
    "note": "명절에 마당에서 던지는 큰 윷.",
    "kind": "edition",
-   "game": "yutnori"
+   "game": "yutnori",
+   "cp": {
+    "p": "4737688639",
+    "i": "6015760295",
+    "v": "73313450849"
+   },
+   "img": "image/retail/images/70984885332200-3614ea71-ab2d-4a97-bd6c-693da0ff4553.jpg",
+   "cpName": "everywheel 자이언트 중형 윷놀이 세트 39cm, 혼합색상, 1개",
+   "reviews": 784
   },
   "janggi": {
    "name": "장기 세트",
    "q": "장기판 장기알 세트",
    "note": "접이식 판과 장기알 세트.",
    "kind": "game",
-   "game": "janggi"
+   "game": "janggi",
+   "cp": {
+    "p": "392203",
+    "i": "1010732",
+    "v": "3000925192"
+   },
+   "img": "image/product/image/vendoritem/2015/07/31/3000925192/4f601707-b7e7-4ba5-b866-3f6dac11020b.jpg",
+   "cpName": "골든게임 장기알 + 장기판, 혼합색상, 1개",
+   "reviews": 419
   },
   "baduk": {
    "name": "바둑 세트",
    "q": "바둑판 바둑알 세트",
    "note": "입문용은 9줄, 13줄 판도 있어요.",
    "kind": "game",
-   "game": "baduk"
+   "game": "baduk",
+   "cp": {
+    "p": "90351543",
+    "i": "281905274",
+    "v": "71902208230"
+   },
+   "img": "image/retail/images/46915453876337-56c9a819-4cb5-4b29-ae3d-90a24ca46866.jpg",
+   "cpName": "벧엘 2cm 대나무 바둑판 + 명석 컬러 바둑알 + 장기알, 혼합색상, 1개",
+   "reviews": 1382
   },
   "omok": {
    "name": "오목판 바둑알 세트",
    "q": "오목 바둑알 세트",
    "note": "바둑판과 돌만 있으면 돼요.",
    "kind": "game",
-   "game": "omok"
+   "game": "omok",
+   "cp": {
+    "p": "7623565669",
+    "i": "20217279386",
+    "v": "92193775402"
+   },
+   "img": "image/vendor_inventory/047b/7b11352be6fa0abd1746c0919505886b275aa4e1f2e458767ea8f4bf9872.png",
+   "cpName": "하이투데이 휴대용 접이식 자석 오목 바둑판 세트 M, 1세트",
+   "reviews": 1971
   },
   "gonu": {
    "name": "고누 놀이판",
