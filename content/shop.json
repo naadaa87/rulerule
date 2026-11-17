@@ -936,63 +936,135 @@
    "q": "고누 놀이판",
    "note": "우물고누, 참고누 같은 판이 그려진 세트.",
    "kind": "game",
-   "game": "umul-gonu"
+   "game": "umul-gonu",
+   "cp": {
+    "p": "5504360348",
+    "i": "321903636",
+    "v": "3788301806"
+   },
+   "img": "image/vendor_inventory/images/2018/07/03/15/4/bfd045ad-862b-4c49-934f-186715169865.jpg",
+   "cpName": "창의개발연구소 고누놀이, 1개",
+   "reviews": 13
   },
   "gonggi": {
    "name": "공깃돌",
    "q": "공깃돌",
    "note": "플라스틱 공깃돌 다섯 알 묶음.",
    "kind": "game",
-   "game": "gonggi"
+   "game": "gonggi",
+   "cp": {
+    "p": "8730085662",
+    "i": "25365976094",
+    "v": "92360210751"
+   },
+   "img": "image/retail/images/2025/04/22/9/0/c9d8e576-5cc3-4c9f-bef9-aef80a0c62c3.jpg",
+   "cpName": "단비나인 데이지 공기놀이 60p 세트, 혼합색상, 1세트",
+   "reviews": 1240
   },
   "chilgyo": {
    "name": "칠교놀이 세트",
    "q": "칠교놀이",
    "note": "나무 조각과 도안 카드 세트.",
    "kind": "game",
-   "game": "chilgyo"
+   "game": "chilgyo",
+   "cp": {
+    "p": "7655739456",
+    "i": "20381974064",
+    "v": "3196247662"
+   },
+   "img": "image/vendor_inventory/ec4d/02172a744909089ee5139325afd153891972db9e3a29e79f80a5fdad3701.jpg",
+   "cpName": "자석나라 양면자석 칠교놀이 마당, 혼합 색상, 1인용, 1개",
+   "reviews": 2968
   },
   "tuho": {
    "name": "투호 세트",
    "q": "투호놀이 세트",
    "note": "항아리와 화살이 든 세트.",
    "kind": "game",
-   "game": "tuho"
+   "game": "tuho",
+   "cp": {
+    "p": "4649611413",
+    "i": "5794898085",
+    "v": "73093394064"
+   },
+   "img": "image/retail/images/3553270635265406-07eb9116-aca9-4f51-95d9-b37f08311ad1.jpg",
+   "cpName": "everywheel 자이언트 투호놀이 세트, 혼합색상, 1세트",
+   "reviews": 185
   },
   "jegi": {
    "name": "제기",
    "q": "제기차기 제기",
    "note": "여러 개 묶음으로 사 두면 편해요.",
    "kind": "game",
-   "game": "jegichagi"
+   "game": "jegichagi",
+   "cp": {
+    "p": "8173662203",
+    "i": "23354121420",
+    "v": "90384828773"
+   },
+   "img": "image/vendor_inventory/8b6f/19260e8599e2b69b3983fdd09a05a441b1047b7245a84e23ef6652e18bd1.jpg",
+   "cpName": "민속놀이 제기차기, 5개",
+   "reviews": 850
   },
   "ttakji": {
    "name": "딱지",
    "q": "딱지치기 딱지",
    "note": "접어 둔 딱지나 딱지 접기 종이.",
    "kind": "game",
-   "game": "ttakji"
+   "game": "ttakji",
+   "cp": {
+    "p": "7718352529",
+    "i": "20707504481",
+    "v": "87778646487"
+   },
+   "img": "image/vendor_inventory/6f87/60fa504790a9a6dc681c78c733e871b9f90344e2c2d6371245dde491f314.jpg",
+   "cpName": "전통놀이 딱지 4개입 4인용 X 6세트, 오징어딱지 6세트, 24개",
+   "reviews": 107
   },
   "chalk": {
    "name": "바닥 분필",
    "q": "바닥 분필",
    "note": "놀이판을 그릴 굵은 분필.",
    "kind": "goods",
-   "game": "sabangchigi"
+   "game": "sabangchigi",
+   "cp": {
+    "p": "8357608857",
+    "i": "24150478147",
+    "v": "91169209626"
+   },
+   "img": "image/retail/images/2024/09/24/9/6/563a83b0-ed08-4061-b692-6f56d7f98cef.jpg",
+   "cpName": "크레욜라 워셔블 수성 분필 야외용 536214, 24색, 24개",
+   "reviews": 1917
   },
   "biseok": {
    "name": "비석치기 세트",
    "q": "비석치기 세트",
    "note": "잘 서는 비석과 놀이 안내가 든 세트.",
    "kind": "game",
-   "game": "biseokchigi"
+   "game": "biseokchigi",
+   "cp": {
+    "p": "2034530973",
+    "i": "3459685328",
+    "v": "84605503741"
+   },
+   "img": "image/vendor_inventory/9957/354dd8cb595cc0b00a0db68e16cc37ca5ed546ee37ef9d3b3ca65bc4016d.jpg",
+   "cpName": "민속 놀이 비석치기, 10개",
+   "reviews": 343
   },
   "paengi": {
    "name": "전통 팽이와 팽이채",
    "q": "전통 팽이 팽이채",
    "note": "채로 치는 나무 팽이 세트.",
    "kind": "game",
-   "game": "paengichigi"
+   "game": "paengichigi",
+   "cp": {
+    "p": "6264849301",
+    "i": "12777373373",
+    "v": "96090755113"
+   },
+   "img": "image/vendor_inventory/1d90/d2e0308a7e0daf1eaa440824e090337ae05a5eb394698217120f865f9eea.jpg",
+   "cpName": "민속팽이세트 팽이 1입 채 1입, 2개",
+   "reviews": 106
   },
   "sleeves": {
    "name": "카드 슬리브",

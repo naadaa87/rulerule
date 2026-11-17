@@ -1460,3 +1460,13 @@ button.poll-opt:hover { border-color: var(--navy); }
 .shelf-imgs { display: flex; align-items: center; gap: 6px; margin-top: 12px; }
 .shelf-imgs .pimg { width: 56px; height: 56px; border-radius: 12px; border: 1px solid var(--line); }
 @media (max-width: 599px) { .shelf-imgs .pimg:nth-child(n+3) { display: none; } }
+.buy-item.has-img .btn { grid-column: 1 / -1; }
+@media (min-width: 560px) {
+  .buy-item.has-img { grid-template-columns: 76px minmax(0, 1fr) auto; }
+  .buy-item.has-img .btn { grid-column: auto; }
+}
+.buy-item { background: var(--cream); }
+.btn-sm { border-radius: 999px; box-shadow: none; }
+.shop-row { display: flex; gap: 10px; align-items: center; }
+.shop-row img { width: 48px; height: 48px; border-radius: 8px; border: 1px solid var(--line); object-fit: contain; background: #fff; flex: none; }
+.badge-warn { background: var(--coral-tint); color: var(--coral-dark); }

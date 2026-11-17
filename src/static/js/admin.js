@@ -243,18 +243,19 @@
       j.links.forEach(function (l) { link[l.id] = l.url; });
       j.clicks.forEach(function (c) { clicks[c.id] = c.n; });
       var ids = Object.keys(shopItems).sort(function (a, b) { return (clicks[b] || 0) - (clicks[a] || 0) || (link[a] ? 1 : 0) - (link[b] ? 1 : 0); });
-      var done = ids.filter(function (id) { return link[id]; }).length;
+      var done = ids.filter(function (id) { return link[id] || shopItems[id].p; }).length;
       var total = ids.reduce(function (n, id) { return n + (clicks[id] || 0); }, 0);
       p.innerHTML = '<div class="stat-grid"><div class="stat"><b>' + done + ' / ' + ids.length + '</b><span>파트너스 링크 넣음</span></div><div class="stat"><b>' + total + '</b><span>최근 30일 구매 버튼</span></div></div>' +
-        '<div class="notice"><b>파트너스 링크 넣는 순서</b><ol><li>‘쿠팡에서 찾기’를 눌러 알맞은 상품 페이지를 열고 주소를 복사해요.</li><li>쿠팡 파트너스 → 링크 생성 → 간편 링크 만들기에 그 주소를 붙여 넣고 단축 링크(https://link.coupang.com/a/...)를 만들어요.</li><li>아래 칸에 붙여 넣고 ‘저장’을 누르면 바로 사이트의 구매 버튼에 쓰여요.</li></ol>링크를 넣지 않은 상품은 쿠팡 검색 결과로 가요. 이때는 수수료가 생기지 않으니, 많이 눌린 상품(위쪽)부터 채워 주세요.</div>' +
+        '<div class="notice"><b>파트너스 링크 넣는 순서</b><ol><li>‘쿠팡에서 찾기’를 눌러 알맞은 상품 페이지를 열고 주소를 복사해요.</li><li>쿠팡 파트너스 → 링크 생성 → 간편 링크 만들기에 그 주소를 붙여 넣고 단축 링크(https://link.coupang.com/a/...)를 만들어요.</li><li>아래 칸에 붙여 넣고 ‘저장’을 누르면 바로 사이트의 구매 버튼에 쓰여요.</li></ol>파트너스 링크가 없는 상품은 고른 쿠팡 상품 페이지(없으면 검색 결과)로 가요. 이때는 수수료가 생기지 않으니, ‘수수료 없음’ 표시가 붙은 상품을 많이 눌린 순서(위쪽)부터 채워 주세요. 원고(content/shop.json)의 url 칸에 넣은 링크도 그대로 쓰여요.</div>' +
         (j.api ? '<div class="row-btns"><button type="button" class="btn btn-main" data-auto>쿠팡 API로 빈 링크 자동 만들기</button></div>' : '<p class="muted small">쿠팡 파트너스 API 승인을 받은 뒤 Cloudflare에 COUPANG_ACCESS_KEY, COUPANG_SECRET_KEY를 넣으면 빈 링크를 한 번에 만들 수 있어요.</p>') +
         (j.sources.length ? '<h2 class="h3">어디서 많이 눌렀나요 (최근 30일)</h2><p class="small">' + j.sources.map(function (s) { return esc(s.src || '바로 들어옴') + ' ' + s.n; }).join(' · ') + '</p>' : '') +
         '<div class="tbl-wrap"><table class="tbl shop-tbl"><thead><tr><th>상품</th><th>30일 클릭</th><th>파트너스 링크</th></tr></thead><tbody>' +
         ids.map(function (id) {
           var it = shopItems[id];
           var search = 'https://www.coupang.com/np/search?q=' + encodeURIComponent(it.q);
-          return '<tr data-id="' + id + '"><td><b>' + esc(it.n) + '</b><br><a class="small" href="' + search + '" target="_blank" rel="noopener">쿠팡에서 찾기</a> · <span class="small muted">' + id + '</span></td><td>' + (clicks[id] || 0) + '</td>' +
-            '<td><div class="shop-in"><input data-url value="' + esc(link[id] || '') + '" placeholder="https://link.coupang.com/a/..." inputmode="url"><button type="button" class="btn btn-sub btn-sm" data-save>저장</button></div></td></tr>';
+          var state = link[id] ? '<span class="badge">관리 화면 링크</span>' : it.p ? '<span class="badge">원고 링크</span>' : '<span class="badge badge-warn">수수료 없음</span>';
+          return '<tr data-id="' + id + '"><td><div class="shop-row">' + (it.img ? '<img src="' + esc(it.img) + '" width="48" height="48" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') + '<div><b>' + esc(it.n) + '</b> ' + state + '<br>' + (it.cu ? '<a class="small" href="' + esc(it.cu) + '" target="_blank" rel="noopener">고른 상품 열기</a> · ' : '') + '<a class="small" href="' + search + '" target="_blank" rel="noopener">쿠팡에서 찾기</a> · <span class="small muted">' + id + '</span></div></div></td><td>' + (clicks[id] || 0) + '</td>' +
+            '<td><div class="shop-in"><input data-url value="' + esc(link[id] || '') + '" placeholder="' + esc(it.p || 'https://link.coupang.com/a/...') + '" inputmode="url"><button type="button" class="btn btn-sub btn-sm" data-save>저장</button></div></td></tr>';
         }).join('') + '</tbody></table></div>';
     });
   }
