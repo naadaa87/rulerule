@@ -74,7 +74,8 @@ export async function adminShop(request, env, parts) {
     const shop = await assetJSON(env, request, '/data/shop.json');
     const { results } = await db.prepare('SELECT id FROM shop_links').all();
     const have = new Set(results.map((r) => r.id));
-    const todo = Object.entries(shop.items).filter(([id]) => !have.has(id)).slice(0, 40);
+    // 원고(shop.json)에 이미 파트너스 링크(p)가 있는 상품은 건너뛰어요
+    const todo = Object.entries(shop.items).filter(([id, it]) => !have.has(id) && !it.p).slice(0, 40);
     let made = 0;
     try {
       for (let i = 0; i < todo.length; i += 10) {
@@ -91,7 +92,8 @@ export async function adminShop(request, env, parts) {
     } catch (e) {
       return fail(`링크를 ${made}개 만든 뒤 멈췄어요: ${e.message}`, 502);
     }
-    return json({ ok: true, made, left: Math.max(0, Object.keys(shop.items).length - have.size - made) });
+    const need = Object.entries(shop.items).filter(([id, it]) => !have.has(id) && !it.p).length;
+    return json({ ok: true, made, left: Math.max(0, need - made) });
   }
   return fail('없는 주소예요.', 404);
 }

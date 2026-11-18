@@ -1238,6 +1238,11 @@ ${SHOP.shelves.map((sh) => `<section class="shelf" id="${sh.slug}" aria-labelled
 <p class="muted">${esc(sh.lead)}</p>
 <ul class="pcards">${sh.items.map((id) => productCard(id, `shop-${sh.slug}`)).join('\n')}</ul>
 </section>`).join('\n')}
+${SHOP.items['coupang-boardgames'] ? `<div class="shop-more">
+<div><h2 class="h3">찾는 게임이 여기 없나요?</h2>
+<p class="muted">쿠팡의 보드게임 검색 결과에서 다른 게임과 확장판도 둘러볼 수 있어요.</p></div>
+${buyLink('coupang-boardgames', 'shop-more', '쿠팡에서 보드게임 더 보기', 'btn btn-buy')}
+</div>` : ''}
 <div class="tip-box">
 <h2 class="h2">사기 전에 알아 두세요</h2>
 <ul class="list">
