@@ -646,7 +646,9 @@ mark { background: #ffe1a8; color: inherit; border-radius: 3px; padding: 0 1px; 
 .shop-more { margin-top: 40px; padding: 22px; border-radius: var(--r-l); background: var(--cream); display: grid; gap: 14px; align-items: center; }
 .shop-more .h3 { margin: 0 0 4px; }
 .shop-more .muted { margin: 0; }
-@media (min-width: 720px) { .shop-more { grid-template-columns: 1fr auto; padding: 24px 28px; } }
+.cp-search { min-height: 75px; border-radius: var(--r); overflow: hidden; background: #fff; }
+.cp-search iframe { display: block; }
+@media (min-width: 720px) { .shop-more { grid-template-columns: 1fr auto; padding: 24px 28px; } .cp-search { grid-column: 1 / -1; } }
 .tip-box { margin-top: 48px; padding: 22px; border-radius: var(--r-l); border: 1.5px solid var(--line-2); }
 .tip-box .h2 { margin-top: 0; }
 .learn, .about { padding-bottom: 72px; }

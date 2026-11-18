@@ -106,6 +106,7 @@ for (const [slug, ids] of Object.entries(SHOP.games)) {
   for (const id of ids) if (!SHOP.items[id]) problems.push(`shop.json: ${slug}의 상품 ${id}가 items에 없어요`);
 }
 for (const sh of SHOP.shelves) for (const id of sh.items) if (!SHOP.items[id]) problems.push(`shop.json: 진열대 ${sh.slug}의 상품 ${id}가 items에 없어요`);
+if (SHOP.searchWidget && !/^https:\/\/coupa\.ng\/\w+$/.test(SHOP.searchWidget)) problems.push('shop.json: searchWidget은 쿠팡 파트너스 검색 위젯 주소(https://coupa.ng/...)여야 해요');
 for (const [id, it] of Object.entries(SHOP.items)) {
   if (!/^[a-z0-9-]{1,60}$/.test(id)) problems.push(`shop.json: 상품 id는 영문 소문자, 숫자, 하이픈만 써요 (${id})`);
   if (!it.name || !it.q) problems.push(`shop.json: ${id}에 name과 q(쿠팡 검색어)가 필요해요`);
@@ -1240,8 +1241,9 @@ ${SHOP.shelves.map((sh) => `<section class="shelf" id="${sh.slug}" aria-labelled
 </section>`).join('\n')}
 ${SHOP.items['coupang-boardgames'] ? `<div class="shop-more">
 <div><h2 class="h3">찾는 게임이 여기 없나요?</h2>
-<p class="muted">쿠팡의 보드게임 검색 결과에서 다른 게임과 확장판도 둘러볼 수 있어요.</p></div>
+<p class="muted">${SHOP.searchWidget ? '아래 검색창에 게임 이름을 넣어 쿠팡에서 바로 찾거나, ' : ''}쿠팡의 보드게임 검색 결과에서 다른 게임과 확장판도 둘러볼 수 있어요.</p></div>
 ${buyLink('coupang-boardgames', 'shop-more', '쿠팡에서 보드게임 더 보기', 'btn btn-buy')}
+${SHOP.searchWidget ? `<div class="cp-search"><iframe src="${esc(SHOP.searchWidget)}" width="100%" height="75" frameborder="0" scrolling="no" referrerpolicy="unsafe-url" loading="lazy" title="쿠팡 상품 검색창"></iframe></div>` : ''}
 </div>` : ''}
 <div class="tip-box">
 <h2 class="h2">사기 전에 알아 두세요</h2>
