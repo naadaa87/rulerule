@@ -372,7 +372,7 @@
         card('설정 상태', '<ul class="setup">' + setup.map(function (x) { return '<li class="' + (x[1] ? 'ok' : 'no') + '"><b>' + x[0] + '</b><span>' + x[2] + '</span></li>'; }).join('') + '</ul><p class="small muted">자세한 내용은 <a href="#/settings">설정·도움말</a>에 있어요.</p>') +
         '</div>' +
         card('바로가기', '<div class="quick">' + [
-          ['/', '룰룰 사이트'], ['https://partners.coupang.com/#affiliate/ws/report', '쿠팡 파트너스 리포트'], ['https://dash.cloudflare.com/', 'Cloudflare'],
+          ['/', '룰룰 사이트'], ['https://partners.coupang.com/#affiliate/ws/report/trend/daily', '쿠팡 파트너스 리포트'], ['https://dash.cloudflare.com/', 'Cloudflare'],
           ['https://github.com/' + repo, 'GitHub 저장소'], ['https://searchadvisor.naver.com/', '네이버 서치어드바이저'], ['https://search.google.com/search-console', '구글 서치 콘솔'],
         ].map(function (q) { return '<a class="btn btn-ghost btn-sm" href="' + q[0] + '" target="_blank" rel="noopener">' + q[1] + '</a>'; }).join('') + '</div>');
       refreshCounts();
@@ -584,7 +584,7 @@
       (s.days || []).forEach(function (d) { ours[d.day] = d.clicks; });
       var y = addDay(kstToday(), -1);
       p.innerHTML =
-        '<div class="notice small"><b>옮겨 적는 순서</b><ol><li><a href="https://partners.coupang.com/#affiliate/ws/report" target="_blank" rel="noopener">쿠팡 파트너스 → 리포트 → 실적 리포트</a>에서 날짜별 숫자를 봐요. 숫자는 다음 날 오후 4시쯤 반영돼요.</li><li>아래 칸에 날짜별로 클릭, 구매 건수, 합산 금액, 수익을 넣고 저장해요. 여러 날은 표를 복사해 ‘한꺼번에 붙여 넣기’에 넣으면 돼요.</li><li>저장하면 지표의 구매 전환율·구매액·수익에 바로 쓰여요.</li></ol>쿠팡 파트너스 최종 승인 뒤 Open API 키를 받으면, 이 입력을 자동으로 가져오도록 붙일 수 있어요.</div>' +
+        '<div class="notice small"><b>옮겨 적는 순서</b><ol><li><a href="https://partners.coupang.com/#affiliate/ws/report/trend/daily" target="_blank" rel="noopener">쿠팡 파트너스 → 리포트 → 기간별 리포트(일별 실적)</a>에서 날짜별 숫자를 봐요. 숫자는 다음 날 오후 4시쯤 반영돼요.</li><li>아래 칸에 날짜별로 클릭, 구매 건수, 합산 금액, 수익을 넣고 저장해요. 여러 날은 표를 복사해 ‘한꺼번에 붙여 넣기’에 넣으면 돼요.</li><li>저장하면 지표의 구매 전환율·구매액·수익에 바로 쓰여요.</li></ol>쿠팡 파트너스 최종 승인 뒤 Open API 키를 받으면, 이 입력을 자동으로 가져오도록 붙일 수 있어요.</div>' +
         card('하루씩 넣기', '<form class="cp-form" data-cpform>' +
           '<label class="field"><span>날짜</span><input type="date" name="day" value="' + y + '" max="' + kstToday() + '" required></label>' +
           '<label class="field"><span>쿠팡 클릭</span><input name="clicks" inputmode="numeric" placeholder="0"></label>' +
