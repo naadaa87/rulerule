@@ -1,5 +1,6 @@
 // 보드게임몰: 쿠팡 파트너스 링크 이동과 관리
 import { json, fail, readBody, nowIso, kstDay, assetJSON } from './util.js';
+import { logClick, isBot } from './kpi.js';
 
 export const searchUrl = (q) => `https://www.coupang.com/np/search?component=&q=${encodeURIComponent(q)}&channel=user`;
 const okLink = (u) => /^https:\/\/(link\.coupang\.com|coupa\.ng|www\.coupang\.com|m\.coupang\.com)\//.test(u || '');
@@ -17,7 +18,10 @@ export async function go(request, env, id) {
       const row = await env.DB.prepare('SELECT url FROM shop_links WHERE id = ?').bind(id).first();
       if (row && okLink(row.url)) target = row.url;
       const src = (new URL(request.url).searchParams.get('from') || '').replace(/[^a-z0-9-]/g, '').slice(0, 40);
-      await env.DB.prepare('INSERT INTO shop_clicks (day, id, src, n) VALUES (?, ?, ?, 1) ON CONFLICT (day, id, src) DO UPDATE SET n = n + 1').bind(kstDay(), id, src).run();
+      if (!isBot(request)) {
+        await env.DB.prepare('INSERT INTO shop_clicks (day, id, src, n) VALUES (?, ?, ?, 1) ON CONFLICT (day, id, src) DO UPDATE SET n = n + 1').bind(kstDay(), id, src).run();
+        await logClick(request, env, id, src);
+      }
     } catch (e) { /* 표가 아직 없으면 그냥 보내요 */ }
   }
   return new Response(null, { status: 302, headers: { location: target, 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow', 'referrer-policy': 'no-referrer-when-downgrade' } });

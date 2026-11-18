@@ -4,7 +4,8 @@
 // - 회원: /api/me, /api/auth/(signup|login|logout|profile|password|delete)
 // - 커뮤니티: /api/community/home, /api/posts, /api/clubs, /api/events, /api/comments, /api/flag, /api/my
 // - 참여·성장: /api/games/:slug (별점·후기·저장), /api/reviews/:id/helpful, /api/checkin, /api/growth, /api/sync, /api/users/:nick, /api/rank, /api/notes
-// - 운영 관리: /api/admin/... (x-admin-key 헤더에 ADMIN_PASSWORD)
+// - 운영 관리: POST /api/admin-login 으로 받은 토큰을 x-admin-token 헤더에 넣어 /api/admin/... 호출
+// - 방문 통계: POST /api/event (t=pv, end, search 등)
 //
 // Cloudflare 설정 (Pages 프로젝트 > 설정)
 // - D1 데이터베이스 바인딩: 변수 이름 DB (필수)
@@ -20,6 +21,8 @@ import { contact } from '../../server/contact.js';
 import { admin } from '../../server/admin.js';
 import { social } from '../../server/social.js';
 import { levelInfo } from '../../server/growth.js';
+import { collect, isBot } from '../../server/kpi.js';
+import { adminLogin, adminAuthed } from '../../server/adminauth.js';
 
 const KINDS = ['wrong', 'unclear', 'typo', 'request', 'other'];
 const EVENTS = ['view', 'table', 'qr', 'venue', 'speak', 'share'];
@@ -45,8 +48,11 @@ async function postReport(request, env) {
 }
 
 async function postEvent(request, env) {
-  const body = await readBody(request, 600);
-  if (!body || !EVENTS.includes(body.t)) return new Response(null, { status: 204 });
+  const body = await readBody(request, 1500);
+  if (!body) return new Response(null, { status: 204 });
+  // 방문 통계 (페이지 보기, 머문 시간, 검색과 기능 사용)
+  try { await collect(request, env, body); } catch (e) { /* 통계 실패는 화면에 영향 없음 */ }
+  if (!EVENTS.includes(body.t) || isBot(request)) return new Response(null, { status: 204 });
   let slug = clip(body.s, 60);
   if (slug) {
     const d = await assetJSON(env, request, '/data/games.json');
@@ -71,15 +77,17 @@ export async function onRequest(context) {
     if (route === 'health') return json({ ok: true, db: !!env.DB, admin: !!env.ADMIN_PASSWORD, coupangApi: !!(env.COUPANG_ACCESS_KEY && env.COUPANG_SECRET_KEY) });
     if (!env.DB) return fail('지금은 쓸 수 없어요. 운영자가 저장 공간(D1)을 아직 연결하지 않았어요.', 503);
     // 다른 사이트에서 몰래 보내는 요청은 받지 않아요 (운영 관리는 비밀번호 헤더로 따로 확인)
-    if (write && route !== 'admin' && route !== 'event' && !sameOrigin(request)) return fail('이 사이트에서 보낸 요청만 받아요.', 403);
+    if (write && route !== 'admin' && route !== 'admin-login' && route !== 'event' && !sameOrigin(request)) return fail('이 사이트에서 보낸 요청만 받아요.', 403);
     await ensureSchema(env.DB);
 
     if (route === 'report' && request.method === 'POST') return await postReport(request, env);
     if (route === 'event' && request.method === 'POST') return await postEvent(request, env);
     if (route === 'contact' && request.method === 'POST') return await contact(request, env);
+    if (route === 'admin-login' && request.method === 'POST') return await adminLogin(request, env);
     if (route === 'admin') {
       if (!env.ADMIN_PASSWORD) return fail('Cloudflare에 ADMIN_PASSWORD가 아직 없어요. README의 설정 순서를 확인해 주세요.', 503);
-      if (!(await sameSecret(request.headers.get('x-admin-key'), env.ADMIN_PASSWORD))) return fail('비밀번호가 맞지 않아요.', 401);
+      const who = await adminAuthed(request, env);
+      if (!who) return fail('다시 로그인해 주세요.', 401);
       return await admin(request, env, parts.slice(1));
     }
     const me = await currentUser(request, env);

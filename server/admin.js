@@ -1,8 +1,9 @@
-// 운영 관리 (x-admin-key 헤더에 ADMIN_PASSWORD)
+// 운영 관리 (로그인 확인은 server/adminauth.js)
 import { json, fail, readBody, kstDay, oneLine, clip, nowIso, systemUserId } from './util.js';
 import { adminShop } from './shop.js';
 import { deleteClub, deleteEvent, deletePost, deleteUser, hashPassword } from './auth.js';
 import { removeComment, removeReview } from './community.js';
+import { kpi, coupangResults } from './kpi.js';
 
 const TABLE = { post: 'posts', event: 'events', club: 'clubs', comment: 'comments', review: 'reviews' };
 
@@ -74,6 +75,27 @@ export async function admin(request, env, parts) {
 
   // 보드게임몰 링크
   if (section === 'shop') return adminShop(request, env, parts.slice(1));
+
+  // 지표(KPI)와 쿠팡 파트너스 실적
+  if (section === 'kpi' && m === 'GET') return kpi(request, env, parts.slice(1));
+  if (section === 'cp') return coupangResults(request, env, parts.slice(1));
+
+  // 설정 상태
+  if (section === 'system' && m === 'GET') {
+    const [pv, clk, ev, users, games] = await db.batch([
+      db.prepare('SELECT COUNT(*) AS n, MIN(day) AS first FROM pv'),
+      db.prepare('SELECT COUNT(*) AS n FROM clk'),
+      db.prepare('SELECT COUNT(*) AS n FROM ev'),
+      db.prepare("SELECT COUNT(*) AS n FROM users WHERE status = 'ok'"),
+      db.prepare('SELECT COUNT(*) AS n FROM reviews'),
+    ]);
+    return json({
+      ok: true,
+      db: true, admin: true, coupangApi: !!(env.COUPANG_ACCESS_KEY && env.COUPANG_SECRET_KEY), webhook: !!env.INQUIRY_WEBHOOK_URL, pepper: !!env.AUTH_PEPPER,
+      rows: { pv: pv.results[0].n, clk: clk.results[0].n, ev: ev.results[0].n, users: users.results[0].n, reviews: games.results[0].n },
+      firstDay: pv.results[0].first || '',
+    });
+  }
 
   // 커뮤니티 관리
   if (section === 'community') {

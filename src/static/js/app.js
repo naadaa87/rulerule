@@ -52,15 +52,114 @@
   var params = new URLSearchParams(location.search);
   if (params.get('v')) { try { sessionStorage.setItem('rs-venue', params.get('v').slice(0, 40)); } catch (e) { /* 무시 */ } }
   function venue() { try { return sessionStorage.getItem('rs-venue') || ''; } catch (e) { return ''; } }
-  function track(type, slug) {
+  // ---------- 방문 통계 ----------
+  // 이름·IP 없이 이 브라우저에만 저장하는 무작위 번호로 셉니다. 개인정보처리방침 1번 참고.
+  // 'rs-notrack'을 켜 두면(개인정보처리방침 페이지의 버튼, 운영자 기기) 아무것도 보내지 않아요.
+  var stat = (function () {
+    var off = false;
+    try { off = localStorage.getItem('rs-notrack') === '1'; } catch (e) { off = false; }
+    if (off || /^\/admin\//.test(location.pathname)) return null;
+    var rnd = function () { return (Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-5)).replace(/[^a-z0-9]/g, ''); };
+    var day = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+    var v = store.get('rs-vid', null);
+    if (!v || !/^[a-z0-9]{6,24}$/.test(v.id || '')) { v = { id: rnd(), d: day }; store.set('rs-vid', v); }
+    var s = store.get('rs-ses', null), now = Date.now(), entry = false;
+    if (!s || !/^[a-z0-9]{6,24}$/.test(s.id || '') || now - (s.t || 0) > 30 * 60e3) { s = { id: rnd(), t: now }; entry = true; }
+    s.t = now; store.set('rs-ses', s);
+    return { vid: v.id, sid: s.id, nv: v.d === day ? 1 : 0, entry: entry, pv: rnd() };
+  })();
+  function send(obj) {
     try {
-      var body = JSON.stringify({ t: type, s: slug || '', v: venue() });
-      if (navigator.sendBeacon) navigator.sendBeacon('/api/event', new Blob([body], { type: 'text/plain' }));
-      else fetch('/api/event', { method: 'POST', body: body, keepalive: true });
+      var body = JSON.stringify(obj);
+      if (navigator.sendBeacon && navigator.sendBeacon('/api/event', new Blob([body], { type: 'text/plain' }))) return;
+      fetch('/api/event', { method: 'POST', body: body, keepalive: true }).catch(function () { /* 무시 */ });
     } catch (e) { /* 기록 실패는 화면에 영향 없음 */ }
+  }
+  function track(type, slug, extra) {
+    var o = { t: type, s: slug || '', v: venue() };
+    if (stat) { o.vid = stat.vid; o.sid = stat.sid; }
+    if (!stat) return;
+    if (extra) for (var k in extra) o[k] = extra[k];
+    send(o);
+  }
+  if (stat) {
+    (function () {
+      var ua = navigator.userAgent || '', w = window.innerWidth || screen.width || 0;
+      var dev = /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobi/i.test(ua)) ? 't' : (/Mobi|iPhone|Android/i.test(ua) || w < 600 ? 'm' : 'd');
+      var ref = '', kw = '';
+      try {
+        if (document.referrer) {
+          var r = new URL(document.referrer);
+          if (r.host !== location.host) {
+            ref = r.hostname;
+            kw = (r.searchParams.get('query') || r.searchParams.get('q') || r.searchParams.get('wd') || r.searchParams.get('p') || '').slice(0, 60);
+          }
+        }
+      } catch (e) { /* 무시 */ }
+      var utm = params.get('utm_source') ? [params.get('utm_source'), params.get('utm_medium') || '', params.get('utm_campaign') || ''].join('/').slice(0, 120) : '';
+      send({ t: 'pv', id: stat.pv, vid: stat.vid, sid: stat.sid, nv: stat.nv, en: stat.entry ? 1 : 0, p: location.pathname, r: stat.entry ? ref : '', q: stat.entry ? kw : '', u: stat.entry ? utm : '', qr: params.get('src') === 'qr' ? 1 : 0, d: dev });
+      // 머문 시간(화면을 보고 있던 시간)과 스크롤 정도
+      var active = 0, since = document.visibilityState === 'visible' ? Date.now() : 0, depth = 0, last = 0;
+      var measure = function () {
+        var h = Math.max(document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0);
+        var seen = (window.scrollY || window.pageYOffset || 0) + window.innerHeight;
+        var d = h > 0 ? Math.min(100, Math.round(seen / h * 100)) : 100;
+        if (d > depth) depth = d;
+      };
+      var flush = function () {
+        if (since) { active += Date.now() - since; since = 0; }
+        var sec = Math.round(active / 1000);
+        if (sec === last && sec > 0) return;
+        last = sec;
+        var end = { t: 'end', id: stat.pv, vid: stat.vid, dur: sec, dep: depth };
+        // 떠날 때 보내는 기록이 끊길 수 있어, 다음 페이지에서 한 번 더 보내요 (서버는 큰 값만 남겨요)
+        try { sessionStorage.setItem('rs-last-end', JSON.stringify(end)); } catch (e) { /* 무시 */ }
+        send(end);
+      };
+      try {
+        var prevEnd = JSON.parse(sessionStorage.getItem('rs-last-end') || 'null');
+        sessionStorage.removeItem('rs-last-end');
+        if (prevEnd && prevEnd.id && prevEnd.id !== stat.pv) send(prevEnd);
+      } catch (e) { /* 무시 */ }
+      window.addEventListener('scroll', function () { measure(); }, { passive: true });
+      setTimeout(measure, 1500);
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') flush();
+        else { since = Date.now(); store.set('rs-ses', { id: stat.sid, t: Date.now() }); }
+      });
+      window.addEventListener('pagehide', flush);
+      // 구매 버튼: 누른 방문과 페이지를 함께 남겨요
+      var mark = function (e) {
+        var a = e.target.closest && e.target.closest('a[href^="/go/"]');
+        if (!a || a.dataset.tagged) return;
+        a.dataset.tagged = '1';
+        a.href = a.getAttribute('href') + (a.getAttribute('href').indexOf('?') > -1 ? '&' : '?') + 'vi=' + stat.vid + '&si=' + stat.sid + '&pg=' + encodeURIComponent(location.pathname);
+      };
+      document.addEventListener('pointerdown', mark, true);
+      document.addEventListener('click', mark, true);
+      document.addEventListener('contextmenu', mark, true);
+    })();
   }
 
   window.RS = { $: $, $$: $$, toast: toast, copyText: copyText, shareOrCopy: shareOrCopy, track: track, store: store, esc: escHTML, plain: plain };
+
+  // 개인정보처리방침의 '방문 통계 끄기' 버튼
+  $$('[data-notrack]').forEach(function (b) {
+    var paint = function () {
+      var off = false;
+      try { off = localStorage.getItem('rs-notrack') === '1'; } catch (e) { off = false; }
+      b.textContent = off ? '이 브라우저의 방문 통계 다시 켜기' : '이 브라우저의 방문 통계 끄기';
+      b.setAttribute('aria-pressed', String(off));
+    };
+    paint();
+    b.addEventListener('click', function () {
+      try {
+        if (localStorage.getItem('rs-notrack') === '1') { localStorage.removeItem('rs-notrack'); toast('방문 통계를 다시 켰어요'); }
+        else { localStorage.setItem('rs-notrack', '1'); toast('이 브라우저의 방문 통계를 껐어요'); }
+      } catch (e) { toast('이 브라우저에서는 설정을 저장할 수 없어요'); }
+      paint();
+    });
+  });
 
   // ---------- 머리의 로그인 표시 (서버에 묻지 않고, 로그인할 때 저장한 닉네임만 보여 줘요) ----------
   function paintAccount() {
@@ -219,6 +318,13 @@
       if (!g) return;
       $$('[role="radio"]', g).forEach(function (b) { b.setAttribute('aria-checked', String(b.dataset.v === val)); });
     };
+    var lastCount = 0, lastSent = '', searchTimer;
+    var logSearch = function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () {
+        if (st.q && st.q !== lastSent) { lastSent = st.q; track('search', '', { k: st.q, n: lastCount }); }
+      }, 1500);
+    };
     var apply = function () {
       var n = 0;
       cards.forEach(function (c) {
@@ -232,6 +338,7 @@
         c.hidden = !ok;
         if (ok) n++;
       });
+      lastCount = n;
       countEl.textContent = '게임 ' + n + '개';
       emptyEl.hidden = n > 0;
       var any = st.q || st.p || st.m || st.l || st.k || st.t.length;
@@ -256,7 +363,7 @@
         apply();
       });
     }
-    qInput.addEventListener('input', function () { st.q = qInput.value.trim(); apply(); });
+    qInput.addEventListener('input', function () { st.q = qInput.value.trim(); apply(); logSearch(); });
     resetBtn.addEventListener('click', function () {
       st = { q: '', p: '', m: '', l: '', k: '', t: [] };
       qInput.value = '';
@@ -274,6 +381,7 @@
       $('.filter-more', finder).open = true;
     }
     apply();
+    if (st.q) logSearch();
     if (location.hash === '#search' && !st.q) setTimeout(function () { qInput.focus(); }, 50);
   }
 

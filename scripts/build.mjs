@@ -1465,15 +1465,17 @@ function privacyPage() {
 <tr><td>제휴·문의</td><td>이름, 이메일, 전화번호(선택), 회사·단체 이름(선택), 문의 내용</td><td>문의 답변, 제휴 검토</td><td>답변 후 1년</td></tr>
 <tr><td>틀린 곳 알려 주기</td><td>연락처(선택), 의견 내용</td><td>설명 고치기, 답변</td><td>처리 후 1년</td></tr>
 <tr><td>부정 이용 막기</td><td>접속 IP를 날마다 바뀌는 방식으로 바꾼 값(원래 IP는 저장하지 않아요)</td><td>도배와 자동 가입 막기</td><td>2일</td></tr>
+<tr><td>방문 통계</td><td>이 브라우저에 저장한 무작위 방문자 번호와 방문 번호, 본 페이지와 시각, 화면을 보고 있던 시간, 스크롤 정도, 들어오기 전 사이트 주소와 검색어, 기기 종류(휴대폰·태블릿·PC), 접속 국가, 사이트 안에서 찾은 검색어, 구매 버튼을 누른 상품</td><td>많이 보는 설명과 부족한 설명 찾기, 사이트 개선</td><td>400일</td></tr>
 </tbody></table></div>`],
-    ['2. 쿠키와 브라우저 저장', ul(['로그인 상태를 유지하려고 쿠키(rr_sid)를 써요. 30일 동안 쓰지 않으면 끝나요.', '글씨 크기, 체크한 구성물 같은 설정은 이용자의 브라우저에만 저장해요.', '이용 숫자는 날짜별 합계로만 세요. 누가 봤는지는 알 수 없어요.', '보드게임몰의 구매 버튼을 누르면 쿠팡으로 이동하고, 이후에는 쿠팡의 개인정보처리방침이 적용돼요.'])],
+    ['2. 쿠키와 브라우저 저장', ul(['로그인 상태를 유지하려고 쿠키(rr_sid)를 써요. 30일 동안 쓰지 않으면 끝나요.', '글씨 크기, 체크한 구성물 같은 설정은 이용자의 브라우저에만 저장해요.', '방문 통계는 이름, IP, 로그인 정보와 연결하지 않은 무작위 번호로만 세요. 이 번호로는 누구인지 알 수 없어요. 번호는 브라우저 저장 공간(localStorage)에 있고, 브라우저 데이터를 지우면 새 번호가 생겨요.',
+      '아래 버튼으로 이 브라우저의 방문 통계를 끌 수 있어요. 끄면 페이지를 봐도 아무 기록도 보내지 않아요.', '보드게임몰의 구매 버튼을 누르면 쿠팡으로 이동하고, 이후에는 쿠팡의 개인정보처리방침이 적용돼요.']) + `<p><button type="button" class="btn btn-sub" data-notrack>이 브라우저의 방문 통계 끄기</button></p>`],
     ['3. 다른 곳에 주거나 맡기는 일', `<p>법에 따른 요청이 있을 때 말고는 개인정보를 다른 곳에 주지 않아요. 서비스 운영을 위해 아래 업체에 저장과 처리를 맡겨요.</p>
 ${ul(['Cloudflare, Inc. (미국): 웹사이트 호스팅, 데이터 저장(Cloudflare D1). 위 1번의 항목이 Cloudflare의 데이터센터에 저장되며, 이용자가 정보를 입력할 때 네트워크를 통해 옮겨져요. 보관 기간은 위 1번과 같아요.'])}`],
     ['4. 지우는 방법', `<p>보관 기간이 지나거나 목적을 이룬 정보는 바로 지워요. 데이터베이스의 기록은 복구할 수 없게 지워요.</p>`],
     ['5. 이용자의 권리', ul(['내 정보 페이지에서 닉네임, 지역, 소개를 고치고 탈퇴할 수 있어요.', '내 정보를 보거나 고치거나 지워 달라고 요청할 수 있어요. 아래 책임자에게 알려 주시면 10일 안에 처리해요.', '만 14세 미만은 회원가입을 받지 않아요.'])],
     ['6. 안전하게 지키는 방법', ul(['비밀번호는 되돌릴 수 없는 방식(PBKDF2)으로 바꿔 저장해요.', '모든 연결은 HTTPS로 암호화해요.', '운영 관리 화면은 관리자 비밀번호로만 들어갈 수 있어요.'])],
     ['7. 개인정보 보호책임자', `<p>${officer()}</p><p class="muted small">개인정보 침해 신고와 상담은 개인정보침해신고센터(privacy.kisa.or.kr, 국번 없이 118)에서도 받을 수 있어요.</p>`],
-    ['8. 바뀌는 경우', `<p>이 방침을 바꿀 때는 시행 7일 전에 이 페이지에 알려요.</p>`],
+    ['8. 바뀌는 경우', `<p>이 방침을 바꿀 때는 시행 7일 전에 이 페이지에 알려요.</p><p class="muted small">바뀐 내용: 2026년 11월 18일 ‘방문 통계’ 항목과 방문 통계 끄기 버튼을 더했어요.</p>`],
   ]);
 }
 function communityRulesPage() {
@@ -1524,34 +1526,40 @@ ${CREW.map(([im, nm, role, line]) => `<li><span class="crew-card">${pic(im, '', 
 }
 
 function adminPage() {
-  const body = `<section class="admin wrap" data-admin data-repo="${esc(cfg.githubRepo || '')}" data-branch="${esc(cfg.githubBranch || 'main')}">
+  const NAV = [
+    ['', [['home', '대시보드', 'i-home']]],
+    ['지표', [['kpi/overview', '한눈에 보기'], ['kpi/content', '페이지·게임'], ['kpi/traffic', '유입 경로'], ['kpi/shop', '구매·전환'], ['kpi/engage', '검색·참여'], ['kpi/live', '실시간']]],
+    ['운영', [['content', '원고 관리'], ['reports', '오류 신고', '', 'reports'], ['inquiries', '문의함', '', 'inquiries'], ['community', '커뮤니티', '', 'flags']]],
+    ['보드게임몰', [['shop', '쇼핑 링크'], ['coupang', '쿠팡 실적 입력']]],
+    ['설정', [['settings', '설정·도움말']]],
+  ];
+  const panels = ['home', 'kpi-overview', 'kpi-content', 'kpi-traffic', 'kpi-shop', 'kpi-engage', 'kpi-live', 'content', 'reports', 'inquiries', 'community', 'shop', 'coupang', 'settings'];
+  const body = `<section class="adm" data-admin data-repo="${esc(cfg.githubRepo || '')}" data-branch="${esc(cfg.githubBranch || 'main')}">
+<div class="adm-login" data-login>
 <h1 class="page-title">운영 관리</h1>
-<div class="admin-login" data-login>
 <p class="muted">Cloudflare에 넣어 둔 관리자 비밀번호(ADMIN_PASSWORD)를 입력하세요.</p>
 <form class="admin-form" data-login-form>
 <label class="field"><span>관리자 비밀번호</span><input type="password" name="pw" autocomplete="current-password" required></label>
+<label class="check"><input type="checkbox" name="remember"><span>이 기기에서 7일 동안 로그인 유지</span></label>
 <button class="btn btn-main" type="submit">들어가기</button>
 <p class="form-msg" role="status" aria-live="polite"></p>
 </form>
 </div>
-<div class="admin-body" data-body hidden>
-<div class="tabs" role="tablist" aria-label="관리 메뉴">
-<button role="tab" aria-selected="true" aria-controls="a-reports" id="t-reports">신고함</button>
-<button role="tab" aria-selected="false" aria-controls="a-stats" id="t-stats">이용 기록</button>
-<button role="tab" aria-selected="false" aria-controls="a-content" id="t-content">원고 관리</button>
-<button role="tab" aria-selected="false" aria-controls="a-inq" id="t-inq">문의함</button>
-<button role="tab" aria-selected="false" aria-controls="a-shop" id="t-shop">쇼핑 링크</button>
-<button role="tab" aria-selected="false" aria-controls="a-cm" id="t-cm">커뮤니티</button>
+<div class="adm-app" data-body hidden>
+<aside class="adm-side">
+<p class="adm-brand"><b>룰룰</b> 운영 관리</p>
+<nav class="adm-nav" aria-label="관리 메뉴">
+${NAV.map(([group, items]) => `${group ? `<p class="adm-group">${group}</p>` : ''}${items.map(([r, label, , badge]) => `<a href="#/${r}" data-route="${r}">${label}${badge ? `<span class="adm-count" data-count="${badge}" hidden></span>` : ''}</a>`).join('')}`).join('\n')}
+</nav>
+<div class="adm-side-foot"><a href="/" target="_blank" rel="noopener">사이트 열기</a><button type="button" class="link-btn" data-logout>로그아웃</button></div>
+</aside>
+<div class="adm-main">
+<header class="adm-top"><div><p class="adm-crumb" data-crumb></p><h1 class="adm-title" data-title>대시보드</h1></div><div class="adm-period" data-period hidden></div></header>
+${panels.map((id) => `<section class="adm-panel" id="a-${id}" hidden></section>`).join('\n')}
 </div>
-<div class="panel" id="a-reports" role="tabpanel" aria-labelledby="t-reports"></div>
-<div class="panel" id="a-stats" role="tabpanel" aria-labelledby="t-stats"></div>
-<div class="panel" id="a-content" role="tabpanel" aria-labelledby="t-content"></div>
-<div class="panel" id="a-inq" role="tabpanel" aria-labelledby="t-inq"></div>
-<div class="panel" id="a-shop" role="tabpanel" aria-labelledby="t-shop"></div>
-<div class="panel" id="a-cm" role="tabpanel" aria-labelledby="t-cm"></div>
 </div>
 </section>`;
-  return layout({ title: `운영 관리 - ${cfg.siteName}`, description: '운영 관리 화면', path: '/admin/', body, noindex: true, scripts: ['admin.js'] });
+  return layout({ title: `운영 관리 - ${cfg.siteName}`, description: '운영 관리 화면', path: '/admin/', body, noindex: true, scripts: ['admin.js'], bodyClass: 'admin-page' });
 }
 
 function notFoundPage() {
