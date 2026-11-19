@@ -1704,6 +1704,7 @@ Disallow: /go/
 Disallow: /space/view/
 Disallow: /account/
 Disallow: /community/write/
+Disallow: /cdn-cgi/
 
 User-agent: Yeti
 Allow: /
