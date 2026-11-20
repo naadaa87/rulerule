@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VISUALS, frameSVG } from '../src/visual/index.mjs';
 import { LEVELS as GROW_LEVELS, RULES as GROW_RULES, BADGES as GROW_BADGES, levelOf, glyph, emblemSVG, badgeSVG } from '../server/growth-data.js';
+import { makeFun } from './fun.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'public');
@@ -274,6 +275,8 @@ const DIAGRAMS = { 'yut-board': yutBoard, 'umul-gonu': umulGonuBoard, chilgyo: c
 const NAV = [
   ['/games/', '게임 찾기'],
   ['/rules/', '룰 모음'],
+  ['/test/', '취향 테스트'],
+  ['/stories/', '보드게임 이야기'],
   ['/traditional/', '전통놀이'],
   ['/shop/', '보드게임몰'],
   ['/community/', '커뮤니티'],
@@ -313,6 +316,10 @@ function footer() {
 <a href="/games/">게임 찾기</a>
 <a href="/rules/">보드게임 룰 모음</a>
 <a href="/traditional/">전통놀이</a>
+<a href="/stories/">보드게임 이야기</a>
+<a href="/test/">취향 테스트</a>
+<a href="/worldcup/">보드게임 월드컵</a>
+<a href="/quiz/">상식 퀴즈</a>
 <a href="/learn/">처음이라면</a>
 <a href="/shop/">보드게임몰</a>
 <a href="/community/">커뮤니티</a>
@@ -511,6 +518,13 @@ ${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item${it.i
 </section>`;
 }
 
+// ---------- 재미로 알아보기 (scripts/fun.mjs) ----------
+const FUN = makeFun({ ROOT, layout, esc, pic, tile, gameCard, bySlug, games, sortedGames, icon, buyBox, abs, cfg, GROUPS, LEVELS, playersText, minutesText, VISUALS, frameSVG, bare, josa, GROW_RULES, popular: content.popular, BRAND_IMG });
+if (FUN.problems.length) {
+  console.error('\n이야기·테스트 원고에서 고칠 곳이 있어요:\n- ' + FUN.problems.join('\n- '));
+  process.exit(1);
+}
+
 // ---------- 페이지: 게임 ----------
 function gamePage(g) {
   const name = g.name;
@@ -649,6 +663,7 @@ ${variants}
 ${house}
 </section>
 
+${FUN.gameStoryBox(g)}
 <section class="faq-sec" id="faq" aria-labelledby="faq-title">
 <h2 class="h2" id="faq-title">${esc(seo.n)} 자주 묻는 질문</h2>
 <div class="faq-list">${faqItems.map((x, i) => `<details class="faq"${i < 2 ? ' open' : ''}><summary>${esc(x.q)}</summary><p>${esc(x.a)}</p></details>`).join('')}</div>
@@ -794,6 +809,8 @@ ${CATS.map(([im, href, t, d, tone, col]) => `<a class="cat ${tone}" href="${href
 </div>
 </section>
 
+${FUN.homeBand()}
+
 <section class="sec">
 <div class="wrap">
 <div class="start-band">
@@ -888,7 +905,7 @@ ${pic('scene-store', '매장 테이블에서 휴대폰으로 게임 설명을 �
     description: cfg.description,
     path: '/',
     body,
-    scripts: [],
+    scripts: ['fun.js'],
     keywords: ['보드게임 하는법', '보드게임 룰', '보드게임 규칙', '보드게임 추천', '루미큐브 하는법', '할리갈리 룰', '다빈치코드 하는법', '윷놀이 규칙', '보드게임 모임'],
     jsonld: [
       { '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.siteName, alternateName: ['룰룰 보드게임', 'rulerule', '보드게임 룰 하는법 설명서'], url: abs('/'), inLanguage: 'ko', potentialAction: { '@type': 'SearchAction', target: abs('/games/?q={search_term_string}'), 'query-input': 'required name=search_term_string' } },
@@ -1644,6 +1661,8 @@ write('saved/index.html', savedPage());
 write('terms/index.html', termsPage());
 write('privacy/index.html', privacyPage());
 write('community/rules/index.html', communityRulesPage());
+for (const [f, html] of FUN.pages) write(f, html);
+for (const [f, svg] of FUN.frames) write(f, svg);
 // 네이버 사이트 소유 확인 파일 (함수가 먼저 답하지만, 정적 파일도 함께 둬요)
 write('naver166f723b5ee950517c79af0092638755.html', 'naver-site-verification: naver166f723b5ee950517c79af0092638755.html');
 write('admin/index.html', adminPage());
@@ -1658,6 +1677,7 @@ const compact = sortedGames.map((g) => ({
   done: ['components', 'setup', 'examples', 'rules', 'tricky', 'faq'].filter((k) => (g[k] || []).length).length,
 }));
 write('data/games.json', JSON.stringify({ build: BUILD, games: compact, popular: content.popular }));
+write('data/stories.json', JSON.stringify({ build: BUILD, stories: FUN.storiesData }));
 // 구매 버튼(/go/)이 읽는 상품 목록: id -> 이름, 쿠팡 검색어, 고정 링크
 write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || cpProductUrl(it), p: it.url || '', cu: cpProductUrl(it), img: it.img ? CP_IMG(it.img, 230) : '', g: it.game || '' }])) }));
 
@@ -1690,6 +1710,7 @@ const urls = [
   ['/terms/', 'yearly', '0.2'], ['/privacy/', 'yearly', '0.2'], ['/community/rules/', 'yearly', '0.2'],
   ...games.map((g) => [`/games/${g.slug}/`, 'weekly', '0.9', gameDay(g)]),
   ...content.collections.map((c) => [`/collections/${c.slug}/`, 'weekly', '0.7']),
+  ...FUN.urls,
 ];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1737,6 +1758,14 @@ ${[...games].sort((a, b) => gameDay(b).localeCompare(gameDay(a)) || collator.com
 <description>${xesc(`${so.n} 하는법과 룰. ${plain(g.oneLine)} ${playersText(g.players)}, ${minutesText(g.minutes)}. 이기는 법: ${plain(g.summary.goal)}`)}</description>
 <pubDate>${rfc822(gameDay(g))}</pubDate>
 </item>`; }).join('\n')}
+${FUN.rss.map((r) => `<item>
+<title>${xesc(r.title)}</title>
+<link>${abs(r.link)}</link>
+<guid isPermaLink="true">${abs(r.link)}</guid>
+<category>${xesc(r.cat)}</category>
+<description>${xesc(r.desc)}</description>
+<pubDate>${rfc822(r.day)}</pubDate>
+</item>`).join('\n')}
 </channel>
 </rss>
 `);

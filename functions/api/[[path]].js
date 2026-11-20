@@ -6,6 +6,7 @@
 // - 참여·성장: /api/games/:slug (별점·후기·저장), /api/reviews/:id/helpful, /api/checkin, /api/growth, /api/sync, /api/users/:nick, /api/rank, /api/notes
 // - 운영 관리: POST /api/admin-login 으로 받은 토큰을 x-admin-token 헤더에 넣어 /api/admin/... 호출
 // - 방문 통계: POST /api/event (t=pv, end, search 등)
+// - 재미로 알아보기: POST /api/play (취향 테스트, 월드컵, 퀴즈), GET /api/fun (모두의 결과)
 //
 // Cloudflare 설정 (Pages 프로젝트 > 설정)
 // - D1 데이터베이스 바인딩: 변수 이름 DB (필수)
@@ -23,6 +24,7 @@ import { social } from '../../server/social.js';
 import { levelInfo } from '../../server/growth.js';
 import { collect, isBot } from '../../server/kpi.js';
 import { adminLogin, adminAuthed } from '../../server/adminauth.js';
+import { fun } from '../../server/fun.js';
 
 const KINDS = ['wrong', 'unclear', 'typo', 'request', 'other'];
 const EVENTS = ['view', 'table', 'qr', 'venue', 'speak', 'share'];
@@ -100,6 +102,7 @@ export async function onRequest(context) {
     if (route === 'auth') return await auth(request, env, parts.slice(1), me);
     if (COMMUNITY.has(route)) return await community(request, env, route, parts.slice(1), me);
     if (SOCIAL.has(route)) return await social(request, env, route, parts.slice(1), me);
+    if (route === 'play' || route === 'fun') return await fun(request, env, route, me);
     return fail('없는 주소예요.', 404);
   } catch (e) {
     if (env.DEBUG_ERRORS) return fail(`서버 오류: ${e.message}`, 500);

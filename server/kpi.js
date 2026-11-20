@@ -37,6 +37,11 @@ export function pageKind(path) {
   if (path.startsWith('/rules/')) return ['rules', ''];
   if (path.startsWith('/traditional/')) return ['traditional', ''];
   if (path.startsWith('/learn/')) return ['learn', ''];
+  if ((m = path.match(/^\/stories\/([a-z0-9-]+)\/$/))) return ['story', m[1]];
+  if (path.startsWith('/stories/')) return ['stories', ''];
+  if (path.startsWith('/test/')) return ['test', ''];
+  if (path.startsWith('/worldcup/')) return ['worldcup', ''];
+  if (path.startsWith('/quiz/')) return ['quiz', ''];
   if (path.startsWith('/space/')) return ['space', ''];
   if (path.startsWith('/saved/')) return ['saved', ''];
   if (path.startsWith('/account/')) return ['account', ''];

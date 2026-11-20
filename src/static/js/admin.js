@@ -63,7 +63,7 @@
   var CH = { naver: '네이버 검색', 'naver-community': '네이버 블로그·카페', google: '구글', daum: '다음·카카오 검색', 'search-other': '그 밖의 검색', youtube: '유튜브', social: 'SNS', kakaotalk: '카카오톡', qr: 'QR 코드', campaign: '캠페인 링크(utm)', referral: '다른 사이트', direct: '직접 들어옴', internal: '다시 들어옴(30분 넘게 쉼)', '': '알 수 없음' };
   var SRC = { shop: '보드게임몰', game: '게임 페이지 구매 상자', home: '처음 화면 보드게임몰 띠', 'shop-more': '보드게임몰 ‘더 보기’', unknown: '알 수 없음' };
   var DEV = { m: '휴대폰', t: '태블릿', d: 'PC' };
-  var FEAT = { table: '테이블 모드', speak: '소리 내 읽기', share: '링크 보내기', qr: 'QR로 게임 열기', venue: '매장 안내 페이지' };
+  var FEAT = { table: '테이블 모드', speak: '소리 내 읽기', share: '링크 보내기', qr: 'QR로 게임 열기', venue: '매장 안내 페이지', 'test-start': '취향 테스트 시작', 'test-done': '취향 테스트 끝까지', 'cup-start': '월드컵 시작', 'cup-done': '월드컵 끝까지', 'quiz-done': '상식 퀴즈 끝까지', 'squiz-done': '이야기 퀴즈 끝까지', 'fun-share': '재미 결과 공유' };
 
   // 앞뒤 기간 비교
   function delta(cur, prev, invert) {

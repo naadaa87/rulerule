@@ -84,6 +84,9 @@ export async function checkBadges(env, request, uid, keys) {
     else if (k === 'host') ok = (await count('SELECT COUNT(*) AS n FROM clubs WHERE owner_id = ?', uid)) >= 1;
     else if (k === 'meet5') ok = (await count('SELECT COUNT(*) AS n FROM event_members WHERE user_id = ?', uid)) >= 5;
     else if (k === 'manner') ok = (u.manner_n || 0) >= 5 && u.manner_sum / u.manner_n >= 4.5;
+    else if (k === 'taste') ok = (await count("SELECT COUNT(*) AS n FROM points WHERE user_id = ? AND act = 'typetest'", uid)) >= 1;
+    else if (k === 'cup1') ok = (await count("SELECT COUNT(*) AS n FROM points WHERE user_id = ? AND act = 'cup'", uid)) >= 1;
+    else if (k === 'story10') ok = (await count("SELECT COUNT(*) AS n FROM points WHERE user_id = ? AND act = 'quiz' AND ref LIKE 'story:%'", uid)) >= 10;
     if (ok) {
       const r = await db.prepare('INSERT OR IGNORE INTO user_badges (user_id, badge, created_at) VALUES (?, ?, ?)').bind(uid, k, nowIso()).run();
       if (r.meta.changes) {

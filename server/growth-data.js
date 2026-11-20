@@ -34,6 +34,9 @@ export const RULES = {
   event: [5, 2, '정모·번개 열기'],
   join: [3, 3, '정모·번개 참여 신청'],
   manner: [1, 10, '함께한 사람 매너 평가하기'],
+  typetest: [10, 1, '보드게임 취향 테스트 하기'],
+  cup: [3, 1, '보드게임 월드컵 끝까지 하기'],
+  quiz: [3, 5, '이야기·상식 퀴즈 다 맞히기'],
 };
 
 // 배지: key, 이름, 받는 조건, 아이콘, 색
@@ -55,6 +58,9 @@ export const BADGES = [
   { key: 'host', name: '모임장', desc: '보드게임 모임을 만들었어요', icon: 'people', color: '#233552' },
   { key: 'meet5', name: '모임 단골', desc: '정모·번개에 5번 참여했어요', icon: 'meeple', color: '#3E9C8B' },
   { key: 'manner', name: '매너 플레이어', desc: '매너 별점 4.5 이상 (평가 5개 이상)', icon: 'heart', color: '#D9435F' },
+  { key: 'taste', name: '취향 발견', desc: '보드게임 취향 테스트를 해 봤어요', icon: 'compass', color: '#7A5AC8' },
+  { key: 'cup1', name: '월드컵 심판', desc: '보드게임 월드컵에서 우승 게임을 골랐어요', icon: 'medal', color: '#E8A93A' },
+  { key: 'story10', name: '이야기 박사', desc: '보드게임 이야기 퀴즈 10개를 다 맞혔어요', icon: 'book', color: '#3E9C8B' },
 ];
 
 export function levelOf(xp, LEVELS) {
