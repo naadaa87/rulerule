@@ -14,7 +14,11 @@
     "catan",
     "burumabul",
     "love-letter",
-    "bang"
+    "bang",
+    "yacht",
+    "go-stop",
+    "monopoly",
+    "sushi-go"
   ],
   "collections": [
     {
@@ -35,7 +39,10 @@
         "janggi",
         "umul-gonu",
         "chess",
-        "love-letter"
+        "love-letter",
+        "seven-wonders-duel",
+        "lost-cities",
+        "backgammon"
       ]
     },
     {
@@ -53,7 +60,11 @@
         "dobble",
         "cockroach-poker",
         "las-vegas",
-        "incan-gold"
+        "incan-gold",
+        "skull",
+        "no-thanks",
+        "jungle-speed",
+        "sushi-go"
       ]
     },
     {
@@ -76,7 +87,12 @@
         "one-card",
         "sabangchigi",
         "ttangttameokgi",
-        "burumabul"
+        "burumabul",
+        "ubongo",
+        "qwirkle",
+        "sushi-go",
+        "chinese-checkers",
+        "marrakech"
       ]
     },
     {
@@ -99,7 +115,12 @@
         "biseokchigi",
         "paengichigi",
         "sabangchigi",
-        "one-card"
+        "one-card",
+        "go-stop",
+        "yacht",
+        "seunggyeongdo",
+        "game-of-life",
+        "chinese-checkers"
       ]
     },
     {
@@ -120,7 +141,10 @@
         "saboteur",
         "one-night-werewolf",
         "bang",
-        "incan-gold"
+        "incan-gold",
+        "jungle-speed",
+        "indian-poker",
+        "no-thanks"
       ]
     },
     {
@@ -143,7 +167,11 @@
         "one-night-werewolf",
         "bang",
         "skull-king",
-        "las-vegas"
+        "las-vegas",
+        "jungle-speed",
+        "skull",
+        "indian-poker",
+        "penguin-party"
       ]
     },
     {
@@ -165,7 +193,11 @@
         "love-letter",
         "tumbling-monkey",
         "one-night-werewolf",
-        "one-card"
+        "one-card",
+        "no-thanks",
+        "sushi-go",
+        "jungle-speed",
+        "yacht"
       ]
     },
     {
@@ -187,7 +219,11 @@
         "pandemic",
         "lexio",
         "chess",
-        "clue"
+        "clue",
+        "wingspan",
+        "dominion",
+        "seven-wonders-duel",
+        "monopoly"
       ]
     }
   ]
