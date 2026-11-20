@@ -9,6 +9,8 @@ import morePartyA from './more-party-a.mjs';
 import morePartyB from './more-party-b.mjs';
 import moreStrategy from './more-strategy.mjs';
 import moreTrad from './more-trad.mjs';
+import newA from './new-a.mjs';
+import newB from './new-b.mjs';
 
-export const VISUALS = { ...family, ...party, ...strategy, ...traditional, ...moreFamily, ...morePartyA, ...morePartyB, ...moreStrategy, ...moreTrad };
+export const VISUALS = { ...family, ...party, ...strategy, ...traditional, ...moreFamily, ...morePartyA, ...morePartyB, ...moreStrategy, ...moreTrad, ...newA, ...newB };
 export { frameSVG } from './kit.mjs';
