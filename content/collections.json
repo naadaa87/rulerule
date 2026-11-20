@@ -18,7 +18,10 @@
     "yacht",
     "go-stop",
     "monopoly",
-    "sushi-go"
+    "sushi-go",
+    "seven-wonders",
+    "kingdomino",
+    "mugunghwa"
   ],
   "collections": [
     {
@@ -42,7 +45,11 @@
         "love-letter",
         "seven-wonders-duel",
         "lost-cities",
-        "backgammon"
+        "backgammon",
+        "mancala",
+        "checkers",
+        "siltteugi",
+        "kingdomino"
       ]
     },
     {
@@ -64,7 +71,11 @@
         "skull",
         "no-thanks",
         "jungle-speed",
-        "sushi-go"
+        "sushi-go",
+        "spyfall",
+        "insider",
+        "set",
+        "old-maid"
       ]
     },
     {
@@ -92,7 +103,15 @@
         "qwirkle",
         "sushi-go",
         "chinese-checkers",
-        "marrakech"
+        "marrakech",
+        "speed-cups",
+        "sleeping-queens",
+        "looping-louie",
+        "set",
+        "mancala",
+        "old-maid",
+        "guseulchigi",
+        "mugunghwa"
       ]
     },
     {
@@ -120,7 +139,12 @@
         "yacht",
         "seunggyeongdo",
         "game-of-life",
-        "chinese-checkers"
+        "chinese-checkers",
+        "old-maid",
+        "sugeondolligi",
+        "guseulchigi",
+        "siltteugi",
+        "jachigi"
       ]
     },
     {
@@ -144,7 +168,13 @@
         "incan-gold",
         "jungle-speed",
         "indian-poker",
-        "no-thanks"
+        "no-thanks",
+        "spyfall",
+        "insider",
+        "mugunghwa",
+        "sugeondolligi",
+        "eoreumttaeng",
+        "seven-wonders"
       ]
     },
     {
@@ -171,7 +201,11 @@
         "jungle-speed",
         "skull",
         "indian-poker",
-        "penguin-party"
+        "penguin-party",
+        "spyfall",
+        "insider",
+        "bohnanza",
+        "speed-cups"
       ]
     },
     {
@@ -197,7 +231,13 @@
         "no-thanks",
         "sushi-go",
         "jungle-speed",
-        "yacht"
+        "yacht",
+        "set",
+        "speed-cups",
+        "looping-louie",
+        "old-maid",
+        "kingdomino",
+        "insider"
       ]
     },
     {
@@ -223,7 +263,12 @@
         "wingspan",
         "dominion",
         "seven-wonders-duel",
-        "monopoly"
+        "monopoly",
+        "seven-wonders",
+        "citadels",
+        "the-crew",
+        "bohnanza",
+        "checkers"
       ]
     }
   ]

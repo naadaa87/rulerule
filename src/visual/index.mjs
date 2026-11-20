@@ -11,6 +11,8 @@ import moreStrategy from './more-strategy.mjs';
 import moreTrad from './more-trad.mjs';
 import newA from './new-a.mjs';
 import newB from './new-b.mjs';
+import newC from './new-c.mjs';
+import newD from './new-d.mjs';
 
-export const VISUALS = { ...family, ...party, ...strategy, ...traditional, ...moreFamily, ...morePartyA, ...morePartyB, ...moreStrategy, ...moreTrad, ...newA, ...newB };
+export const VISUALS = { ...family, ...party, ...strategy, ...traditional, ...moreFamily, ...morePartyA, ...morePartyB, ...moreStrategy, ...moreTrad, ...newA, ...newB, ...newC, ...newD };
 export { frameSVG } from './kit.mjs';

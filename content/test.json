@@ -751,6 +751,83 @@
   "yutnori": [
    "talk",
    "luck"
+  ],
+  "set": [
+   "puzzle",
+   "speed"
+  ],
+  "speed-cups": [
+   "speed"
+  ],
+  "sleeping-queens": [
+   "luck",
+   "talk"
+  ],
+  "looping-louie": [
+   "speed",
+   "luck"
+  ],
+  "old-maid": [
+   "bluff",
+   "luck"
+  ],
+  "kingdomino": [
+   "puzzle",
+   "strategy"
+  ],
+  "mancala": [
+   "strategy",
+   "puzzle"
+  ],
+  "spyfall": [
+   "bluff",
+   "talk"
+  ],
+  "insider": [
+   "bluff",
+   "talk"
+  ],
+  "bohnanza": [
+   "talk",
+   "strategy"
+  ],
+  "seven-wonders": [
+   "strategy",
+   "puzzle"
+  ],
+  "citadels": [
+   "bluff",
+   "strategy"
+  ],
+  "the-crew": [
+   "coop",
+   "puzzle"
+  ],
+  "checkers": [
+   "strategy"
+  ],
+  "mugunghwa": [
+   "speed",
+   "talk"
+  ],
+  "sugeondolligi": [
+   "speed",
+   "talk"
+  ],
+  "siltteugi": [
+   "create",
+   "coop"
+  ],
+  "guseulchigi": [
+   "speed",
+   "luck"
+  ],
+  "jachigi": [
+   "speed"
+  ],
+  "eoreumttaeng": [
+   "speed",
+   "coop"
   ]
  }
 }
