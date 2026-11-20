@@ -1235,6 +1235,342 @@
    "note": "찾는 게임이 없을 때 쿠팡 보드게임 검색 결과로 이동해요.",
    "kind": "more",
    "url": "https://link.coupang.com/a/iLLRHosgkn"
+  },
+  "yacht": {
+   "name": "요트 다이스 (미키 마우스판)",
+   "q": "요트 다이스 보드게임",
+   "note": "주사위와 점수표가 든 야추 게임. 캐릭터 그림판이에요.",
+   "kind": "game",
+   "game": "yacht",
+   "cp": {
+    "p": "9207362333",
+    "i": "27193391926",
+    "v": "94160869344"
+   },
+   "img": "image/retail/images/2025/11/25/18/4/d5afccbe-caaa-4040-be3a-b82627a92137.jpg",
+   "cpName": "코리아보드게임즈 요트 다이스 미키 마우스, 혼합색상, 1개",
+   "reviews": 17,
+   "url": "https://link.coupang.com/a/iO2E7bZTps"
+  },
+  "game-of-life": {
+   "name": "인생게임 (해즈브로)",
+   "q": "인생게임 보드게임",
+   "note": "돌림판과 자동차 말이 든 한국어판이에요.",
+   "kind": "game",
+   "game": "game-of-life",
+   "cp": {
+    "p": "9555816202",
+    "i": "28513597833",
+    "v": "95537819702"
+   },
+   "img": "image/vendor_inventory/5d7d/91db23e3089c1c336aaf0aa5f575825ffce3735111c177fb497d1a2217e7.jpg",
+   "cpName": "해즈브로 보드게임 인생게임, 1개",
+   "reviews": 12,
+   "url": "https://link.coupang.com/a/iO2Fj1U78m"
+  },
+  "chinese-checkers": {
+   "name": "뉴 다이아몬드 게임",
+   "q": "다이아몬드 게임 보드게임",
+   "note": "별 모양 판과 여섯 색 말. 아이와 하기 좋은 가격이에요.",
+   "kind": "game",
+   "game": "chinese-checkers",
+   "cp": {
+    "p": "38212732",
+    "i": "20262142236",
+    "v": "3304015408"
+   },
+   "img": "image/retail/images/33008571980871-047ab7a8-b9a0-4b20-8cbc-5d3f85b7ee69.jpg",
+   "cpName": "코리아보드게임즈 뉴 다이아몬드 게임, 1개, 혼합색상",
+   "reviews": 1226,
+   "url": "https://link.coupang.com/a/iO2FwBWPzE"
+  },
+  "ubongo": {
+   "name": "우봉고",
+   "q": "우봉고 보드게임",
+   "note": "모래시계와 퍼즐 카드, 조각이 든 기본판이에요.",
+   "kind": "game",
+   "game": "ubongo",
+   "cp": {
+    "p": "1745429",
+    "i": "7616556",
+    "v": "84320929973"
+   },
+   "img": "image/retail/images/5202887623821-6367c05d-7d92-4e75-9704-dcebd29e0b6b.png",
+   "cpName": "코리아보드게임즈 우봉고 보드게임, 혼합색상, 1개",
+   "reviews": 4074,
+   "url": "https://link.coupang.com/a/iO2FJQq6RU"
+  },
+  "ubongo-mini": {
+   "name": "우봉고 미니",
+   "q": "우봉고 미니",
+   "note": "들고 다니기 좋은 작은 판. 혼자서도 해요.",
+   "kind": "edition",
+   "game": "ubongo",
+   "cp": {
+    "p": "7488288176",
+    "i": "19575981601",
+    "v": "4363527091"
+   },
+   "img": "image/retail/images/321655492486866-8807c4fa-7605-4209-8ec1-7fa318b49669.png",
+   "cpName": "코리아보드게임즈 우봉고 미니 두뇌트레이닝게임, 1개, 혼합색상",
+   "reviews": 2909,
+   "url": "https://link.coupang.com/a/iO2FXjePfw"
+  },
+  "qwirkle": {
+   "name": "쿼클",
+   "q": "쿼클 보드게임",
+   "note": "나무 타일 108개가 든 기본판이에요.",
+   "kind": "game",
+   "game": "qwirkle",
+   "cp": {
+    "p": "9337357811",
+    "i": "27688658343",
+    "v": "94669772730"
+   },
+   "img": "image/retail/images/2026/01/29/16/4/7950393e-f777-469f-82fe-127a5dc7dbbf.jpg",
+   "cpName": "공간27 쿼클 보드게임 세트, 1개, 혼합색상",
+   "reviews": 19,
+   "url": "https://link.coupang.com/a/iO2F98JuCG"
+  },
+  "qwirkle-travel": {
+   "name": "쿼클 트래블",
+   "q": "쿼클 트래블",
+   "note": "작은 타일로 줄인 휴대용 판이에요.",
+   "kind": "edition",
+   "game": "qwirkle",
+   "cp": {
+    "p": "9337357595",
+    "i": "27688657545",
+    "v": "94669798770"
+   },
+   "img": "image/retail/images/2026/01/29/17/7/a91c0c17-7373-4954-aa57-a2c02a92727a.jpg",
+   "cpName": "공간27 쿼클 트래블 보드게임 세트, 1개, 혼합색상",
+   "reviews": 49,
+   "url": "https://link.coupang.com/a/iO2GmPrvrg"
+  },
+  "marrakech": {
+   "name": "마라케시",
+   "q": "마라케시 보드게임",
+   "note": "양탄자와 상인 아쌈 말이 든 기본판이에요.",
+   "kind": "game",
+   "game": "marrakech",
+   "cp": {
+    "p": "4869234",
+    "i": "22184923",
+    "v": "3032432130"
+   },
+   "img": "image/retail/images/516558745402164-d46592a5-d5c0-49a6-815e-078f6e614ed9.png",
+   "cpName": "기가믹 마라케시 보드게임, 혼합색상, 1개",
+   "reviews": 272,
+   "url": "https://link.coupang.com/a/iO2GzGcYoe"
+  },
+  "monopoly": {
+   "name": "모노폴리 클래식",
+   "q": "모노폴리 클래식",
+   "note": "기본 규칙 그대로인 클래식판이에요.",
+   "kind": "game",
+   "game": "monopoly",
+   "cp": {
+    "p": "9734274801",
+    "i": "29130860340",
+    "v": "95462243812"
+   },
+   "img": "image/vendor_inventory/8509/0b79d2fd9b15ced3e6d4be2c74991e7d9b7e19ae7f958fca979d0cbf3e9a.jpg",
+   "cpName": "모노폴리 클래식, 1개",
+   "reviews": 2,
+   "url": "https://link.coupang.com/a/iO2GMrSeaa"
+  },
+  "seunggyeongdo": {
+   "name": "승경도 벼슬살이",
+   "q": "승경도 보드게임",
+   "note": "벼슬 판과 윤목이 든 놀이 세트예요.",
+   "kind": "game",
+   "game": "seunggyeongdo",
+   "cp": {
+    "p": "34775597",
+    "i": "129502365",
+    "v": "90830986942"
+   },
+   "img": "image/vendor_inventory/image_audit/prod/8a3cf3d6-15e0-4cb0-ae16-dfc95a494eeb_fixing_v2.png",
+   "cpName": "생각투자 승경도 벼슬살이 최신판 보드게임, 1개",
+   "reviews": 30,
+   "url": "https://link.coupang.com/a/iO2GZkmqdM"
+  },
+  "sushi-go": {
+   "name": "스시고 (초밥왕)",
+   "q": "스시고 보드게임",
+   "note": "초밥 카드가 든 작은 상자. 2~5명이 해요.",
+   "kind": "game",
+   "game": "sushi-go",
+   "cp": {
+    "p": "9587759847",
+    "i": "219137278",
+    "v": "3674425133"
+   },
+   "img": "image/vendor_inventory/image_audit/prod/07db573e-8197-49d7-a0a2-d4d172878948_fixing_v2.png",
+   "cpName": "[생각투자 보약게임] Sushi Go! 초밥왕, 1개",
+   "reviews": 2,
+   "url": "https://link.coupang.com/a/iO2Hb78VEq"
+  },
+  "penguin-party": {
+   "name": "펭귄 파티",
+   "q": "펭귄파티 보드게임",
+   "note": "펭귄 카드 36장과 벌점 칩이 든 작은 상자예요.",
+   "kind": "game",
+   "game": "penguin-party",
+   "cp": {
+    "p": "8275313583",
+    "i": "23853251455",
+    "v": "96309589890"
+   },
+   "img": "image/vendor_inventory/dcd6/0586f9cd1af644ceb405a7bbc54903e656cb52580c1aa235de8c6558115b.jpg",
+   "cpName": "플레이트 펭귄파티 보드게임, 혼합색상, 1개",
+   "reviews": 248,
+   "url": "https://link.coupang.com/a/iO2HqdQf00"
+  },
+  "jungle-speed": {
+   "name": "정글 스피드",
+   "q": "정글스피드 보드게임",
+   "note": "토템과 카드가 든 판이에요. 해외판이라 상품 설명을 확인하세요.",
+   "kind": "game",
+   "game": "jungle-speed",
+   "cp": {
+    "p": "9614323032",
+    "i": "28706327413",
+    "v": "95647274949"
+   },
+   "img": "image/vendor_inventory/e1e2/f5fbed22854beb6b58e18a29a4e3a4dc355719a4c8766f93177895288996.jpg",
+   "cpName": "Hobby Japan 하비재팬 정글스피드 2021년판 보드게임 2-10인용, 1개",
+   "reviews": 0,
+   "url": "https://link.coupang.com/a/iO2HCGDmii"
+  },
+  "indian-poker": {
+   "name": "인디언 포커 카드",
+   "q": "인디언포커 게임",
+   "note": "이마에 대는 카드와 머리띠가 든 놀이 세트예요.",
+   "kind": "goods",
+   "game": "indian-poker",
+   "cp": {
+    "p": "8906136770",
+    "i": "26011043907",
+    "v": "92993142822"
+   },
+   "img": "image/vendor_inventory/8b1b/6252700da25690abae3afeca66c9cecf1df5fdd7e9c967d890e9efce947d.jpg",
+   "cpName": "커플히어로 인디언포커 오리지널 게임, 1개",
+   "reviews": 55,
+   "url": "https://link.coupang.com/a/iO2HPn2C7g"
+  },
+  "no-thanks": {
+   "name": "노 땡스 딜럭스",
+   "q": "노땡스 보드게임",
+   "note": "카드와 칩이 든 작은 상자. 3~7명이 해요.",
+   "kind": "game",
+   "game": "no-thanks",
+   "cp": {
+    "p": "9626161249",
+    "i": "28748381634",
+    "v": "95681254790"
+   },
+   "img": "image/retail/images/2026/06/29/9/2/21f8bdd4-c02b-4635-8979-0cef04b08534.jpg",
+   "cpName": "아미고 노 땡스 딜럭스 보드게임, 1개",
+   "reviews": 49,
+   "url": "https://link.coupang.com/a/iO2H18JPPM"
+  },
+  "skull": {
+   "name": "스컬",
+   "q": "스컬 보드게임",
+   "note": "일본어판이지만 받침에 그림만 있어서 규칙만 알면 바로 할 수 있어요.",
+   "kind": "game",
+   "game": "skull",
+   "cp": {
+    "p": "7764313531",
+    "i": "20944923327",
+    "v": "95836515608"
+   },
+   "img": "image/vendor_inventory/38bf/32529a0e5e5a990255a82dac03ec87599beb0262bfc822801985f057b9b2.jpg",
+   "cpName": "보드게임 스컬 2023년 신판 일본어판, 상세페이지 참조, 1개",
+   "reviews": 0,
+   "url": "https://link.coupang.com/a/iO2IeRy6i4"
+  },
+  "seven-wonders-duel": {
+   "name": "7원더스 대결 (세븐 원더스 듀얼)",
+   "q": "세븐원더스 듀얼",
+   "note": "둘이서 하는 판. 한국어판 이름은 ‘7원더스 대결’이에요.",
+   "kind": "game",
+   "game": "seven-wonders-duel",
+   "cp": {
+    "p": "319842276",
+    "i": "1023252935",
+    "v": "5464230473"
+   },
+   "img": "image/retail/images/2019/10/17/14/3/286c7ba7-0818-418d-8283-d4effc6d4713.jpg",
+   "cpName": "레포스 7원더스 대결 보드게임, 혼합색상, 1개",
+   "reviews": 336,
+   "url": "https://link.coupang.com/a/iO2IrOiH9w"
+  },
+  "wingspan": {
+   "name": "윙스팬",
+   "q": "윙스팬 보드게임",
+   "note": "새 카드 170장과 알, 새 모이통 주사위탑이 든 기본판이에요.",
+   "kind": "game",
+   "game": "wingspan",
+   "cp": {
+    "p": "6163766770",
+    "i": "11980086377",
+    "v": "79252578434"
+   },
+   "img": "image/rs_quotation_api/jnvc2ase/3582eb7798ae4921b062a5bbebc5c93f.png",
+   "cpName": "코리아보드게임즈 윙스팬 보드게임, 다색(베이직), 1개",
+   "reviews": 137,
+   "url": "https://link.coupang.com/a/iO2IEnLdkG"
+  },
+  "dominion": {
+   "name": "도미니언",
+   "q": "도미니언 보드게임",
+   "note": "왕국 카드와 동전·승점 카드가 든 기본판이에요.",
+   "kind": "game",
+   "game": "dominion",
+   "cp": {
+    "p": "61703042",
+    "i": "211304130",
+    "v": "3670831740"
+   },
+   "img": "image/vendor_inventory/images/2018/05/02/19/4/fe2435ca-455b-4bac-88a1-4a425ca1092c.jpg",
+   "cpName": "[코리아보드게임즈] Dominion 도미니언",
+   "reviews": 0,
+   "url": "https://link.coupang.com/a/iO2IQ7rhca"
+  },
+  "backgammon": {
+   "name": "백개먼·체스·체커 3in1",
+   "q": "백가몬 보드게임",
+   "note": "한 판으로 백개먼, 체스, 체커를 모두 할 수 있어요.",
+   "kind": "set",
+   "game": "backgammon",
+   "cp": {
+    "p": "1508882291",
+    "i": "2590055576",
+    "v": "70581334567"
+   },
+   "img": "image/vendor_inventory/2c32/fa674d19bfa773e8ca57aed4e6328401aadc9318ac79eadd970660b90371.jpg",
+   "cpName": "UB 다담기 대형 3in1 보드게임 32cm 체스 체커 백개먼 3가지 게임, 1개",
+   "reviews": 34,
+   "url": "https://link.coupang.com/a/iO2I3RWpTo"
+  },
+  "lost-cities": {
+   "name": "로스트 시티",
+   "q": "로스트시티 보드게임",
+   "note": "탐험 카드 60장과 게임판이 든 한국어판이에요.",
+   "kind": "game",
+   "game": "lost-cities",
+   "cp": {
+    "p": "182204547",
+    "i": "25047829165",
+    "v": "92798486709"
+   },
+   "img": "image/retail/images/2025/06/19/14/1/c6e97f14-272d-498d-b0b3-e508276cfb65.png",
+   "cpName": "코리아보드게임즈 로스트 시티, 1개, 혼합 색상",
+   "reviews": 831,
+   "url": "https://link.coupang.com/a/iO2EnKUCOW"
   }
  },
  "games": {
@@ -1429,6 +1765,65 @@
   ],
   "ttangttameokgi": [
    "chalk"
+  ],
+  "yacht": [
+   "yacht"
+  ],
+  "game-of-life": [
+   "game-of-life"
+  ],
+  "chinese-checkers": [
+   "chinese-checkers"
+  ],
+  "ubongo": [
+   "ubongo",
+   "ubongo-mini"
+  ],
+  "qwirkle": [
+   "qwirkle",
+   "qwirkle-travel"
+  ],
+  "marrakech": [
+   "marrakech"
+  ],
+  "monopoly": [
+   "monopoly"
+  ],
+  "seunggyeongdo": [
+   "seunggyeongdo"
+  ],
+  "sushi-go": [
+   "sushi-go"
+  ],
+  "penguin-party": [
+   "penguin-party"
+  ],
+  "jungle-speed": [
+   "jungle-speed"
+  ],
+  "indian-poker": [
+   "indian-poker"
+  ],
+  "no-thanks": [
+   "no-thanks"
+  ],
+  "skull": [
+   "skull"
+  ],
+  "seven-wonders-duel": [
+   "seven-wonders-duel"
+  ],
+  "wingspan": [
+   "wingspan"
+  ],
+  "dominion": [
+   "dominion"
+  ],
+  "backgammon": [
+   "backgammon"
+  ],
+  "lost-cities": [
+   "lost-cities"
   ]
  },
  "shelves": [
@@ -1444,7 +1839,8 @@
     "jenga",
     "dobble",
     "splendor",
-    "burumabul"
+    "burumabul",
+    "ubongo"
    ]
   },
   {
@@ -1461,7 +1857,10 @@
     "chess",
     "othello",
     "love-letter",
-    "lexio"
+    "lexio",
+    "seven-wonders-duel",
+    "lost-cities",
+    "backgammon"
    ]
   },
   {
@@ -1476,7 +1875,10 @@
     "halli-galli",
     "blokus",
     "jenga",
-    "uno"
+    "uno",
+    "ubongo",
+    "chinese-checkers",
+    "qwirkle"
    ]
   },
   {
@@ -1496,7 +1898,12 @@
     "skull-king",
     "just-one",
     "dixit",
-    "mafia-cards"
+    "mafia-cards",
+    "jungle-speed",
+    "skull",
+    "no-thanks",
+    "penguin-party",
+    "sushi-go"
    ]
   },
   {
@@ -1513,7 +1920,10 @@
     "king-of-tokyo",
     "tichu",
     "catan-56",
-    "splendor-cities"
+    "splendor-cities",
+    "wingspan",
+    "dominion",
+    "marrakech"
    ]
   },
   {
@@ -1533,7 +1943,11 @@
     "chilgyo",
     "ttakji",
     "biseok",
-    "gonu"
+    "gonu",
+    "seunggyeongdo",
+    "yacht",
+    "game-of-life",
+    "monopoly"
    ]
   },
   {
