@@ -1571,6 +1571,214 @@
    "cpName": "코리아보드게임즈 로스트 시티, 1개, 혼합 색상",
    "reviews": 831,
    "url": "https://link.coupang.com/a/iO2EnKUCOW"
+  },
+  "kingdomino": {
+   "name": "킹도미노",
+   "q": "킹도미노 보드게임",
+   "note": "땅 타일 48장과 성, 왕 말이 든 한국어판이에요.",
+   "kind": "game",
+   "game": "kingdomino",
+   "cp": {
+    "p": "22434816",
+    "i": "23852660377",
+    "v": "95468264453"
+   },
+   "img": "image/retail/images/2026/05/20/14/3/cd02ea28-bc6a-40e9-a7eb-b627c8eedcb3.jpg",
+   "cpName": "행복한바오밥 킹도미노 가족용 전략게임, 혼합 색상, 1개",
+   "reviews": 107,
+   "url": "https://link.coupang.com/a/iO9zTKIpNc"
+  },
+  "set": {
+   "name": "셋 (세트)",
+   "q": "세트 보드게임 코리아보드게임즈",
+   "note": "카드 81장 한 벌. 한국어판 이름은 ‘세트’예요.",
+   "kind": "game",
+   "game": "set",
+   "cp": {
+    "p": "1298850",
+    "i": "5636384",
+    "v": "96010567362"
+   },
+   "img": "image/retail/images/2026/09/03/14/0/5b9bcfe5-fc25-4f41-8b63-2451bbf3efea.png",
+   "cpName": "코리아보드게임즈 세트 보드게임, 혼합색상, 1세트",
+   "reviews": 1251,
+   "url": "https://link.coupang.com/a/iO9ANVipuC"
+  },
+  "speed-cups": {
+   "name": "할리갈리 컵스 (스피드컵)",
+   "q": "할리갈리 컵스",
+   "note": "스피드컵의 한국어판이에요. 컵과 종, 그림 카드가 들어 있어요.",
+   "kind": "game",
+   "game": "speed-cups",
+   "cp": {
+    "p": "4921207",
+    "i": "22460270",
+    "v": "3032835984"
+   },
+   "img": "image/1025_amir_coupang_oct_80k/a2e3/adf897484aaf329f46b34cf3001cd3ab78a394a869b5090afc27123621d7.jpg",
+   "cpName": "코리아보드게임즈 할리갈리 컵스 딜럭스, 1개, 혼합 색상",
+   "reviews": 5982,
+   "url": "https://link.coupang.com/a/iO9AZBYTJs"
+  },
+  "sleeping-queens": {
+   "name": "슬리핑 퀸즈",
+   "q": "슬리핑퀸즈 보드게임",
+   "note": "여왕 12장과 능력 카드, 숫자 카드가 든 카드 게임이에요.",
+   "kind": "game",
+   "game": "sleeping-queens",
+   "cp": {
+    "p": "1929237",
+    "i": "8559862",
+    "v": "3011952641"
+   },
+   "img": "image/product/image/vendoritem/2016/10/04/3011952641/81bddeb8-b713-4d97-8b71-ca8c37b3192c.jpg",
+   "cpName": "보약게임 컴퍼니오름 슬리핑 퀸즈 보드게임, 혼합색상, 1개",
+   "reviews": 1936,
+   "url": "https://link.coupang.com/a/iO9BaZrIoS"
+  },
+  "looping-louie": {
+   "name": "루핑루이",
+   "q": "루핑루이 보드게임",
+   "note": "건전지는 따로 준비해야 해요.",
+   "kind": "game",
+   "game": "looping-louie",
+   "cp": {
+    "p": "8987113766",
+    "i": "245528",
+    "v": "3000178688"
+   },
+   "img": "image/retail/images/31702702955523-8128f2db-43ee-4821-92ba-5d825c98ddaf.jpg",
+   "cpName": "코리아보드게임즈 루핑루이, 1개",
+   "reviews": 5954,
+   "url": "https://link.coupang.com/a/iO9BlQZaTY"
+  },
+  "mancala": {
+   "name": "만칼라",
+   "q": "만칼라 보드게임",
+   "note": "구덩이 판과 돌이 든 기본 세트예요.",
+   "kind": "game",
+   "game": "mancala",
+   "cp": {
+    "p": "22590562",
+    "i": "87777592",
+    "v": "3149980825"
+   },
+   "img": "image/retail/images/9258305007390-a006538b-d950-44cd-ab49-7b617ba6eaa1.jpg",
+   "cpName": "만칼라 스탠다드 두뇌트레이닝게임, 혼합 색상, 1개",
+   "reviews": 271,
+   "url": "https://link.coupang.com/a/iO9BxEHxM4"
+  },
+  "spyfall": {
+   "name": "스파이폴 3 타임머신",
+   "q": "스파이폴 보드게임",
+   "note": "규칙은 같고 장소가 시대를 넘나드는 판이에요.",
+   "kind": "game",
+   "game": "spyfall",
+   "cp": {
+    "p": "9307575009",
+    "i": "27528264958",
+    "v": "94492915208"
+   },
+   "img": "image/vendor_inventory/ef80/22fe6a5e06ed457b4da6945344d32266068d2dde74970f9e01306e540a75.png",
+   "cpName": "[팝콘게임즈] 스파이폴3 타임머신 보드게임, 1개, 혼합",
+   "reviews": 4,
+   "url": "https://link.coupang.com/a/iO9BI5fQTk"
+  },
+  "insider": {
+   "name": "인사이더",
+   "q": "인사이더 보드게임",
+   "note": "오잉크 게임즈의 작은 상자 한국어판이에요.",
+   "kind": "game",
+   "game": "insider",
+   "cp": {
+    "p": "9651754960",
+    "i": "28848643738",
+    "v": "95782482629"
+   },
+   "img": "image/vendor_inventory/547b/4527f8a52405fb9454960e62cb1a0d2261c902f8630c06b629431b89dcfb.png",
+   "cpName": "팝콘게임즈 오잉크 인사이더 레드 보드게임 추리 블러핑게임, 혼합색상, 1개",
+   "reviews": 1,
+   "url": "https://link.coupang.com/a/iO9BTLt1lQ"
+  },
+  "bohnanza": {
+   "name": "보난자",
+   "q": "보난자 보드게임",
+   "note": "콩 카드로 하는 거래 게임, 한국어판이에요.",
+   "kind": "game",
+   "game": "bohnanza",
+   "cp": {
+    "p": "7632825828",
+    "i": "20262249351",
+    "v": "3000159650"
+   },
+   "img": "image/retail/images/1395616174502838-81ad64f3-dfcc-43c6-874b-a80a7da0cdeb.png",
+   "cpName": "코리아보드게임즈 보난자 전략게임, 1개, 혼합색상",
+   "reviews": 2601,
+   "url": "https://link.coupang.com/a/iO9B5V0ufk"
+  },
+  "citadels": {
+   "name": "시타델",
+   "q": "시타델 보드게임",
+   "note": "새로 나온 판이에요. 직업 구성이 처음 판과 조금 달라요.",
+   "kind": "game",
+   "game": "citadels",
+   "cp": {
+    "p": "7385306574",
+    "i": "19082319315",
+    "v": "86204644779"
+   },
+   "img": "image/retail/images/2023/06/07/14/8/85510817-fc4b-404c-b46c-104195582346.png",
+   "cpName": "시타델 2018, 혼합 색상, 1개",
+   "reviews": 678,
+   "url": "https://link.coupang.com/a/iO9CgQB0JU"
+  },
+  "marbles": {
+   "name": "유리구슬",
+   "q": "구슬치기 유리구슬",
+   "note": "구슬치기용 유리구슬. 수량을 골라 살 수 있어요.",
+   "kind": "goods",
+   "game": "guseulchigi",
+   "cp": {
+    "p": "8476965690",
+    "i": "11689468174",
+    "v": "81643843756"
+   },
+   "img": "image/vendor_inventory/55b2/bd8fe963fa333cea3ce030b109fec9e14bfcd71b309ca2b834b4d72b25c5.jpg",
+   "cpName": "추억의 유리구슬 구슬치기 20알 40알 60알 80알 100알 200알, 20개",
+   "reviews": 413,
+   "url": "https://link.coupang.com/a/iO9CrHI7J6"
+  },
+  "string-loop": {
+   "name": "실뜨기 실",
+   "q": "실뜨기",
+   "note": "고리로 묶어 둔 실뜨기 실 다섯 개 묶음이에요.",
+   "kind": "goods",
+   "game": "siltteugi",
+   "cp": {
+    "p": "9232047075",
+    "i": "27217469421",
+    "v": "94184684241"
+   },
+   "img": "image/vendor_inventory/49e8/cbe2d624ebcc942785e262f28624e7488df618f998edecf9d3be1a0215b7.png",
+   "cpName": "로멀리 레인보우 실뜨기 놀이, 5개",
+   "reviews": 311,
+   "url": "https://link.coupang.com/a/iO9CCDOake"
+  },
+  "jachigi-set": {
+   "name": "자치기 세트",
+   "q": "자치기",
+   "note": "채와 알이 든 자치기 놀잇감이에요.",
+   "kind": "goods",
+   "game": "jachigi",
+   "cp": {
+    "p": "6843050644",
+    "i": "16277801232",
+    "v": "83470451248"
+   },
+   "img": "image/vendor_inventory/0ae4/23352a71eec99fa61d10e32b313f382ec009b0e8506b2ea297671f10c460.JPG",
+   "cpName": "민속마당 자치기/메뚜기치기/어린이놀이/마때치기/막대치기/, 1개",
+   "reviews": 4,
+   "url": "https://link.coupang.com/a/iO9CNF75EH"
   }
  },
  "games": {
@@ -1824,6 +2032,54 @@
   ],
   "lost-cities": [
    "lost-cities"
+  ],
+  "kingdomino": [
+   "kingdomino"
+  ],
+  "set": [
+   "set"
+  ],
+  "speed-cups": [
+   "speed-cups"
+  ],
+  "sleeping-queens": [
+   "sleeping-queens"
+  ],
+  "looping-louie": [
+   "looping-louie"
+  ],
+  "mancala": [
+   "mancala"
+  ],
+  "spyfall": [
+   "spyfall"
+  ],
+  "insider": [
+   "insider"
+  ],
+  "bohnanza": [
+   "bohnanza"
+  ],
+  "citadels": [
+   "citadels"
+  ],
+  "guseulchigi": [
+   "marbles"
+  ],
+  "siltteugi": [
+   "string-loop"
+  ],
+  "jachigi": [
+   "jachigi-set"
+  ],
+  "checkers": [
+   "backgammon"
+  ],
+  "old-maid": [
+   "playing-cards"
+  ],
+  "mugunghwa": [
+   "chalk"
   ]
  },
  "shelves": [
@@ -1840,7 +2096,8 @@
     "dobble",
     "splendor",
     "burumabul",
-    "ubongo"
+    "ubongo",
+    "bohnanza"
    ]
   },
   {
@@ -1860,7 +2117,9 @@
     "lexio",
     "seven-wonders-duel",
     "lost-cities",
-    "backgammon"
+    "backgammon",
+    "mancala",
+    "kingdomino"
    ]
   },
   {
@@ -1878,7 +2137,11 @@
     "uno",
     "ubongo",
     "chinese-checkers",
-    "qwirkle"
+    "qwirkle",
+    "speed-cups",
+    "sleeping-queens",
+    "looping-louie",
+    "set"
    ]
   },
   {
@@ -1903,7 +2166,10 @@
     "skull",
     "no-thanks",
     "penguin-party",
-    "sushi-go"
+    "sushi-go",
+    "spyfall",
+    "insider",
+    "bohnanza"
    ]
   },
   {
@@ -1923,7 +2189,9 @@
     "splendor-cities",
     "wingspan",
     "dominion",
-    "marrakech"
+    "marrakech",
+    "citadels",
+    "kingdomino"
    ]
   },
   {
@@ -1947,7 +2215,10 @@
     "seunggyeongdo",
     "yacht",
     "game-of-life",
-    "monopoly"
+    "monopoly",
+    "marbles",
+    "string-loop",
+    "jachigi-set"
    ]
   },
   {

@@ -1,4 +1,4 @@
-// 재미로 알아보기: 보드게임 이야기, 취향 테스트, 보드게임 월드컵, 상식 퀴즈
+// 재미로 알아보기: 보드게임 이야기, 취향 테스트, 보드게임 월드컵, 상식 퀴즈, 모임 게임 짜기, 룰룰 차트
 // build.mjs가 쓰는 도구를 받아 페이지와 자료를 만들어 돌려줘요.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,7 +59,9 @@ export function makeFun(x) {
   };
   const FUN = [
     ['test', '/test/', 'fc-test', '나에게 맞는 보드게임 테스트', '질문 10개로 알아보는 8가지 게임 취향', 'char-card'],
+    ['plan', '/plan/', 'fc-plan', '오늘 모임 게임 순서 짜기', '인원과 시간만 고르면 몸풀기부터 마무리까지', 'pawn-map'],
     ['worldcup', '/worldcup/', 'fc-cup', '보드게임 월드컵', '16강 토너먼트로 고르는 나의 최애 게임', 'char-dice'],
+    ['chart', '/chart/', 'fc-chart', '룰룰 차트', '이번 주 많이 본 게임과 모두의 순위', 'fox-explain'],
     ['quiz', '/quiz/', 'fc-quiz', '보드게임 상식 퀴즈', '10문제, 몇 개나 맞힐 수 있을까요?', 'char-book'],
     ['stories', '/stories/', 'fc-story', '보드게임 이야기', `게임 ${list.length}가지의 유래와 숨은 이야기`, 'char-domi'],
   ];
@@ -328,11 +330,151 @@ ${funBand('quiz')}
     });
   }
 
+  // ---------- 모임 게임 짜기 ----------
+  const est = (g) => Math.max(5, Math.round((g.minutes[0] + g.minutes[1]) / 2 / 5) * 5);
+  const PLAN_EX = [
+    ['둘이서 한 시간', '연인, 부부, 친구 둘이', 2, 60, ['dobble', 'patchwork', 'lost-cities']],
+    ['처음 만난 여섯 명', '말을 트고 금방 친해지는 순서', 6, 90, ['just-one', 'codenames', 'spyfall', 'insider']],
+    ['명절에 3대가 함께', '할머니부터 손주까지', 6, 60, ['yutnori', 'halli-galli', 'old-maid']],
+    ['초등학생 아이와', '아이가 직접 이길 수 있는 게임으로', 4, 60, ['looping-louie', 'speed-cups', 'sleeping-queens']],
+    ['파티룸에서 여덟 명', '다 같이 떠들썩하게', 8, 90, ['insider', 'telestrations', 'spyfall', 'one-night-werewolf']],
+    ['전략 좋아하는 네 명', '머리 쓰는 저녁', 4, 180, ['splendor', 'catan', 'seven-wonders']],
+  ];
+  const ROLE_NAME = (i, k) => (i === 0 ? '몸풀기' : i === k - 1 ? '마무리' : '메인');
+  for (const [t, , n, , slugs] of PLAN_EX) for (const sl of slugs) {
+    const g = bySlug[sl];
+    if (!g) problems.push(`모임 게임 짜기 예시(${t}): 없는 게임 ${sl}`);
+    else if (n < g.players[0] || n > g.players[1]) problems.push(`모임 게임 짜기 예시(${t}): ${sl}은 ${n}명이 할 수 없어요`);
+  }
+  const planEx = ([t, d, n, time, slugs]) => {
+    const gs = slugs.map((sl) => bySlug[sl]);
+    const total = gs.reduce((a, g) => a + est(g), 0);
+    const q = `/plan/?n=${n}&t=${time}&g=${slugs.join(',')}`;
+    return `<a class="plan-ex" href="${q}">
+<span class="plan-ex-t">${esc(t)}</span><span class="plan-ex-d">${esc(d)} · ${n}명</span>
+<ol class="plan-ex-list">${gs.map((g, i) => `<li>${tile(g, 'tile-sm')}<span class="plan-ex-role">${ROLE_NAME(i, gs.length)}</span><b>${esc(g.name)}</b><small>${est(g)}분</small></li>`).join('')}</ol>
+<span class="plan-ex-total">${icon('i-time')}약 ${total}분<span class="plan-ex-go">이 순서로 보기</span></span>
+</a>`;
+  };
+  const chipRow = (name, label, items, def) => `<fieldset class="plan-field"><legend>${label}</legend><div class="chips" role="radiogroup" aria-label="${label}" data-plan-${name}>${items.map(([v, t]) => `<button type="button" class="chip" role="radio" aria-checked="${String(v) === String(def)}" data-v="${v}">${t}</button>`).join('')}</div></fieldset>`;
+  const planData = () => ({
+    games: games.map((g) => ({ ...compact(g), w: TEST.games[g.slug], t: g.tags, k: g.kind, b: g.best })),
+    popular,
+  });
+  function planPage() {
+    const body = `<section class="fun-hero plan-hero">
+<div class="wrap fun-hero-grid">
+<div>
+${crumbs([['', '모임 게임 짜기']])}
+<p class="fun-kicker">몇 명이서, 몇 시간?</p>
+<h1 class="fun-title">오늘 모임,<br>게임 순서 짜기</h1>
+<p class="fun-lead">인원과 시간, 분위기만 고르면 몸풀기부터 마무리까지 게임 순서를 짜 드려요. 마음에 안 드는 게임은 바로 바꾸고, 정한 순서는 단톡방에 보낼 수 있어요.</p>
+</div>
+${pic('pawn-map', '', 'plan-hero-pic', true)}
+</div>
+</section>
+<section class="wrap plan-sec">
+<div class="plan-form" data-plan-form>
+${chipRow('n', '몇 명이에요?', [[2, '2명'], [3, '3명'], [4, '4명'], [5, '5명'], [6, '6명'], [7, '7명'], [8, '8명'], [10, '10명 이상']], 4)}
+${chipRow('t', '얼마나 놀 거예요?', [[30, '30분'], [60, '1시간'], [90, '1시간 반'], [120, '2시간'], [180, '3시간']], 120)}
+${chipRow('m', '어떤 분위기가 좋아요?', [['party', '웃고 떠들기'], ['brain', '머리 쓰기'], ['mix', '둘 다 섞어서']], 'mix')}
+<fieldset class="plan-field"><legend>더 고르기 <span class="muted small">(여러 개 골라도 돼요)</span></legend><div class="chips" data-plan-opt>
+<button type="button" class="chip" aria-pressed="false" data-v="kids">아이와 함께 (8살 이하)</button>
+<button type="button" class="chip" aria-pressed="false" data-v="easy">처음인 사람이 많아요</button>
+<button type="button" class="chip" aria-pressed="false" data-v="saved">저장한 게임에서만</button>
+<button type="button" class="chip" aria-pressed="false" data-v="body">몸으로 하는 놀이도</button>
+</div></fieldset>
+<div class="row-btns"><button type="button" class="btn btn-coral btn-lg" data-plan-go>${icon('i-spark')}게임 순서 짜기</button></div>
+</div>
+<div class="plan-res" data-plan-res hidden aria-live="polite"></div>
+</section>
+<section class="wrap fun-sec plan-wheel" id="wheel">
+<div class="plan-wheel-grid">
+<div>
+<h2 class="sec-title">그래도 못 고르겠다면, 돌림판</h2>
+<p class="sec-lead">후보 가운데 하나를 돌림판이 골라 드려요. 고른 조건에 맞는 게임, 내가 저장한 게임, 인기 게임 가운데서 돌릴 수 있어요.</p>
+<div class="chips" role="radiogroup" aria-label="돌림판 후보" data-wheel-src>
+<button type="button" class="chip" role="radio" aria-checked="true" data-v="fit">조건에 맞는 게임</button>
+<button type="button" class="chip" role="radio" aria-checked="false" data-v="saved">저장한 게임</button>
+<button type="button" class="chip" role="radio" aria-checked="false" data-v="popular">인기 게임</button>
+</div>
+<div class="row-btns"><button type="button" class="btn btn-main btn-lg" data-wheel-spin>돌림판 돌리기</button></div>
+<div class="wheel-res" data-wheel-res aria-live="polite"></div>
+</div>
+<div class="wheel-box"><span class="wheel-pin" aria-hidden="true"></span><div class="wheel" data-wheel aria-hidden="true"></div></div>
+</div>
+</section>
+<section class="wrap fun-sec">
+<h2 class="sec-title">이런 모임엔 이런 순서</h2>
+<p class="sec-lead">룰룰이 미리 짜 둔 순서예요. 눌러서 그대로 쓰거나, 한두 개만 바꿔 써도 좋아요.</p>
+<div class="plan-ex-grid">${PLAN_EX.map(planEx).join('')}</div>
+</section>
+<section class="wrap fun-sec">
+<h2 class="sec-title">순서를 짤 때 알아 두면 좋은 것</h2>
+<div class="type-boxes plan-tips">
+<div class="type-box"><h2>${icon('i-spark')}처음엔 짧고 쉽게</h2><p>모두 모이기 전이나 서로 어색할 때는 10~15분짜리 순발력 게임으로 몸을 풀어요. 늦게 온 사람도 다음 판에 바로 끼어들 수 있어요.</p></div>
+<div class="type-box"><h2>${icon('i-time')}설명 시간도 넣어요</h2><p>처음 하는 게임은 규칙 설명에 5~10분이 더 걸려요. 룰룰의 그림 설명을 함께 보면 훨씬 빨라져요.</p></div>
+<div class="type-box"><h2>${icon('i-people')}마무리는 다 같이</h2><p>마지막 게임은 인원이 바뀌어도 되는 파티 게임이 좋아요. 일찍 가는 사람이 있어도 아쉬움 없이 끝낼 수 있어요.</p></div>
+</div>
+</section>
+${funBand('plan')}
+<script type="application/json" id="plan-data">${json(planData())}</script>`;
+    return layout({
+      title: `모임 게임 순서 짜기 | 인원·시간에 맞는 보드게임 추천 - ${cfg.siteName}`,
+      description: '인원과 시간, 분위기만 고르면 몸풀기부터 마무리까지 보드게임 순서를 짜 드려요. 마음에 안 드는 게임은 바꾸고, 못 고르겠으면 돌림판으로 정해 보세요.',
+      keywords: ['모임 보드게임 추천', '보드게임 순서', '인원별 보드게임', '파티룸 보드게임', '보드게임 돌림판', '보드게임 랜덤 추천'],
+      path: '/plan/', body, scripts: ['plan.js'], ogImage: '/assets/img/og/fun-plan.png',
+    });
+  }
+
+  // ---------- 룰룰 차트 ----------
+  function chartPage() {
+    const picks = popular.map((sl) => bySlug[sl]).filter(Boolean).slice(0, 10);
+    const row = (g, i) => `<li class="chart-row"><span class="chart-rank">${i + 1}</span><span class="chart-move chart-pick">추천</span><a class="chart-game" href="/games/${g.slug}/">${tile(g, 'tile-sm')}<span><b>${esc(g.name)}</b><small>${esc(g.oneLine)}</small></span></a><span class="chart-meta">${playersText(g.players)} · ${minutesText(g.minutes)}</span></li>`;
+    const BOX = [
+      ['saved', '많이 저장한 게임', '저장하거나 해 보고 싶다고 표시한 수', '/games/', '게임 둘러보기'],
+      ['played', '많이 해 본 게임', '‘해 봤어요’를 누른 수', '/games/', '해 본 게임 표시하기'],
+      ['rated', '별점이 높은 게임', '후기 2개 이상, 평균 별점', '/games/', '별점 남기러 가기'],
+      ['cup', '월드컵 우승이 많은 게임', '보드게임 월드컵 우승 횟수', '/worldcup/', '월드컵 하러 가기'],
+      ['plan', '모임 순서에 많이 넣은 게임', '모임 게임 짜기에서 고른 수', '/plan/', '모임 게임 짜기'],
+      ['types', '취향 테스트 유형 비율', '지금까지 나온 결과', '/test/', '나도 테스트하기'],
+    ];
+    const body = `<section class="fun-hero chart-hero">
+<div class="wrap fun-hero-grid">
+<div>
+${crumbs([['', '룰룰 차트']])}
+<p class="fun-kicker">매주 바뀌는 순위</p>
+<h1 class="fun-title">룰룰 차트</h1>
+<p class="fun-lead">이번 주 룰룰에서 사람들이 가장 많이 찾아본 게임과, 저장하고 해 보고 별점을 준 게임을 모았어요. 순위는 10분마다 새로 계산해요.</p>
+<p class="chart-range muted small" data-chart-range>최근 7일 기준</p>
+</div>
+${pic('fox-explain', '', 'chart-hero-pic', true)}
+</div>
+</section>
+<section class="wrap fun-sec">
+<div class="sec-row"><h2 class="sec-title">이번 주 많이 본 게임 TOP 10</h2><span class="muted small">방문자 수 기준 · 지난주와 비교</span></div>
+<ol class="chart-top" data-chart-week>${picks.map(row).join('')}</ol>
+<p class="muted small chart-note" data-chart-note>아직 집계가 모이는 중이라, 지금은 룰룰이 고른 인기 게임 순서로 보여 드려요.</p>
+</section>
+<section class="wrap fun-sec">
+<h2 class="sec-title">모두가 고른 게임</h2>
+<div class="chart-grid">${BOX.map(([k, t, d, href, go]) => `<div class="chart-box" data-chart-box="${k}"><h3>${esc(t)}</h3><p class="muted small">${esc(d)}</p><ol class="chart-mini"><li class="live-skel"></li></ol><a class="more-link" href="${href}">${esc(go)}</a></div>`).join('')}</div>
+</section>
+${funBand('chart')}
+<script type="application/json" id="chart-data">${json({ games: games.map(compact), types: Object.fromEntries(TYPES.map((t) => [t, { nick: TEST.types[t].nick, name: TEST.types[t].name, color: TEST.types[t].color }])) })}</script>`;
+    return layout({
+      title: `룰룰 차트 | 이번 주 인기 보드게임 순위 - ${cfg.siteName}`,
+      description: '이번 주 가장 많이 본 보드게임 TOP 10과 많이 저장한 게임, 별점이 높은 게임, 월드컵 우승 게임까지. 룰룰 이용자들이 직접 만든 보드게임 순위예요.',
+      keywords: ['보드게임 순위', '인기 보드게임', '보드게임 랭킹', '요즘 보드게임 추천', '보드게임 차트'],
+      path: '/chart/', body, scripts: ['plan.js'], ogImage: '/assets/img/og/fun-chart.png',
+    });
+  }
+
   // ---------- 다른 페이지에 넣는 조각 ----------
   const homeBand = () => `<section class="sec fun-home">
 <div class="wrap">
 <div class="sec-row"><h2 class="sec-title">재미로 알아보기</h2><a class="more-link" href="/stories/">보드게임 이야기 ${list.length}편</a></div>
-${funCards('stories')}
+${funCards()}
 ${dyk('dyk-home')}
 </div>
 </section>`;
@@ -353,11 +495,14 @@ ${dyk('dyk-home')}
     ...TYPES.map((t) => [`test/${t}/index.html`, testTypePage(t)]),
     ['worldcup/index.html', worldcupPage()],
     ['quiz/index.html', quizPage()],
+    ['plan/index.html', planPage()],
+    ['chart/index.html', chartPage()],
   ];
   const urls = [
     ['/stories/', 'weekly', '0.7'], ...list.map((g) => [`/stories/${g.slug}/`, 'monthly', '0.6', STORY_DATE]),
     ['/test/', 'monthly', '0.7'], ...TYPES.map((t) => [`/test/${t}/`, 'monthly', '0.5']),
     ['/worldcup/', 'weekly', '0.6'], ['/quiz/', 'monthly', '0.5'],
+    ['/plan/', 'monthly', '0.7'], ['/chart/', 'daily', '0.6'],
   ];
   const storiesData = list.map((g) => ({ s: g.slug, n: g.name, t: stories[g.slug].title, tz: stories[g.slug].teaser }));
   const rss = list.map((g) => ({ title: `${gname(g)} 유래와 역사 | ${stories[g.slug].title}`, link: `/stories/${g.slug}/`, desc: `${stories[g.slug].teaser} ${stories[g.slug].lead}`, day: STORY_DATE, cat: '보드게임 이야기' }));

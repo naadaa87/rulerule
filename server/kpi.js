@@ -42,6 +42,8 @@ export function pageKind(path) {
   if (path.startsWith('/test/')) return ['test', ''];
   if (path.startsWith('/worldcup/')) return ['worldcup', ''];
   if (path.startsWith('/quiz/')) return ['quiz', ''];
+  if (path.startsWith('/plan/')) return ['plan', ''];
+  if (path.startsWith('/chart/')) return ['chart', ''];
   if (path.startsWith('/space/')) return ['space', ''];
   if (path.startsWith('/saved/')) return ['saved', ''];
   if (path.startsWith('/account/')) return ['account', ''];

@@ -320,6 +320,8 @@ function footer() {
 <a href="/test/">취향 테스트</a>
 <a href="/worldcup/">보드게임 월드컵</a>
 <a href="/quiz/">상식 퀴즈</a>
+<a href="/plan/">모임 게임 짜기</a>
+<a href="/chart/">룰룰 차트</a>
 <a href="/learn/">처음이라면</a>
 <a href="/shop/">보드게임몰</a>
 <a href="/community/">커뮤니티</a>

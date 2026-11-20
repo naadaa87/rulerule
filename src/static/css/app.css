@@ -1883,3 +1883,108 @@ button.poll-opt:hover { border-color: var(--navy); }
   .quiz-hero-pic, .type-hero-pic { max-height: 180px; }
   .crew-grid img { height: 64px; }
 }
+
+/* ---------- 모임 게임 짜기 ---------- */
+.fc-plan { --fc: #e3f0fb; }
+.fc-chart { --fc: #e6f4df; }
+.plan-hero-pic, .chart-hero-pic { width: auto; max-height: 250px; justify-self: center; }
+.plan-sec { padding: 28px 20px 8px; }
+.plan-form { display: grid; gap: 18px; padding: 22px; border-radius: var(--r-l); border: 1.5px solid var(--line); background: #fff; }
+.plan-field { border: 0; margin: 0; padding: 0; min-width: 0; }
+.plan-field legend { padding: 0; margin-bottom: 10px; font-weight: 900; font-size: 17px; }
+.plan-field .chips { margin-top: 0; }
+.plan-form .row-btns { margin-top: 2px; }
+.plan-res { margin-top: 22px; padding: 22px; border-radius: var(--r-l); background: var(--cream); border: 1.5px solid var(--line); scroll-margin-top: 80px; }
+.plan-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 16px; }
+.plan-k { color: var(--coral-dark); font-weight: 800; font-size: 14.5px; }
+.plan-title { margin-top: 2px; font-size: 24px; font-weight: 900; letter-spacing: -0.03em; outline: none; }
+.plan-total { display: flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.plan-total .ico { width: 18px; height: 18px; }
+.plan-warn { margin-top: 10px; padding: 10px 14px; border-radius: 12px; background: var(--butter-2); font-size: 15px; }
+.plan-list { list-style: none; margin: 16px 0 10px; padding: 0; display: grid; gap: 12px; counter-reset: none; }
+@media (min-width: 760px) { .plan-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.plan-slot { display: grid; gap: 8px; padding: 12px; border-radius: 16px; background: #fff; border: 1.5px solid var(--line); }
+.plan-slot .gcard { border: 0; padding: 4px 2px 2px; box-shadow: none; }
+.plan-slot-top { display: flex; align-items: center; gap: 8px; }
+.plan-role { padding: 3px 12px; border-radius: 999px; font-weight: 900; font-size: 14.5px; background: var(--mist); }
+.plan-role-warm { background: var(--butter); }
+.plan-role-main, .plan-role-main2 { background: var(--coral-tint); color: var(--coral-dark); }
+.plan-role-end { background: var(--teal-tint); color: var(--teal-dark); }
+.plan-min { font-weight: 800; color: var(--ink-2); font-size: 15px; }
+.plan-slot-top .btn { margin-left: auto; }
+.plan-acts { margin-top: 14px; }
+.plan-empty { text-align: center; padding: 10px; }
+.plan-empty p + p { margin-top: 6px; }
+.plan-ex-grid { display: grid; gap: 12px; margin-top: 18px; }
+@media (min-width: 640px) { .plan-ex-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .plan-ex-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.plan-ex { display: grid; gap: 4px; padding: 18px; border-radius: var(--r-l); border: 1.5px solid var(--line); background: #fff; text-decoration: none; transition: border-color .12s ease, box-shadow .12s ease; }
+.plan-ex:hover { border-color: var(--navy); box-shadow: var(--lift); }
+.plan-ex-t { font-weight: 900; font-size: 18px; letter-spacing: -0.02em; }
+.plan-ex-d { color: var(--muted); font-size: 14.5px; }
+.plan-ex-list { list-style: none; margin: 10px 0 6px; padding: 0; display: grid; gap: 8px; }
+.plan-ex-list li { display: grid; grid-template-columns: 36px 52px minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 15px; }
+.plan-ex-list b { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plan-ex-list small { color: var(--muted); font-size: 14px; }
+.plan-ex-role { font-size: 13.5px; font-weight: 800; color: var(--ink-2); }
+.plan-ex-total { display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1.5px dashed var(--line); color: var(--ink-2); font-weight: 700; font-size: 15px; }
+.plan-ex-total .ico { width: 17px; height: 17px; }
+.plan-ex-go { margin-left: auto; color: var(--coral-dark); font-weight: 800; }
+.plan-tips { margin-top: 16px; }
+@media (min-width: 760px) { .plan-tips { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* 돌림판 */
+.plan-wheel { scroll-margin-top: 70px; }
+.plan-wheel-grid { display: grid; gap: 24px; align-items: center; padding: 22px; border-radius: var(--r-l); background: var(--mist); }
+@media (min-width: 860px) { .plan-wheel-grid { grid-template-columns: minmax(0, 1fr) 340px; padding: 28px 32px; } }
+.plan-wheel .chips { margin-top: 14px; }
+.wheel-box { position: relative; width: min(320px, 100%); aspect-ratio: 1; justify-self: center; }
+.wheel { width: 100%; height: 100%; border-radius: 50%; will-change: transform; }
+.wheel svg { display: block; width: 100%; height: 100%; }
+.wheel-pin { position: absolute; z-index: 1; left: 50%; top: -6px; width: 0; height: 0; margin-left: -14px; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 26px solid var(--navy); filter: drop-shadow(0 2px 0 #fff); }
+.wheel-res { margin-top: 14px; display: grid; gap: 10px; }
+.wheel-res .gcard { background: #fff; }
+.wheel-pick { display: flex; align-items: center; gap: 6px; font-size: 17px; }
+.wheel-pick .ico { width: 19px; height: 19px; color: var(--coral); }
+.wheel-pick b { color: var(--coral-dark); }
+
+/* ---------- 룰룰 차트 ---------- */
+.chart-range { margin-top: 10px; }
+.chart-top { list-style: none; margin: 16px 0 0; padding: 0; border-radius: var(--r-l); border: 1.5px solid var(--line); background: #fff; overflow: hidden; }
+.chart-row { display: grid; grid-template-columns: 34px 46px minmax(0, 1fr); align-items: center; gap: 8px; padding: 12px 16px; border-top: 1.5px solid var(--line); }
+.chart-row:first-child { border-top: 0; }
+@media (min-width: 760px) { .chart-row { grid-template-columns: 40px 54px minmax(0, 1fr) auto; padding: 12px 20px; } }
+.chart-rank { font-weight: 900; font-size: 20px; text-align: center; font-variant-numeric: tabular-nums; }
+.chart-row:nth-child(-n+3) .chart-rank { color: var(--coral-dark); }
+.chart-move { justify-self: center; padding: 2px 6px; border-radius: 8px; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.chart-up { color: var(--coral-dark); background: var(--coral-tint); }
+.chart-down { color: #3b6fc0; background: #e3edf9; }
+.chart-same { color: var(--muted); }
+.chart-new { color: var(--teal-dark); background: var(--teal-tint); }
+.chart-pick { color: var(--ink-2); background: var(--mist); }
+.chart-game { display: flex; align-items: center; gap: 10px; min-width: 0; text-decoration: none; }
+.chart-game > span:last-child { display: grid; min-width: 0; }
+.chart-game b { font-weight: 900; font-size: 16.5px; }
+.chart-game small { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chart-meta { display: none; color: var(--ink-2); font-size: 14px; white-space: nowrap; }
+@media (min-width: 760px) { .chart-meta { display: block; } }
+.chart-note { margin-top: 10px; }
+.chart-grid { display: grid; gap: 12px; margin-top: 18px; }
+@media (min-width: 640px) { .chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .chart-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.chart-box { display: grid; align-content: start; gap: 4px; padding: 18px; border-radius: var(--r-l); border: 1.5px solid var(--line); background: #fff; }
+.chart-box h3 { font-size: 17px; font-weight: 900; }
+.chart-box .more-link { justify-self: start; margin-top: 8px; }
+.chart-mini { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.chart-mini .live-skel { height: 160px; }
+.chart-mini li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.chart-mini .chart-rank { font-size: 16px; }
+.chart-mini a { display: flex; align-items: center; gap: 8px; min-width: 0; text-decoration: none; }
+.chart-mini a b { font-weight: 800; font-size: 15.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chart-mini .tile-sm { width: 30px; flex: none; }
+.chart-val { color: var(--ink-2); font-weight: 800; font-size: 14.5px; white-space: nowrap; }
+.chart-val small { color: var(--muted); font-weight: 600; }
+.chart-mini .chart-bar { grid-template-columns: 70px minmax(0, 1fr) 42px; }
+.chart-bar-track { height: 12px; border-radius: 999px; background: var(--mist); overflow: hidden; }
+.chart-bar-track span { display: block; height: 100%; border-radius: 999px; }
+.chart-empty { margin-top: 10px; padding: 14px; border-radius: 12px; background: var(--mist); color: var(--ink-2); font-size: 15px; }
