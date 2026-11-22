@@ -12,7 +12,7 @@
   var token = '';
   try { token = sessionStorage.getItem(TOK) || localStorage.getItem(TOK) || ''; } catch (e) { token = ''; }
   var gamesBySlug = {}, gamesData = null, shopData = null;
-  var KIND = { wrong: '규칙이 틀림', unclear: '설명이 헷갈림', typo: '오타, 표현', request: '게임 추가 요청', other: '그 밖의 의견' };
+  var KIND = { wrong: '규칙이 틀림', unclear: '설명이 헷갈림', typo: '오타, 표현', request: '게임 추가 요청', link: '구매 링크 안 열림', other: '그 밖의 의견' };
 
   // ---------- 서버 ----------
   function api(path, opt) {
@@ -680,16 +680,18 @@
       if (j._status !== 200) { box.innerHTML = '<p class="notice">' + esc(j.message || '신고를 불러오지 못했어요.') + '</p>'; return; }
       if (!j.reports.length) { box.innerHTML = '<p class="muted">' + (repStatus === 'new' ? '새 신고가 없어요.' : '신고가 없어요.') + '</p>'; return; }
       box.innerHTML = j.reports.map(function (r) {
-        var g = gamesBySlug[r.slug];
+        var g = r.kind === 'link' ? null : gamesBySlug[r.slug];
+        var who = r.kind === 'link' ? '상품 · ' + itemName(r.slug) : g ? g.n : (r.slug || '게임과 상관없음');
         return '<article class="report" data-id="' + r.id + '">' +
           '<div class="report-meta"><span class="badge' + (r.status === 'new' ? ' new' : '') + '">' + (r.status === 'new' ? '새 신고' : '처리함') + '</span>' +
-          '<b>' + esc(KIND[r.kind] || r.kind) + '</b><span>' + esc(g ? g.n : (r.slug || '게임과 상관없음')) + '</span><span>' + esc(fmtTime(r.created_at)) + '</span>' +
+          '<b>' + esc(KIND[r.kind] || r.kind) + '</b><span>' + esc(who) + '</span><span>' + esc(fmtTime(r.created_at)) + '</span>' +
           (r.page ? '<span>' + esc(r.page) + '</span>' : '') + '</div>' +
           '<p class="report-msg">' + esc(r.message) + '</p>' +
           (r.contact ? '<p class="small">답장 받을 곳: ' + esc(r.contact) + '</p>' : '') +
           '<div class="row-btns">' +
           (r.status === 'new' ? '<button type="button" class="btn btn-sub" data-done>처리 완료</button>' : '<button type="button" class="btn btn-ghost" data-undo>새 신고로 되돌리기</button>') +
           (g && repo ? '<a class="btn btn-ghost" href="' + ghEdit(r.slug) + '" target="_blank" rel="noopener">원고 고치기</a>' : '') +
+          (r.kind === 'link' ? '<a class="btn btn-ghost" href="#/shop">링크 점검으로 가기</a>' : '') +
           '<button type="button" class="btn btn-ghost" data-del>지우기</button></div></article>';
       }).join('');
     }).catch(function () { box.innerHTML = '<p class="notice">서버에 연결하지 못했어요.</p>'; });
@@ -779,40 +781,115 @@
     }
   });
 
-  // ---------- 쇼핑 링크 ----------
+  // ---------- 쇼핑 링크와 점검 ----------
+  var shopView = 'all', shopRows = null;
+  var ST = { ok: ['정상', 'badge-ok'], broken: ['안 열림', 'badge-warn'] };
+  function shopRow(id, x) {
+    var it = shopData.items[id];
+    var search = 'https://www.coupang.com/np/search?q=' + encodeURIComponent(it.q);
+    var openUrl = it.cu || search;
+    var src = x.url ? '<span class="badge">관리 화면 링크</span>' : it.p ? '<span class="badge">원고 링크</span>' : '<span class="badge badge-warn">수수료 없음</span>';
+    var st = ST[x.state] ? '<span class="badge ' + ST[x.state][1] + '">' + ST[x.state][0] + '</span>' : '<span class="badge badge-dim">확인 전</span>';
+    var rep = x.reports ? '<span class="badge badge-warn">신고 ' + x.reports + '</span>' : '';
+    var alt = x.alt || it.s;
+    return '<tr data-id="' + id + '" data-state="' + (x.state || '') + '" data-rep="' + (x.reports || 0) + '"><td><div class="shop-row">' + (it.img ? '<img src="' + esc(it.img) + '" width="48" height="48" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') +
+      '<div><b>' + esc(it.n) + '</b> ' + st + ' ' + rep + ' ' + src + '<br><span class="small muted">' + id + (x.checked_at ? ' · ' + esc(fmtTime(x.checked_at)) + ' 확인' : '') + (alt ? ' · 검색 결과 링크 있음' : ' · 검색 결과 링크 없음') + '</span></div></div></td>' +
+      '<td class="num">' + (x.clicks || 0) + '</td>' +
+      '<td><div class="row-btns shop-check"><a class="btn btn-ghost btn-sm" href="' + esc(openUrl) + '" target="_blank" rel="noopener" data-open>상품 열기</a><button type="button" class="btn btn-sub btn-sm" data-st="ok">정상</button><button type="button" class="btn btn-ghost btn-sm" data-st="broken">안 열림</button>' + (x.state ? '<button type="button" class="link-btn small" data-st="">표시 지우기</button>' : '') + '</div>' +
+      '<small class="muted">안 열림으로 두면 구매 버튼이 <a href="' + esc(search) + '" target="_blank" rel="noopener">쿠팡 검색 결과</a>로 가요.</small></td>' +
+      '<td><div class="shop-in"><input data-url aria-label="상품 링크" value="' + esc(x.url || '') + '" placeholder="' + esc(it.p || '상품 링크 https://link.coupang.com/a/...') + '" inputmode="url"></div>' +
+      '<div class="shop-in"><input data-alt aria-label="검색 결과 링크" value="' + esc(x.alt || '') + '" placeholder="' + esc(it.s || '검색 결과 링크 https://link.coupang.com/a/...') + '" inputmode="url"><button type="button" class="btn btn-sub btn-sm" data-save>저장</button></div></td></tr>';
+  }
+  function shopFilter(p) {
+    $$('tbody tr', p).forEach(function (tr) {
+      var show = shopView === 'all' || (shopView === 'todo' && !tr.dataset.state) || (shopView === 'broken' && tr.dataset.state === 'broken') || (shopView === 'rep' && Number(tr.dataset.rep) > 0);
+      tr.hidden = !show;
+    });
+  }
   function loadShop(p) {
     api('shop?days=30').then(function (j) {
       var shopItems = shopData.items;
       if (j._status !== 200) { p.innerHTML = '<p class="notice">' + esc(j.message || '불러오지 못했어요.') + '</p>'; return; }
-      var link = {}, clicks = {};
-      j.links.forEach(function (l) { link[l.id] = l.url; });
-      j.clicks.forEach(function (c) { clicks[c.id] = c.n; });
-      var ids = Object.keys(shopItems).sort(function (a, b) { return (clicks[b] || 0) - (clicks[a] || 0) || (link[a] ? 1 : 0) - (link[b] ? 1 : 0); });
-      var done = ids.filter(function (id) { return link[id] || shopItems[id].p; }).length;
-      var total = ids.reduce(function (n, id) { return n + (clicks[id] || 0); }, 0);
-      p.innerHTML = '<div class="kpi-grid kpi-3">' + kpiCard('파트너스 링크 넣음', done + ' / ' + ids.length, done === ids.length ? '모든 구매 버튼에 수수료가 붙어요' : '비어 있는 상품은 수수료가 없어요') + kpiCard('최근 30일 구매 버튼', N(total)) + kpiCard('쿠팡 API', j.api ? '연결됨' : '없음', j.api ? '' : '최종 승인 뒤 키를 넣을 수 있어요') + '</div>' +
-        '<div class="notice small"><b>파트너스 링크 바꾸는 순서</b><ol><li>‘고른 상품 열기’ 또는 ‘쿠팡에서 찾기’로 알맞은 상품 페이지를 열고 주소를 복사해요.</li><li>쿠팡 파트너스 → 링크 생성 → 간편 링크 만들기에 그 주소를 붙여 넣고 단축 링크(https://link.coupang.com/a/...)를 만들어요.</li><li>아래 칸에 붙여 넣고 ‘저장’을 누르면 바로 사이트의 구매 버튼에 쓰여요. 원고(content/shop.json)의 url보다 이 칸이 먼저 쓰여요.</li></ol></div>' +
-        (j.api ? '<div class="row-btns"><button type="button" class="btn btn-main" data-auto>쿠팡 API로 빈 링크 자동 만들기</button></div>' : '') +
-        (j.sources.length ? card('어디서 많이 눌렀나요 (최근 30일)', bars(j.sources.map(function (s) { return { label: esc(SRC[s.src] || (gamesBySlug[s.src] ? gameName(s.src) + ' 페이지' : s.src || '알 수 없음')), v: s.n }; }), N, { share: true })) : '') +
-        card('상품과 링크', '<div class="tbl-wrap"><table class="tbl shop-tbl"><thead><tr><th>상품</th><th class="num">30일 클릭</th><th>파트너스 링크</th></tr></thead><tbody>' +
-        ids.map(function (id) {
-          var it = shopItems[id];
-          var search = 'https://www.coupang.com/np/search?q=' + encodeURIComponent(it.q);
-          var state = link[id] ? '<span class="badge">관리 화면 링크</span>' : it.p ? '<span class="badge">원고 링크</span>' : '<span class="badge badge-warn">수수료 없음</span>';
-          return '<tr data-id="' + id + '"><td><div class="shop-row">' + (it.img ? '<img src="' + esc(it.img) + '" width="48" height="48" alt="" loading="lazy" referrerpolicy="no-referrer">' : '') + '<div><b>' + esc(it.n) + '</b> ' + state + '<br>' + (it.cu ? '<a class="small" href="' + esc(it.cu) + '" target="_blank" rel="noopener">고른 상품 열기</a> · ' : '') + '<a class="small" href="' + search + '" target="_blank" rel="noopener">쿠팡에서 찾기</a> · <span class="small muted">' + id + '</span></div></div></td><td class="num">' + (clicks[id] || 0) + '</td>' +
-            '<td><div class="shop-in"><input data-url value="' + esc(link[id] || '') + '" placeholder="' + esc(it.p || 'https://link.coupang.com/a/...') + '" inputmode="url"><button type="button" class="btn btn-sub btn-sm" data-save>저장</button></div></td></tr>';
-        }).join('') + '</tbody></table></div>');
+      var rows = {};
+      Object.keys(shopItems).forEach(function (id) { rows[id] = { url: '', alt: '', state: '', checked_at: '', clicks: 0, reports: 0 }; });
+      j.links.forEach(function (l) { if (rows[l.id]) Object.assign(rows[l.id], l); });
+      j.clicks.forEach(function (c) { if (rows[c.id]) rows[c.id].clicks = c.n; });
+      (j.linkReports || []).forEach(function (r) { if (rows[r.id]) rows[r.id].reports = r.n; });
+      shopRows = rows;
+      var ids = Object.keys(rows).sort(function (a, b) { return rows[b].reports - rows[a].reports || (rows[b].state === 'broken') - (rows[a].state === 'broken') || rows[b].clicks - rows[a].clicks; });
+      var done = ids.filter(function (id) { return rows[id].url || shopItems[id].p; }).length;
+      var total = ids.reduce(function (n, id) { return n + rows[id].clicks; }, 0);
+      var nOk = ids.filter(function (id) { return rows[id].state === 'ok'; }).length;
+      var nBroken = ids.filter(function (id) { return rows[id].state === 'broken'; }).length;
+      var nRep = ids.filter(function (id) { return rows[id].reports > 0; }).length;
+      p.innerHTML = '<div class="kpi-grid">' +
+        kpiCard('파트너스 링크 넣음', done + ' / ' + ids.length, done === ids.length ? '모든 구매 버튼에 수수료가 붙어요' : '비어 있는 상품은 수수료가 없어요') +
+        kpiCard('링크 점검', nOk + ' 정상', '안 열림 ' + nBroken + ' · 확인 전 ' + (ids.length - nOk - nBroken)) +
+        kpiCard('새 링크 신고', N(nRep), nRep ? '신고 있는 상품이 맨 위에 있어요' : '방문자가 ‘안 열려요’를 누르면 여기 떠요') +
+        kpiCard('최근 30일 구매 버튼', N(total), j.api ? '쿠팡 API 연결됨' : '쿠팡 API 없음') + '</div>' +
+        '<div class="notice small"><b>링크 점검하는 법</b><ol>' +
+        '<li>‘다음 상품 열기’를 누르면 아직 확인하지 않은 상품의 쿠팡 페이지가 새 탭에 열려요. 상품이 보이면 ‘정상’, ‘상품을 찾을 수 없습니다’가 뜨면 ‘안 열림’을 눌러요.</li>' +
+        '<li>‘안 열림’으로 둔 상품은 바로 구매 버튼이 쿠팡 검색 결과로 가요. 새 상품을 골라 파트너스 단축 링크를 넣고 저장한 뒤 ‘정상’으로 바꿔 주세요.</li>' +
+        '<li>한 번에 20개 안팎만, 천천히 확인해 주세요. 짧은 시간에 쿠팡 페이지를 많이 열면 쿠팡이 이 인터넷에서의 접속을 몇 시간 막아요. 그때는 ‘요청하신 페이지의 사용권한이 없습니다’가 떠요. 손님 쪽에는 영향이 없고, 휴대폰 데이터로 열면 보여요.</li>' +
+        '</ol></div>' +
+        '<div class="row-btns"><button type="button" class="btn btn-main" data-next>다음 상품 열기</button>' + (j.api ? '<button type="button" class="btn btn-sub" data-auto>쿠팡 API로 비어 있는 링크 만들기</button><button type="button" class="btn btn-ghost" data-auto-all>모든 링크를 상품 단위로 다시 만들기</button>' : '') + '</div>' +
+        '<div class="row-btns" role="radiogroup" aria-label="보기">' + [['all', '전체'], ['rep', '신고 있음'], ['broken', '안 열림'], ['todo', '확인 전']].map(function (x) { return '<button type="button" class="chip" role="radio" aria-checked="' + (shopView === x[0]) + '" data-view="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+        card('상품과 링크', '<div class="tbl-wrap"><table class="tbl shop-tbl"><thead><tr><th>상품</th><th class="num">30일 클릭</th><th>점검</th><th>파트너스 링크 (상품 · 검색 결과)</th></tr></thead><tbody>' +
+          ids.map(function (id) { return shopRow(id, rows[id]); }).join('') + '</tbody></table></div>') +
+        (j.sources.length ? card('어디서 많이 눌렀나요 (최근 30일)', bars(j.sources.map(function (s) { var alt = /-alt$/.test(s.src); var k = s.src.replace(/-alt$/, ''); return { label: esc((SRC[k] || (gamesBySlug[k] ? gameName(k) + ' 페이지' : /^shop-/.test(k) ? '보드게임몰 · ' + k.slice(5) : k || '알 수 없음')) + (alt ? ' (검색 결과로)' : '')), v: s.n }; }), N, { share: true })) : '');
+      RS.radioGroup($('[role="radiogroup"]', p), function (b) { shopView = b.dataset.view; shopFilter(p); });
+      shopFilter(p);
+    });
+  }
+  function setShop(p, id, body, msg) {
+    return post('shop/link', Object.assign({ id: id }, body)).then(function (j) {
+      if (!j.ok) { RS.toast(j.message || '저장하지 못했어요'); return; }
+      var x = Object.assign(shopRows[id], j.link || { url: '', alt: '', state: '', checked_at: '' });
+      if (body.state === 'ok') x.reports = 0;
+      var tr = $('tr[data-id="' + id + '"]', p);
+      if (tr) { tr.outerHTML = shopRow(id, x); shopFilter(p); }
+      RS.toast(msg);
     });
   }
   $('#a-shop').addEventListener('click', function (e) {
+    var p = $('#a-shop');
+    var a = e.target.closest('a[data-open]');
+    if (a) { var r0 = a.closest('tr'); $$('tr.on', p).forEach(function (t) { t.classList.remove('on'); }); if (r0) r0.classList.add('on'); return; }
     var b = e.target.closest('button'); if (!b) return;
-    if (b.hasAttribute('data-auto')) {
-      b.disabled = true; b.textContent = '만드는 중이에요';
-      post('shop/auto').then(function (j) { RS.toast(j.ok ? '링크 ' + j.made + '개를 만들었어요' : (j.message || '만들지 못했어요')); loadShop($('#a-shop')); });
+    if (b.hasAttribute('data-next')) {
+      var next = $$('tbody tr', p).filter(function (tr) { return !tr.dataset.state; })[0];
+      if (!next) { RS.toast('모든 상품을 확인했어요'); return; }
+      $$('tr.on', p).forEach(function (t) { t.classList.remove('on'); });
+      next.hidden = false; next.classList.add('on'); next.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      window.open($('a[data-open]', next).href, '_blank', 'noopener');
       return;
     }
-    var row = b.closest('[data-id]'); if (!row || !b.hasAttribute('data-save')) return;
-    post('shop/link', { id: row.dataset.id, url: $('[data-url]', row).value.trim() }).then(function (j) { RS.toast(j.ok ? (j.removed ? '링크를 지웠어요' : '저장했어요') : (j.message || '저장하지 못했어요')); });
+    if (b.hasAttribute('data-auto') || b.hasAttribute('data-auto-all')) {
+      var all = b.hasAttribute('data-auto-all');
+      if (all && b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = '한 번 더 누르면 112개를 다시 만들어요'; return; }
+      b.disabled = true; b.textContent = '만드는 중이에요';
+      var made = 0;
+      var step = function (offset) {
+        return post('shop/auto', { mode: all ? 'all' : 'empty', offset: offset }).then(function (j) {
+          if (!j.ok) { RS.toast((made ? '링크 ' + made + '개를 만든 뒤 멈췄어요. ' : '') + (j.message || '만들지 못했어요')); return; }
+          made += j.made;
+          if (all && j.left > 0) { b.textContent = '만드는 중이에요 (' + j.next + ' / ' + j.total + ')'; return step(j.next); }
+          RS.toast('링크 ' + made + '개를 만들었어요');
+        });
+      };
+      step(0).then(function () { loadShop(p); });
+      return;
+    }
+    var row = b.closest('tr[data-id]'); if (!row) return;
+    var id = row.dataset.id;
+    if (b.hasAttribute('data-st')) {
+      var st = b.dataset.st;
+      setShop(p, id, { state: st }, st === 'ok' ? '정상으로 표시했어요' : st === 'broken' ? '안 열림으로 표시했어요. 구매 버튼이 검색 결과로 가요' : '표시를 지웠어요');
+      return;
+    }
+    if (b.hasAttribute('data-save')) {
+      setShop(p, id, { url: $('[data-url]', row).value.trim(), alt: $('[data-alt]', row).value.trim() }, '저장했어요');
+    }
   });
 
   // ---------- 커뮤니티 관리 ----------

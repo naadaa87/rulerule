@@ -495,10 +495,13 @@ function gameFaq(g) {
 const SHOP_KIND = { game: '본판', edition: '다른 판', expansion: '확장', goods: '용품', set: '세트' };
 // 상품 사진: 쿠팡 상품 사진 주소(content/shop.json의 img)를 크기만 바꿔 씀
 const CP_IMG = (path, n) => `https://thumbnail.coupangcdn.com/thumbnails/remote/${n}x${n}ex/${path}`;
-const cpProductUrl = (it) => (it.cp ? `https://www.coupang.com/vp/products/${it.cp.p}${it.cp.i ? `?itemId=${it.cp.i}${it.cp.v ? `&vendorItemId=${it.cp.v}` : ''}` : ''}` : '');
+// 상품 단위 주소: 판매자 번호(vendorItemId)를 빼서, 판매자가 바뀌어도 쿠팡이 지금 파는 곳을 골라 보여 줘요
+const cpProductUrl = (it) => (it.cp ? `https://www.coupang.com/vp/products/${it.cp.p}` : '');
 const shopImg = (it, n = 320, cls = 'pimg', eager = false) => (it.img ? `<img class="${cls}" src="${CP_IMG(it.img, n)}" srcset="${CP_IMG(it.img, n)} 1x, ${CP_IMG(it.img, Math.round(n * 1.5))} 2x" width="${n}" height="${n}" alt="${esc(it.name)} 상품 사진" loading="${eager ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer">` : '');
 const goHref = (id, from) => `/go/${id}${from ? `?from=${from}` : ''}`;
 const buyLink = (id, from, label = '쿠팡에서 보기', cls = 'btn btn-buy') => `<a class="${cls}" href="${goHref(id, from)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}">${label}</a>`;
+// 상품 페이지가 판매 종료 등으로 안 열릴 때: 같은 이름의 쿠팡 검색 결과로 가는 길과 알려 주기
+const altLine = (id, from) => (id === 'coupang-boardgames' ? '' : `<p class="alt-line"><a href="${goHref(id, from)}${from ? '&amp;' : '?'}alt=1" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}">검색 결과로 보기</a><button type="button" class="link-btn" data-link-report="${id}">안 열려요</button></p>`);
 const shopItemsOf = (g) => {
   const ids = [...(SHOP.games[g.slug] || [])];
   const extra = g.kind === 'traditional' ? SHOP.extras.traditional : g.group === 'family' && g.age <= 6 ? SHOP.extras.kids : g.group === 'party' ? [...SHOP.extras.party, ...SHOP.extras.board] : SHOP.extras.board;
@@ -514,8 +517,9 @@ function buyBox(g) {
 <h2 class="h2" id="buy-title">${esc(n)} 구매하기</h2>
 <p class="muted small">판매처의 가격과 구성은 수시로 바뀌어요. 상자 속 구성물이 이 설명과 같은지 상품 페이지에서 한 번 더 확인하세요.</p>
 <ul class="buy-list">
-${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item${it.img ? ' has-img' : ''}">${it.img ? `<a class="buy-img" href="${goHref(id, g.slug)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}" tabindex="-1" aria-hidden="true">${shopImg(it, 96, 'pimg')}</a>` : ''}<span class="buy-text"><span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span><b>${esc(it.name)}</b><small>${esc(it.note || '')}</small></span>${buyLink(id, g.slug)}</li>`; }).join('\n')}
+${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item${it.img ? ' has-img' : ''}">${it.img ? `<a class="buy-img" href="${goHref(id, g.slug)}" rel="sponsored nofollow noopener" target="_blank" data-buy="${id}" tabindex="-1" aria-hidden="true">${shopImg(it, 96, 'pimg')}</a>` : ''}<span class="buy-text"><span class="buy-kind">${SHOP_KIND[it.kind] || '상품'}</span><b>${esc(it.name)}</b><small>${esc(it.note || '')}</small>${altLine(id, g.slug)}</span>${buyLink(id, g.slug)}</li>`; }).join('\n')}
 </ul>
+<p class="muted small buy-help">쿠팡에서 ‘상품을 찾을 수 없습니다’가 뜨면 판매가 끝난 상품이에요. ‘검색 결과로 보기’로 같은 게임을 찾고, ‘안 열려요’를 눌러 주시면 링크를 바꿔 둘게요.</p>
 <p class="buy-more"><a href="/shop/">${icon('i-cart')}룰룰 보드게임몰에서 더 보기</a></p>
 </section>`;
 }
@@ -1239,6 +1243,7 @@ ${it.img ? `<a class="pcard-img" href="${goHref(id, from)}" rel="sponsored nofol
 <p class="pcard-note">${esc(it.note || '')}</p>
 ${g ? `<p class="pcard-meta">${playersText(g.players)} · ${minutesText(g.minutes)} · ${ageText(g.age)} · ${LEVELS[g.level]}</p>` : ''}
 <div class="pcard-btns">${g ? `<a class="btn btn-sub btn-sm" href="/games/${g.slug}/">하는법 보기</a>` : ''}${buyLink(id, from, '쿠팡에서 보기', 'btn btn-buy btn-sm')}</div>
+${altLine(id, from)}
 </li>`;
 }
 function shopPage() {
@@ -1269,6 +1274,7 @@ ${SHOP.searchWidget ? `<div class="cp-search"><iframe src="${esc(SHOP.searchWidg
 <h2 class="h2">사기 전에 알아 두세요</h2>
 <ul class="list">
 <li>버튼을 누르면 쿠팡 상품 페이지나 검색 결과로 이동해요. 가격과 배송, 교환·환불은 판매처의 안내를 따라요.</li>
+<li>쿠팡에서 ‘상품을 찾을 수 없습니다’가 뜨면 판매가 끝났거나 잠시 멈춘 상품이에요. 카드 아래 ‘검색 결과로 보기’로 같은 게임을 찾을 수 있고, ‘안 열려요’를 눌러 주시면 확인해서 링크를 바꿔 둘게요.</li>
 <li>같은 이름이라도 판(에디션)에 따라 구성물과 인원이 조금 달라요. 상품 페이지의 구성품을 확인하세요.</li>
 <li>${cfg.siteName}은 상품을 직접 팔지 않아요. 링크를 통해 구매하면 ${cfg.siteName}에 수수료가 생기고, 이 수수료는 설명을 만들고 검수하는 데 써요.</li>
 </ul>
@@ -1681,7 +1687,7 @@ const compact = sortedGames.map((g) => ({
 write('data/games.json', JSON.stringify({ build: BUILD, games: compact, popular: content.popular }));
 write('data/stories.json', JSON.stringify({ build: BUILD, stories: FUN.storiesData }));
 // 구매 버튼(/go/)이 읽는 상품 목록: id -> 이름, 쿠팡 검색어, 고정 링크
-write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || cpProductUrl(it), p: it.url || '', cu: cpProductUrl(it), img: it.img ? CP_IMG(it.img, 230) : '', g: it.game || '' }])) }));
+write('data/shop.json', JSON.stringify({ build: BUILD, items: Object.fromEntries(Object.entries(SHOP.items).map(([id, it]) => [id, { n: it.name, q: it.q, u: it.url || cpProductUrl(it), p: it.url || '', s: it.alt || '', cu: cpProductUrl(it), img: it.img ? CP_IMG(it.img, 230) : '', g: it.game || '' }])) }));
 
 write('manifest.webmanifest', JSON.stringify({
   name: cfg.tagline ? `${cfg.siteName} | ${cfg.tagline}` : cfg.siteName,

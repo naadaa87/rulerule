@@ -1089,6 +1089,12 @@ mark { background: #ffe1a8; color: inherit; border-radius: 3px; padding: 0 1px; 
 .pcard-meta { color: var(--muted); font-size: 13px; font-weight: 600; }
 .pcard-btns { margin-top: auto; padding-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
 .pcard-btns .btn { flex: 1 1 auto; }
+.alt-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin-top: 6px; font-size: 13px; line-height: 1.4; }
+.alt-line a { color: var(--ink-2); font-weight: 600; text-underline-offset: 3px; }
+.alt-line .link-btn { font-size: 13px; font-weight: 600; color: var(--muted); }
+.alt-line .link-btn:disabled { text-decoration: none; cursor: default; }
+.pcard .alt-line { margin-top: 4px; justify-content: center; }
+.buy-help { margin-top: 10px; line-height: 1.55; }
 .tile-goods { display: grid; place-items: center; background: var(--mist); }
 .tile-goods .ico { width: 18px; height: 18px; }
 
@@ -1608,6 +1614,13 @@ button.poll-opt:hover { border-color: var(--navy); }
 .shop-row { display: flex; gap: 10px; align-items: center; }
 .shop-row img { width: 48px; height: 48px; border-radius: 8px; border: 1px solid var(--line); object-fit: contain; background: #fff; flex: none; }
 .badge-warn { background: var(--coral-tint); color: var(--coral-dark); }
+.badge-ok { background: var(--ok-tint); color: var(--ok); }
+.badge-dim { background: #fff; border: 1px solid var(--line-2); color: var(--muted); }
+.shop-tbl td { vertical-align: top; }
+.shop-tbl .shop-in + .shop-in { margin-top: 6px; }
+.shop-check { margin-top: 0; gap: 6px; flex-wrap: wrap; }
+.shop-tbl tr.on td { background: var(--ok-tint); }
+.shop-tbl small { display: block; margin-top: 6px; line-height: 1.45; }
 .buy-item:not(.has-img) { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 560px) { .buy-item:not(.has-img) { grid-template-columns: minmax(0, 1fr) auto; } }
 

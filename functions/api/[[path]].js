@@ -26,7 +26,7 @@ import { collect, isBot } from '../../server/kpi.js';
 import { adminLogin, adminAuthed } from '../../server/adminauth.js';
 import { fun } from '../../server/fun.js';
 
-const KINDS = ['wrong', 'unclear', 'typo', 'request', 'other'];
+const KINDS = ['wrong', 'unclear', 'typo', 'request', 'link', 'other'];
 const EVENTS = ['view', 'table', 'qr', 'venue', 'speak', 'share'];
 
 async function postReport(request, env) {
@@ -36,13 +36,23 @@ async function postReport(request, env) {
   const kind = KINDS.includes(body.kind) ? body.kind : 'other';
   const message = clip(body.message, 1000);
   if (message.length < 5) return fail('조금만 더 자세히 적어 주세요. (5자 이상)');
-  let slug = clip(body.slug, 60);
+  // 구매 링크 신고는 게임 대신 상품 id(item)를 남겨요
+  let slug = clip(kind === 'link' && body.item ? body.item : body.slug, 60);
   if (slug && !/^[a-z0-9-]+$/.test(slug)) slug = '';
+  if (kind === 'link') {
+    if (!slug) return fail('어떤 상품인지 알 수 없어요.');
+    const shop = await assetJSON(env, request, '/data/shop.json');
+    if (!shop || !shop.items[slug]) return fail('어떤 상품인지 알 수 없어요.');
+  }
   const ipHash = await ipHashOf(request);
   if (ipHash) {
     const since = new Date(Date.now() - 10 * 60e3).toISOString();
     const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM reports WHERE ip_hash = ? AND created_at > ?').bind(ipHash, since).first();
     if (row && row.n >= 5) return fail('짧은 시간에 너무 많이 보냈어요. 10분 뒤에 다시 보내 주세요.', 429);
+    if (kind === 'link') {
+      const dup = await env.DB.prepare("SELECT id FROM reports WHERE kind = 'link' AND slug = ? AND ip_hash = ? AND status = 'new' LIMIT 1").bind(slug, ipHash).first();
+      if (dup) return json({ ok: true, dup: true });
+    }
   }
   await env.DB.prepare('INSERT INTO reports (created_at, slug, kind, message, contact, page, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?)')
     .bind(new Date().toISOString(), slug, kind, message, clip(body.contact, 100), clip(body.page, 200), ipHash).run();

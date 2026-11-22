@@ -147,6 +147,8 @@ export async function ensureSchema(db) {
   const ADD = {
     users: [['xp', 'INTEGER NOT NULL DEFAULT 0'], ['stars', 'INTEGER NOT NULL DEFAULT 0'], ['badge', "TEXT NOT NULL DEFAULT ''"], ['streak', 'INTEGER NOT NULL DEFAULT 0'], ['last_checkin', "TEXT NOT NULL DEFAULT ''"], ['checkins', 'INTEGER NOT NULL DEFAULT 0'], ['manner_sum', 'INTEGER NOT NULL DEFAULT 0'], ['manner_n', 'INTEGER NOT NULL DEFAULT 0']],
     posts: [['pinned', 'INTEGER NOT NULL DEFAULT 0'], ['adopted', 'INTEGER NOT NULL DEFAULT 0'], ['poll_ends', "TEXT NOT NULL DEFAULT ''"]],
+    // 구매 링크 점검 (2026-11-23): alt = 검색 결과 링크, state = ok | broken, checked_at = 마지막으로 눈으로 확인한 때
+    shop_links: [['alt', "TEXT NOT NULL DEFAULT ''"], ['state', "TEXT NOT NULL DEFAULT ''"], ['note', "TEXT NOT NULL DEFAULT ''"], ['checked_at', "TEXT NOT NULL DEFAULT ''"]],
   };
   for (const [table, cols] of Object.entries(ADD)) {
     const { results } = await db.prepare(`PRAGMA table_info(${table})`).all();

@@ -641,6 +641,22 @@
     });
   }
 
+  // ---------- 구매 링크가 안 열려요 (한 번 누르면 운영자에게 알려요) ----------
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-link-report]');
+    if (!b || b.disabled) return;
+    e.preventDefault();
+    var id = b.getAttribute('data-link-report');
+    b.disabled = true;
+    fetch('/api/report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'link', item: id, message: '구매 링크가 열리지 않아요', page: location.pathname }) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .then(function (j) {
+        if (j.ok) { b.textContent = '알려 주셔서 고마워요'; toast('확인해서 링크를 바꿔 둘게요. 지금은 ‘검색 결과로 보기’를 눌러 주세요.'); }
+        else { b.disabled = false; toast(j.message || '지금은 보낼 수 없어요. 잠시 뒤 다시 눌러 주세요.'); }
+      })
+      .catch(function () { b.disabled = false; toast('인터넷 연결을 확인하고 다시 눌러 주세요.'); });
+  });
+
   // ---------- 오프라인에서도 열리게 ----------
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () { /* 무시 */ }); });
