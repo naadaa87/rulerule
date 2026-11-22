@@ -4,6 +4,7 @@
 
 - 게임 100가지: 보드게임 78가지, 전통놀이 22가지
 - 게임 찾기: 인원, 시간, 난이도, 종류, 분위기로 거르기와 초성 검색(예: ㅎㄹㄱㄹ)
+- 보드게임 추천(`/recommend/`): 2인·3인·4인·5인·6인 이상, 가족, 아이, 초등, 입문, 처음 만난 사이, 파티, 연말 모임, 명절, 짧은 게임, 전략 게임 15가지 추천과 보드게임 종류(`/types/`)
 - 게임 페이지: 1분 요약, 따라하기(구성물 확인, 준비, 예시), 자세한 규칙, 헷갈리는 상황, 우리 집 규칙 정하기
 - 테이블 모드: 단계별 안내, 화면 켜 두기, 밤 화면, 글씨 크기, 점수판, 타이머, 주사위, 누가 먼저, 팀 나누기, 윷 던지기, 역할 나누기(마피아, 아발론), 제시어 나누기(라이어 게임)
 - 매장 QR: 매장 이름과 게임을 고르면 매장 페이지, QR 이미지, 인쇄용 안내문과 게임별 QR 스티커가 만들어져요. 매장 정보는 주소 안에만 담기고 서버에 저장되지 않아요.
@@ -164,23 +165,52 @@
 | 항목 | 뜻 |
 | --- | --- |
 | `siteName`, `tagline` | 서비스 이름(룰룰)과 이름 옆에 붙는 설명 문구(보드게임 룰 하는법 설명서) |
-| `siteTitle`, `description` | 첫 화면 제목, 검색 설명 |
+| `siteTitle`, `description` | 첫 화면 제목, 검색 설명. `{n}`은 빌드할 때 게임 수로 바뀌어요 |
 | `siteUrl` | 실제 사이트 주소. 도메인을 연결하면 바꿔 주세요 |
 | `githubRepo`, `githubBranch` | 운영 관리 화면의 ‘고치기’ 링크에 쓰여요 |
 | `contactEmail` | 소개 페이지에 보일 문의 메일 (비워 두면 안 보여요) |
-| `naverSiteVerification`, `googleSiteVerification` | 네이버 서치어드바이저, 구글 서치 콘솔 소유 확인 값 |
+| `naverSiteVerification`, `googleSiteVerification`, `bingSiteVerification` | 네이버 서치어드바이저, 구글 서치 콘솔, 빙 웹마스터 도구 소유 확인 값(메타 태그 방식일 때) |
+| `daumWebmasterPin` | Daum 웹마스터도구가 robots.txt에 넣으라고 주는 확인 값. 넣으면 robots.txt 맨 위에 `#DaumWebMasterTool:값`이 붙어요 |
+| `indexNowKey` | 검색엔진에 새 페이지를 알리는 IndexNow 열쇠. 빌드가 `/열쇠.txt` 파일을 만들어요. 바꾸지 마세요 |
+| `sameAs` | 룰룰 공식 블로그·인스타그램 같은 연관 채널 주소 목록. 넣으면 네이버 ‘연관 채널’과 구글이 읽는 구조화 데이터에 들어가요 |
 
 도메인을 연결하려면 Pages 프로젝트의 **Custom domains**(사용자 지정 도메인)에서 추가하고 `siteUrl`을 바꿔요. 검색 등록은 사이트맵 주소 `https://(주소)/sitemap.xml`을 네이버와 구글에 제출하면 돼요.
 
 ---
 
-### 검색 노출 (네이버, 구글)
+### 검색 노출 (네이버, 구글, 다음, 빙, AI 검색)
 
-- 게임마다 `content/seo.json`에 제목 끝에 붙는 핵심 주제(`hooks`)와 많이 찾는 검색어(`kw`)가 있어요. 제목은 ‘루미큐브 하는법·룰 총정리 | 조커·등록 30점·점수 계산’처럼 만들어져요.
-- 사이트맵 `https://rulerule.kr/sitemap.xml`과 RSS `https://rulerule.kr/rss.xml`을 네이버 서치어드바이저(요청 → 사이트맵 제출, RSS 제출)와 구글 서치 콘솔(Sitemaps)에 제출해 주세요.
+**검색어 설계**
+- 2026년 11월 구글·다음 자동완성으로 실제 검색 표현을 확인했어요. 게임 이름 뒤에는 ‘룰’, ‘규칙’, ‘하는법’, ‘게임방법’, 전통놀이는 ‘놀이 방법’, ‘규칙’이 많이 붙고, 추천은 ‘2인·3인·4인·5인·6인 보드게임 추천’, ‘가족 보드게임 추천’, ‘초등 저학년/고학년 보드게임’, ‘보드게임 입문 추천’, ‘연말 모임 게임 추천’, ‘보드게임 종류’, ‘전통놀이 종류’처럼 찾아요.
+- 대상별로 잡은 검색어와 들어가는 페이지
+  | 대상 | 검색어 예 | 페이지 |
+  | --- | --- | --- |
+  | 룰을 찾는 사람(모든 대상) | 루미큐브 룰, 할리갈리 규칙, 다빈치코드 하는법, 스플렌더 2인 규칙 | 게임 페이지 100개 (`/games/…`) |
+  | 모임을 앞둔 20~30대 | 4인 보드게임 추천, 파티 보드게임 추천, 연말 모임 게임 추천, 처음 만난 사이 게임 | `/collections/four-players/`, `party-room`, `year-end`, `first-meeting` |
+  | 커플·부부 | 2인 보드게임 추천, 커플 보드게임 | `/collections/two-players/` |
+  | 아이 있는 가족 | 가족 보드게임 추천, 아이 보드게임, 초등 저학년·고학년 보드게임 | `family`, `with-kids`, `elementary` |
+  | 처음 해 보는 사람 | 보드게임 입문 추천, 초보 보드게임, 보드게임 종류 | `beginner`, `/types/`, `/learn/` |
+  | 명절·교육 현장 | 전통놀이 종류, 설날·추석 전통놀이, 윷놀이 규칙, 비석치기 놀이방법 | `/traditional/`, `holiday`, 전통놀이 페이지 |
+  | 룰룰을 아는 사람 | 룰룰, 룰룰 보드게임, rulerule | 처음 화면 (사이트 이름·바닥글 문장·구조화 데이터) |
+- 제목 형식: 보드게임은 ‘루미큐브 룰·하는법 총정리 | 조커·등록 30점·점수 계산’, 전통놀이는 ‘비석치기 놀이 방법·규칙 총정리’, 이름이 ‘놀이’로 끝나면 ‘윷놀이 방법·규칙 총정리’, 판에 두는 놀이는 ‘장기 두는 법·규칙 총정리’로 만들어져요. 끝의 핵심 주제는 `content/seo.json`의 `hooks`예요.
+- 추천 페이지는 `content/collections.json`에서 고쳐요. `h1`(검색어), `seo`(제목), `kw`(검색어), `lead`, `how`(고르는 법), `sections`(저학년·고학년처럼 묶을 때), `games` 순서가 곧 추천 순위예요. 페이지마다 순위 목록, 한눈에 비교 표, 자주 묻는 질문, 구조화 데이터(ItemList, FAQPage)가 자동으로 붙어요.
+
+**검색엔진 등록과 알리기**
+- 네이버 서치어드바이저: 소유 확인, 사이트맵(`/sitemap.xml`)과 RSS(`/rss.xml`) 제출. 새 사이트는 수집과 색인까지 몇 주가 걸려요. 요청 → 웹 페이지 수집에 처음 화면, `/rules/`, `/recommend/`와 많이 찾는 게임 페이지를 넣어 두면 빨라져요.
+- IndexNow: main에 원고가 올라가면 GitHub Actions(`.github/workflows/indexnow.yml`)가 배포를 4분 기다린 뒤 사이트맵 주소 전체를 네이버와 IndexNow 공용 주소(빙 등)에 알려요. 운영 관리 → 설정 → ‘검색엔진에 새 페이지 알리기’로 직접 알릴 수도 있어요. Actions 탭에서 ‘Run workflow’로 다시 실행할 수 있어요.
+- 구글 서치 콘솔: 도메인 속성(`rulerule.kr`)에 사이트맵과 RSS가 제출되어 있어요.
+- 빙 웹마스터 도구: 사이트맵과 RSS가 제출되어 있어요. 빙 색인은 ChatGPT 검색과 Copilot에도 쓰여요.
+- Daum 웹마스터도구(`webmaster.daum.net`): PIN코드를 발급받으면(직접 정하는 값이라 운영자가 해야 해요) robots.txt에 넣을 확인 값이 나와요. 그 값을 `site.config.json`의 `daumWebmasterPin`에 넣고 다시 배포한 뒤 인증하고 수집 요청을 해 주세요.
+
+**AI 검색**
+- `/llms.txt`(사이트 소개, 주요 페이지, 게임별 한 줄 요약)와 `/llms-full.txt`(게임별 1분 요약)를 빌드가 만들어요. ChatGPT, Claude, Perplexity 같은 AI 검색이 룰룰을 정확하게 인용하도록 돕는 파일이에요.
+- Cloudflare → AI Crawl Control에서 AI 검색 로봇을 막지 않고 있어요(2026-11-23 기준, 구글·애플·Anthropic·빙 로봇 접근 허용). 막으면 AI 검색에 노출되지 않아요.
+
+**그 밖에**
+- 사이트맵의 날짜(lastmod)와 RSS 날짜는 `content/dates.json`에서 읽어요. 원고를 고친 뒤 `npm run dates`를 실행하면 git 기록으로 다시 만들어요. 안 해도 빌드는 되고, 새 원고는 빌드한 날로 들어가요.
 - 네이버 소유 확인 파일(`/naver166f723b5ee950517c79af0092638755.html`)은 `functions/`의 함수가 바로 답해요. Cloudflare Pages가 `.html` 주소를 다른 주소로 옮기는 것을 피하려는 거예요.
-- 게임별 공유 이미지(1200×630)는 `src/static/img/og/`에 있어요.
-- `www.rulerule.kr`과 `rulerule.pages.dev`는 표준 주소(canonical)가 `rulerule.kr`을 가리켜요. 주소창까지 옮기고 싶다면 Cloudflare 대시보드 → rulerule.kr → Rules → Redirect Rules에서 `www.rulerule.kr/*` → `https://rulerule.kr/$1`(301)을 만들어 주세요.
+- 게임별 공유 이미지(1200×630)는 `src/static/img/og/`에 있어요. 사이트맵에 이미지 주소도 함께 들어가요.
+- `www.rulerule.kr`은 `rulerule.kr`로 301 이동하고, `rulerule.pages.dev`는 표준 주소(canonical)가 `rulerule.kr`을 가리켜요.
 
 ---
 
