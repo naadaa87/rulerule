@@ -649,6 +649,7 @@
       p.innerHTML =
         card('이 기기', '<p>운영자 기기의 방문은 지표를 흐리게 해요. 처음 로그인할 때 이 브라우저의 방문 통계를 자동으로 껐어요.</p><p><b data-ntstate>' + (off ? '이 브라우저의 방문은 지표에서 빼고 있어요.' : '이 브라우저의 방문도 지표에 들어가요.') + '</b></p><div class="row-btns"><button type="button" class="btn btn-sub" data-nt>' + (off ? '이 브라우저도 세기' : '이 브라우저 빼기') + '</button></div><p class="small muted">휴대폰 등 다른 기기도 빼려면 그 기기에서 개인정보처리방침 페이지의 ‘방문 통계 끄기’를 누르세요.</p>') +
         card('Cloudflare 설정 상태', '<ul class="setup">' + rows.map(function (x) { return '<li class="' + (x[2] ? 'ok' : 'no') + '"><b>' + x[0] + '</b><span>' + x[1] + '</span></li>'; }).join('') + '</ul><p class="small muted">비밀 값은 Cloudflare → Workers & Pages → rulerule → 설정 → 변수 및 비밀에서 넣고, 넣은 뒤에는 다시 배포해야 적용돼요.</p>') +
+        card('검색엔진에 새 페이지 알리기', '<p>네이버와 빙(IndexNow 참여 검색엔진)에 사이트맵의 모든 주소를 한 번에 알려요. 게임이나 추천 페이지를 새로 올린 뒤 눌러 주세요. 하루에 한두 번이면 충분해요.</p><p class="small" data-inow>마지막으로 알린 기록을 불러오는 중이에요.</p><div class="row-btns"><button type="button" class="btn btn-sub" data-inow-send>지금 알리기</button></div><p class="small muted">구글은 IndexNow를 쓰지 않아요. 구글은 서치 콘솔의 사이트맵으로 알아서 읽어 가요.</p>') +
         card('모은 기록', tableHTML(['종류', '줄 수'], [['페이지뷰 기록', N(s.rows.pv)], ['구매 버튼 기록', N(s.rows.clk)], ['검색·기능 기록', N(s.rows.ev)], ['회원', N(s.rows.users)], ['후기', N(s.rows.reviews)]]) + '<p class="small muted">' + (s.firstDay ? md(s.firstDay) + '부터 모았어요. ' : '') + '방문 기록은 400일이 지나면 자동으로 지워요. 이름·IP는 모으지 않아요.</p>') +
         card('지표 설명', glossaryHTML) +
         card('로그인', '<p class="small">로그인은 12시간(‘7일 유지’를 고르면 7일) 동안 이어져요. 비밀번호를 15분 안에 8번 틀리면 잠시 막혀요.</p><div class="row-btns"><button type="button" class="btn btn-ghost" data-logout2>로그아웃</button></div>');
@@ -660,6 +661,19 @@
         loadSettings(p);
       });
       $('[data-logout2]', p).addEventListener('click', function () { logout('로그아웃했어요.'); });
+      var inowText = function (r) {
+        if (!r) return '아직 알린 기록이 없어요.';
+        return fmtTime(r.at) + '에 주소 ' + N(r.count) + '개를 알렸어요. ' + r.results.map(function (x) { return x.name + ' ' + (x.ok ? '받음' : '실패(' + x.status + ')'); }).join(', ');
+      };
+      api('indexnow').then(function (j) { var el = $('[data-inow]', p); if (el) el.textContent = j.ok ? inowText(j.last) : (j.message || '불러오지 못했어요.'); });
+      $('[data-inow-send]', p).addEventListener('click', function (e) {
+        var b = e.currentTarget; b.disabled = true; b.textContent = '알리는 중이에요';
+        post('indexnow').then(function (j) {
+          b.disabled = false; b.textContent = '지금 알리기';
+          var el = $('[data-inow]', p); if (el) el.textContent = j.results ? inowText(j) : (j.message || '알리지 못했어요.');
+          RS.toast(j.ok ? '검색엔진에 알렸어요' : (j.message || '알리지 못했어요'));
+        });
+      });
     });
   }
 

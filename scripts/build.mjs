@@ -58,6 +58,9 @@ const games = fs.readdirSync(gamesDir).filter((f) => f.endsWith('.json')).sort()
   g._file = f;
   return g;
 });
+// 사이트 제목·설명의 {n}은 게임 수로 바꿔요
+cfg.siteTitle = String(cfg.siteTitle || '').replace(/\{n\}/g, games.length);
+cfg.description = String(cfg.description || '').replace(/\{n\}/g, games.length);
 
 const need = (g, cond, msg) => { if (!cond) problems.push(`${g._file}: ${msg}`); };
 const visualsOf = (g) => VISUALS[g.slug] || [];
@@ -92,6 +95,10 @@ for (const g of games) {
   });
 }
 const content = readJSON('content/collections.json');
+// 원고 날짜 (scripts/dates.mjs가 git 기록으로 만들어요)
+const DATES = fs.existsSync(path.join(ROOT, 'content', 'dates.json')) ? readJSON('content/dates.json') : {};
+const TODAY = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+const datesOf = (rel) => DATES[rel] || { pub: TODAY, mod: TODAY };
 const glossary = readJSON('content/glossary.json');
 let venues = [];
 if (fs.existsSync(path.join(ROOT, 'content', 'venues.json'))) venues = readJSON('content/venues.json');
@@ -208,7 +215,10 @@ const CREW = [
   ['char-fox', '폭스', '전략 큐레이터', '둘이서 하기 좋은 게임', '/collections/two-players/'],
   ['char-cat', '캣', '모임 호스트', '여럿이 모인 자리를 띄워요', '/collections/party-room/'],
 ];
-const COL_ART = { 'two-players': 'scene-two', 'first-meeting': 'scene-first-meet', 'with-kids': 'scene-family', holiday: 'scene-generations', 'big-group': 'scene-friends', 'party-room': 'scene-workshop', quick: 'ico-quick', 'strategy-night': 'scene-strategy' };
+const COL_ART = {
+  'two-players': 'scene-two', 'first-meeting': 'scene-first-meet', 'with-kids': 'scene-family', holiday: 'scene-generations', 'big-group': 'scene-friends', 'party-room': 'scene-workshop', quick: 'ico-quick', 'strategy-night': 'scene-strategy',
+  'three-players': 'scene-variety', 'four-players': 'scene-coop', 'five-players': 'scene-friends', family: 'scene-generations', elementary: 'scene-picnic', beginner: 'ico-first', 'year-end': 'scene-workshop',
+};
 const guide = (name, who, text) => `<div class="guide">${pic(name, '', 'guide-pic')}<p><b>${who}</b> ${text}</p></div>`;
 
 // ---------- 놀이판 그림 (전통놀이) ----------
@@ -275,6 +285,7 @@ const DIAGRAMS = { 'yut-board': yutBoard, 'umul-gonu': umulGonuBoard, chilgyo: c
 const NAV = [
   ['/games/', '게임 찾기'],
   ['/rules/', '룰 모음'],
+  ['/recommend/', '추천'],
   ['/test/', '취향 테스트'],
   ['/stories/', '보드게임 이야기'],
   ['/traditional/', '전통놀이'],
@@ -310,11 +321,13 @@ function footer() {
 <div class="wrap foot-grid">
 <div>
 <a class="brand brand-foot" href="/"><span>${esc(cfg.siteName)}</span>${SPARK}</a>${cfg.tagline ? `<p class="foot-tag">${esc(cfg.tagline)}</p>` : ''}
-<p class="foot-lead">보드게임과 전통놀이, 처음 하는 사람도 3분 안에 시작할 수 있게 설명해요.</p>
+<p class="foot-lead">${esc(cfg.siteName)}(rulerule.kr)은 보드게임과 전통놀이 ${games.length}가지의 룰과 하는법을 처음 하는 사람도 3분 안에 시작할 수 있게 설명하는 보드게임 설명서예요.</p>
 </div>
 <nav class="foot-nav" aria-label="바닥 메뉴">
 <a href="/games/">게임 찾기</a>
 <a href="/rules/">보드게임 룰 모음</a>
+<a href="/recommend/">보드게임 추천</a>
+<a href="/types/">보드게임 종류</a>
 <a href="/traditional/">전통놀이</a>
 <a href="/stories/">보드게임 이야기</a>
 <a href="/test/">취향 테스트</a>
@@ -391,10 +404,12 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
 <meta property="og:image" content="${abs(ogImage || '/assets/img/og.png')}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(title)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
 ${cfg.naverSiteVerification ? `<meta name="naver-site-verification" content="${esc(cfg.naverSiteVerification)}">` : ''}
 ${cfg.googleSiteVerification ? `<meta name="google-site-verification" content="${esc(cfg.googleSiteVerification)}">` : ''}
+${cfg.bingSiteVerification ? `<meta name="msvalidate.01" content="${esc(cfg.bingSiteVerification)}">` : ''}
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
@@ -476,7 +491,12 @@ const seoOf = (g) => {
     : [`${n} 하는법`, `${n} 룰`, `${n} 규칙`, `${n} 게임방법`];
   const altKw = alt.filter((a) => !GENERIC_ALIAS.test(a)).slice(0, 2).map((a) => `${a} 하는법`);
   const kw = [...new Set([...main, ...s.kw, ...altKw])];
-  return { hooks: s.hooks, kw, alt, n };
+  // 검색에서 많이 붙는 말: 보드게임은 '룰·규칙·게임 방법', 전통놀이는 '놀이 방법·규칙', 판에 두는 놀이는 '두는 법'
+  const play = g.kind !== 'traditional' ? 'game' : /놀이|치기|차기|먹기|땡|돌리기|뜨기|피었습니다/.test(n) ? 'play' : 'board';
+  const endsPlay = /놀이$/.test(n);
+  const sub = play === 'game' ? '룰·하는법' : play === 'play' ? (endsPlay ? '방법·규칙' : '놀이 방법·규칙') : '두는 법·규칙';
+  const how = play === 'game' ? '게임 방법' : play === 'play' ? (endsPlay ? '방법' : '놀이 방법') : '두는 법';
+  return { hooks: s.hooks, kw, alt, n, sub, how };
 };
 
 function gameFaq(g) {
@@ -583,9 +603,12 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 <button type="button" class="btn btn-sub" data-house-make>규칙 카드 만들기</button>
 </section>` : '';
 
-  const related = g.related.length ? `<section class="related wrap">
-<h2 class="h2 h2-pic">${pic('card-recommend', '', 'h2-char')}비슷한 게임</h2>
-<div class="gcards">${g.related.map((s) => gameCard(bySlug[s])).join('')}</div>
+  const inCols = colsOf(g.slug);
+  const related = g.related.length || inCols.length ? `<section class="related wrap">
+${g.related.length ? `<h2 class="h2 h2-pic">${pic('card-recommend', '', 'h2-char')}비슷한 게임</h2>
+<div class="gcards">${g.related.map((s) => gameCard(bySlug[s])).join('')}</div>` : ''}
+${inCols.length ? `<h2 class="h2">${esc(josa(seo.n, '이', '가'))} 들어간 보드게임 추천</h2>
+<div class="trad-links">${inCols.map((c) => `<a class="pill" href="/collections/${c.slug}/">${esc(colH1(c))}</a>`).join('')}<a class="pill" href="/recommend/">보드게임 추천 모음</a></div>` : ''}
 </section>` : '';
 
   const startHref = vis.length ? '#visual' : '#learn';
@@ -597,7 +620,7 @@ ${vis.map((f, i) => `<li class="vis-step" id="v-${i + 1}" aria-label="${i + 1} /
 <div class="game-hero-copy">
 <nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="${g.kind === 'traditional' ? '/traditional/' : '/games/'}">${g.kind === 'traditional' ? '전통놀이' : '게임 찾기'}</a></nav>
 <p class="game-kind"><span class="tag tag-navy">${KINDS[g.kind]}</span><span class="tag">${GROUPS[g.group]}</span>${kindTag}</p>
-<h1 class="game-name">${esc(name)}<span class="game-h1-sub">하는법·룰</span></h1>
+<h1 class="game-name">${esc(name)}<span class="game-h1-sub">${seo.sub}</span></h1>
 ${g.original || seo.alt.length ? `<p class="game-orig">${[g.original, ...seo.alt.filter((a) => a !== g.original && !GENERIC_ALIAS.test(a))].filter(Boolean).slice(0, 3).map(esc).join(' · ')}</p>` : ''}
 <p class="game-one">${fmt(g.oneLine)}</p>
 <ul class="game-meta" aria-label="기본 정보">
@@ -648,7 +671,7 @@ ${visPanel}
 </section>
 
 <section class="panel" id="learn" role="tabpanel" aria-labelledby="tab-learn">
-<h2 class="h2">${esc(seo.n)} 하는법 따라하기</h2>
+<h2 class="h2">${esc(seo.n)} ${seo.how} 따라하기</h2>
 ${guide('domi-order', '도미', '위에서부터 순서대로 따라 하면 돼요.')}
 ${comps}
 ${hasBuy && g.components.length ? `<p class="comp-buy">구성물이 없거나 잃어버렸다면 <a href="#buy">구매하기</a>에서 찾을 수 있어요.</p>` : ''}
@@ -710,10 +733,13 @@ ${related}
 <script type="application/json" id="game-data">${JSON.stringify({ ...g, _file: undefined }).replace(/</g, '\\u003c')}</script>
 </article>`;
 
-  const desc = `${seo.n} 하는법과 룰을 그림으로 쉽게 정리했어요. ${seo.hooks.join(', ')}까지 한 번에 확인하세요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
+  const desc = g.kind === 'traditional'
+    ? `${seo.n} ${seo.how}과 규칙을 그림으로 쉽게 정리했어요. ${seo.hooks.join(', ')}까지 한 번에 확인하세요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`
+    : `${seo.n} 룰(규칙)과 게임 방법을 그림과 1분 요약으로 쉽게 정리했어요. ${seo.hooks.join(', ')}까지 한 번에 확인하세요. ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}. ${plain(g.oneLine)}`;
+  const gd = datesOf(`content/games/${g._file}`);
   const howSteps = [...g.setup.map((t) => ({ name: '준비', text: plain(t) })), ...g.summary.turn.map((t) => ({ name: '내 차례', text: plain(t) })), { name: '끝', text: plain(g.summary.end) }];
   return layout({
-    title: `${seo.n} 하는법·룰 총정리 | ${seo.hooks.join('·')} - ${cfg.siteName}`,
+    title: `${seo.n} ${seo.sub} 총정리 | ${seo.hooks.join('·')} - ${cfg.siteName}`,
     description: desc,
     path: `/games/${g.slug}/`,
     body,
@@ -737,6 +763,14 @@ ${related}
         description: plain(g.intro || g.oneLine), url: abs(`/games/${g.slug}/`),
         numberOfPlayers: { '@type': 'QuantitativeValue', minValue: g.players[0], maxValue: g.players[1] >= 99 ? undefined : g.players[1] },
         typicalAgeRange: `${g.age}-`, inLanguage: 'ko',
+      },
+      {
+        '@context': 'https://schema.org', '@type': 'Article', headline: `${seo.n} ${seo.sub} 총정리`, description: desc, inLanguage: 'ko',
+        datePublished: gd.pub, dateModified: gd.mod, mainEntityOfPage: abs(`/games/${g.slug}/`),
+        image: abs(fs.existsSync(path.join(STATIC, 'img', 'og', `${g.slug}.png`)) ? `/assets/img/og/${g.slug}.png` : '/assets/img/og.png'),
+        author: { '@type': 'Organization', name: cfg.siteName, url: abs('/') },
+        publisher: { '@type': 'Organization', name: cfg.siteName, logo: { '@type': 'ImageObject', url: abs('/assets/img/icon-512.png') } },
+        about: { '@type': 'Game', name },
       },
       {
         '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
@@ -811,7 +845,7 @@ ${sel('l', '난이도', [['', '난이도'], ['1', '쉬움'], ['2', '보통'], ['
 <div class="cats">
 ${CATS.map(([im, href, t, d, tone, col]) => `<a class="cat ${tone}" href="${href}">${pic(im, '', '')}<span class="cat-t">${t}</span><span class="cat-d">${d}</span><span class="cat-c">${col && colBy[col] ? `게임 ${colBy[col].games.length}개` : `${games.length}개 게임`}</span></a>`).join('\n')}
 </div>
-<div class="cat-more">${['first-meeting', 'holiday', 'big-group'].filter((c) => colBy[c]).map((c) => `<a class="pill" href="/collections/${c}/">${esc(colBy[c].title)}</a>`).join('')}<a class="pill" href="/traditional/">전통놀이 ${trad.length}가지</a></div>
+<div class="cat-more">${['two-players', 'four-players', 'family', 'elementary', 'beginner', 'year-end', 'first-meeting', 'holiday', 'big-group'].filter((c) => colBy[c]).map((c) => `<a class="pill" href="/collections/${c}/">${esc(colH1(colBy[c]))}</a>`).join('')}<a class="pill" href="/traditional/">전통놀이 ${trad.length}가지</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/recommend/">추천 모음 전체</a></div>
 </div>
 </section>
 
@@ -914,8 +948,8 @@ ${pic('scene-store', '매장 테이블에서 휴대폰으로 게임 설명을 �
     scripts: ['fun.js'],
     keywords: ['보드게임 하는법', '보드게임 룰', '보드게임 규칙', '보드게임 추천', '루미큐브 하는법', '할리갈리 룰', '다빈치코드 하는법', '윷놀이 규칙', '보드게임 모임'],
     jsonld: [
-      { '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.siteName, alternateName: ['룰룰 보드게임', 'rulerule', '보드게임 룰 하는법 설명서'], url: abs('/'), inLanguage: 'ko', potentialAction: { '@type': 'SearchAction', target: abs('/games/?q={search_term_string}'), 'query-input': 'required name=search_term_string' } },
-      { '@context': 'https://schema.org', '@type': 'Organization', name: cfg.siteName, url: abs('/'), logo: abs('/assets/img/icon-512.png') },
+      { '@context': 'https://schema.org', '@type': 'WebSite', name: cfg.siteName, alternateName: ['룰룰 보드게임', 'rulerule', 'rulerule.kr', '보드게임 룰 하는법 설명서'], description: cfg.description, url: abs('/'), inLanguage: 'ko', potentialAction: { '@type': 'SearchAction', target: abs('/games/?q={search_term_string}'), 'query-input': 'required name=search_term_string' } },
+      { '@context': 'https://schema.org', '@type': 'Organization', name: cfg.siteName, alternateName: ['룰룰 보드게임', 'rulerule'], url: abs('/'), logo: abs('/assets/img/icon-512.png'), description: cfg.description, ...((cfg.sameAs || []).length ? { sameAs: cfg.sameAs } : {}) },
     ],
   });
 }
@@ -977,36 +1011,177 @@ ${pic('fox-search', '', 'empty-pic')}
   });
 }
 
-// ---------- 페이지: 상황 묶음 ----------
-const COL_SEO = {
-  'two-players': '2인 보드게임 추천', 'first-meeting': '처음 만난 사이 보드게임 추천, 아이스브레이킹 게임', 'with-kids': '아이와 하는 보드게임 추천, 유아·초등 보드게임',
-  holiday: '명절 가족 보드게임·전통놀이 추천', 'big-group': '여러 명이 하는 보드게임 추천, 6명 이상 단체 게임', 'party-room': '파티룸 보드게임 추천',
-  quick: '15분 짧은 보드게임 추천', 'strategy-night': '전략 보드게임 추천',
-};
+// ---------- 페이지: 인원·상황별 보드게임 추천 (/collections/, /recommend/) ----------
+// 원고: content/collections.json — h1(검색어), seo(제목), kw(검색어), lead, how(고르는 법), sections(묶음), games
+const YEAR = new Date(Date.now() + 9 * 3600e3).getFullYear();
+const popRank = (s) => { const i = content.popular.indexOf(s); return i < 0 ? 99 : i; };
+const colsOf = (slug) => content.collections.filter((c) => c.games.includes(slug));
+const COL_GROUPS = [
+  ['인원별 보드게임 추천', ['two-players', 'three-players', 'four-players', 'five-players', 'big-group']],
+  ['누구와 함께하나요', ['family', 'with-kids', 'elementary', 'first-meeting', 'year-end', 'holiday']],
+  ['어떤 게임을 찾나요', ['beginner', 'party-room', 'quick', 'strategy-night']],
+];
+const colH1 = (c) => c.h1 || `${c.title} 보드게임 추천`;
+function recItem(g, i, from) {
+  const n = bare(g.name);
+  const buyId = (SHOP.games[g.slug] || [])[0];
+  return `<li class="rec-item" id="g-${g.slug}">
+<div class="rec-head"><span class="rec-no" aria-hidden="true">${i + 1}</span><h3 class="rec-name"><a href="/games/${g.slug}/">${esc(g.name)}</a></h3><span class="rec-kind">${GROUPS[g.group]}</span></div>
+<p class="rec-meta">${playersText(g.players)}${g.best ? ` (추천 ${esc(g.best)})` : ''} · ${minutesText(g.minutes)} · ${ageText(g.age)} · ${LEVELS[g.level]}</p>
+<p class="rec-one">${fmt(g.oneLine)}</p>
+${g.compare ? `<p class="rec-why">${fmt(g.compare)}</p>` : ''}
+<div class="rec-btns"><a class="btn btn-sub btn-sm" href="/games/${g.slug}/">${esc(n)} 룰 보기</a>${buyId ? buyLink(buyId, from, '쿠팡에서 보기', 'btn btn-buy btn-sm') : ''}</div>
+</li>`;
+}
+const recTable = (list, caption) => `<div class="tbl-wrap"><table class="tbl rec-tbl"><caption class="sr">${esc(caption)}</caption><thead><tr><th scope="col">게임</th><th scope="col">인원</th><th scope="col">한 판</th><th scope="col">나이</th><th scope="col">난이도</th></tr></thead><tbody>${list.map((g) => `<tr><th scope="row"><a href="/games/${g.slug}/">${esc(g.name)}</a></th><td>${playersText(g.players)}</td><td>${minutesText(g.minutes)}</td><td>${g.age}세+</td><td>${LEVELS[g.level]}</td></tr>`).join('')}</tbody></table></div>`;
+function recFaq(c, list) {
+  const kwd = colH1(c).replace(/ 추천$/, '');
+  const names = (arr) => arr.map((g) => bare(g.name)).join(', ');
+  const top = list[0];
+  const easy = list.filter((g) => g.level === 1).sort((a, b) => popRank(a.slug) - popRank(b.slug)).slice(0, 3);
+  const short = [...list].sort((a, b) => a.minutes[1] - b.minutes[1] || a.minutes[0] - b.minutes[0]).slice(0, 3);
+  const many = [...list].filter((g) => g.players[1] < 99).sort((a, b) => b.players[1] - a.players[1]).slice(0, 3);
+  const out = [{ q: `${kwd} 가운데 하나만 고른다면 무엇이 좋나요?`, a: `${josa(bare(top.name), '을', '를')} 먼저 권해요. ${plain(top.oneLine)} ${playersText(top.players)}, 한 판 ${minutesText(top.minutes)}이에요.` }];
+  if (easy.length) out.push({ q: `${kwd} 가운데 처음 하는 사람도 쉬운 게임은 무엇인가요?`, a: `${names(easy)}처럼 난이도가 ‘쉬움’인 게임부터 시작해 보세요. 규칙 설명이 5분 안쪽이라 바로 첫 판을 시작할 수 있어요.` });
+  out.push({ q: `${kwd} 가운데 한 판이 짧은 게임은 무엇인가요?`, a: josa(short.map((g) => `${bare(g.name)}(${minutesText(g.minutes)})`).join(', '), '이에요', '예요') + '. 남는 시간에 여러 판 하기 좋아요.' });
+  if (many.length && many[0].players[1] >= 6) out.push({ q: `${kwd} 가운데 사람이 늘어도 할 수 있는 게임은 무엇인가요?`, a: `${many.map((g) => `${bare(g.name)}(최대 ${g.players[1]}명)`).join(', ')}은 사람이 늘어도 함께할 수 있어요.` });
+  return [...out, ...(c.faq || [])];
+}
 function collectionPage(c) {
   const list = c.games.map((s) => bySlug[s]);
+  const h1 = colH1(c);
+  const from = `col-${c.slug}`.slice(0, 36);
+  const sections = c.sections && c.sections.length ? c.sections.map((sec) => ({ title: sec.title, list: sec.games.map((s) => bySlug[s]) })) : [{ title: '', list }];
+  const hasBuy = list.some((g) => (SHOP.games[g.slug] || []).length);
+  const faq = recFaq(c, list);
+  const others = content.collections.filter((x) => x.slug !== c.slug);
   const body = `<section class="page-head">
 <div class="wrap page-head-grid">
 <div>
-<nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>이런 자리라면</span></nav>
-<h1 class="page-title">${esc(c.title)}</h1>
+<nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/recommend/">보드게임 추천</a><span aria-hidden="true">/</span><span>${esc(c.title)}</span></nav>
+<h1 class="page-title">${esc(h1)} ${list.length}가지</h1>
 <p class="page-lead">${esc(c.lead)}</p>
 ${c.tip ? `<p class="tip">${fmt(c.tip)}</p>` : ''}
+<nav class="rec-jump" aria-label="바로 가기">${sections.map((sec) => sec.list.slice(0, sec.title ? 3 : 6).map((g) => `<a class="pill" href="#g-${g.slug}">${esc(g.name)}</a>`).join('')).join('')}<a class="pill pill-ghost" href="#compare">한눈에 비교</a></nav>
 </div>
-${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', `page-art${COL_ART[c.slug].startsWith('scene-strategy') || COL_ART[c.slug].startsWith('ico-') ? ' page-art-sq' : ''}`, true) : ''}
+${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', `page-art${/^(scene-strategy|ico-)/.test(COL_ART[c.slug]) ? ' page-art-sq' : ''}`, true) : ''}
 </div>
 </section>
-<section class="wrap list-sec">
-<div class="gcards">${list.map((g) => gameCard(g)).join('')}</div>
-<h2 class="h2 other-title">다른 자리라면</h2>
-<div class="trad-links">${content.collections.filter((x) => x.slug !== c.slug).map((x) => `<a class="pill" href="/collections/${x.slug}/">${esc(x.title)}</a>`).join('')}</div>
+<section class="wrap rec-page">
+${(c.how || []).length ? `<div class="rec-how"><h2 class="h3">${esc(h1.replace(/ 추천$/, ''))}, 이렇게 고르세요</h2><ul class="list">${c.how.map((t) => `<li>${fmt(t)}</li>`).join('')}</ul></div>` : ''}
+${hasBuy ? '<p class="ad-note"><span class="ad-tag">광고</span>이 페이지의 구매 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>' : ''}
+${sections.map((sec) => `${sec.title ? `<h2 class="h2 rec-sec">${esc(sec.title)} ${esc(h1.replace(/ 추천$/, ''))}</h2>` : `<h2 class="sr">${esc(h1)} 목록</h2>`}
+<ol class="rec-list">${sec.list.map((g, i) => recItem(g, i, from)).join('\n')}</ol>`).join('\n')}
+<h2 class="h2" id="compare">${esc(h1)} 한눈에 비교</h2>
+${recTable(list, `${h1} 인원, 시간, 나이, 난이도 비교`)}
+<h2 class="h2">${esc(h1)} 자주 묻는 질문</h2>
+${qaList(faq)}
+<div class="tip-box">
+<h2 class="h2">조건을 더 좁혀 보고 싶다면</h2>
+<p>인원과 시간을 넣으면 순서까지 짜 주는 <a href="/plan/">모임 게임 짜기</a>, 질문 10개로 취향을 알아보는 <a href="/test/">보드게임 취향 테스트</a>, 인원·시간·난이도로 거르는 <a href="/games/">게임 찾기</a>도 있어요.</p>
+</div>
+<h2 class="h2 other-title">다른 보드게임 추천</h2>
+<div class="trad-links">${others.map((x) => `<a class="pill" href="/collections/${x.slug}/">${esc(colH1(x))}</a>`).join('')}<a class="pill" href="/recommend/">추천 모음 전체</a></div>
 </section>`;
   return layout({
-    title: `${COL_SEO[c.slug] || `${c.title} 보드게임 추천`} ${list.length}가지 | 하는법까지 - ${cfg.siteName}`,
-    description: `${c.lead} ${list.slice(0, 6).map((g) => g.name).join(', ')} 등 ${list.length}가지 게임의 하는법과 룰을 그림과 1분 요약으로 알려 드려요.`,
-    keywords: [COL_SEO[c.slug] || c.title, ...list.slice(0, 6).map((g) => `${bare(g.name)} 하는법`)],
+    title: `${c.seo && c.seo.startsWith(h1) ? c.seo.replace(h1, `${h1} ${list.length}가지`) : `${h1} ${list.length}가지 | 룰까지 한 번에`} - ${cfg.siteName}`,
+    description: `${c.lead} ${list.slice(0, 6).map((g) => bare(g.name)).join(', ')} 등 ${list.length}가지를 인원·시간·난이도와 함께 비교하고, 하는법과 룰을 그림으로 확인하세요.`,
+    keywords: [...(c.kw || [h1]), ...list.slice(0, 5).map((g) => `${bare(g.name)} 룰`)],
     path: `/collections/${c.slug}/`,
     body,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'ItemList', name: `${h1} ${list.length}가지`, numberOfItems: list.length, itemListElement: list.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/games/${g.slug}/`), name: g.name })) },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((x) => ({ '@type': 'Question', name: plain(x.q), acceptedAnswer: { '@type': 'Answer', text: plain(x.a) } })) },
+      { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '보드게임 추천', item: abs('/recommend/') }, { '@type': 'ListItem', position: 3, name: h1, item: abs(`/collections/${c.slug}/`) }] },
+    ],
+  });
+}
+function recommendPage() {
+  const by = Object.fromEntries(content.collections.map((c) => [c.slug, c]));
+  const card = (c) => `<a class="rec-card" href="/collections/${c.slug}/">${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', 'rec-card-pic') : ''}<span class="rec-card-body"><b>${esc(colH1(c))}</b><small>${esc(c.lead)}</small><span class="rec-card-games">${c.games.slice(0, 4).map((s) => esc(bare(bySlug[s].name))).join(' · ')} 외 ${Math.max(0, c.games.length - 4)}가지</span></span></a>`;
+  const body = `<section class="page-head">
+<div class="wrap page-head-grid">
+<div>
+<nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>보드게임 추천</span></nav>
+<h1 class="page-title">보드게임 추천 ${YEAR}</h1>
+<p class="page-lead">몇 명이 모였는지, 누구와 하는지, 시간이 얼마나 있는지에 따라 고를 게임이 달라져요. 상황별로 ${games.length}가지 게임 가운데 잘 맞는 게임을 골라 두었고, 모든 게임의 룰과 하는법을 함께 볼 수 있어요.</p>
+</div>
+${pic('card-recommend', '', 'page-art page-art-sq', true)}
+</div>
+</section>
+<section class="wrap rec-hub">
+${COL_GROUPS.map(([title, slugsIn]) => `<h2 class="h2">${title}</h2><div class="rec-cards">${slugsIn.filter((x) => by[x]).map((x) => card(by[x])).join('')}</div>`).join('\n')}
+<h2 class="h2">직접 골라 보기</h2>
+<div class="rec-tools">
+<a class="pill" href="/games/">인원·시간으로 게임 찾기</a><a class="pill" href="/plan/">모임 게임 순서 짜기</a><a class="pill" href="/test/">보드게임 취향 테스트</a><a class="pill" href="/worldcup/">보드게임 월드컵</a><a class="pill" href="/chart/">이번 주 인기 순위</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/traditional/">전통놀이 종류</a>
+</div>
+</section>`;
+  return layout({
+    title: `보드게임 추천 ${YEAR} | 2인·3인·4인·가족·초등·파티 상황별 추천 - ${cfg.siteName}`,
+    description: `2인 보드게임, 3인·4인·5인 보드게임, 가족 보드게임, 초등 보드게임, 보드게임 입문, 파티·연말 모임 게임까지 상황별 보드게임 추천을 모았어요. 고른 게임의 룰과 하는법도 바로 볼 수 있어요.`,
+    keywords: ['보드게임 추천', `보드게임 추천 ${YEAR}`, '2인 보드게임 추천', '4인 보드게임 추천', '가족 보드게임 추천', '초등 보드게임 추천', '보드게임 입문 추천', '파티 보드게임 추천'],
+    path: '/recommend/',
+    body,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'ItemList', name: `보드게임 추천 ${YEAR}`, itemListElement: content.collections.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/collections/${c.slug}/`), name: colH1(c) })) },
+      { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '보드게임 추천', item: abs('/recommend/') }] },
+    ],
+  });
+}
+
+// ---------- 페이지: 보드게임 종류 (/types/) ----------
+const anyTag = (g, tags) => (g.tags || []).some((t) => tags.includes(t));
+const TYPES = [
+  { id: 'party', name: '파티 게임', what: '여럿이 모였을 때 웃고 떠들려고 하는 게임이에요. 규칙이 짧고 한 판이 금방 끝나서, 처음 보는 사람끼리도 바로 할 수 있어요.', pick: (g) => g.group === 'party' },
+  { id: 'family', name: '가족 게임', what: '아이와 어른이 함께 할 수 있게 규칙을 쉽게 만든 게임이에요. 운과 실력이 섞여 있어서 나이와 상관없이 누구나 이길 수 있어요.', pick: (g) => g.group === 'family' },
+  { id: 'strategy', name: '전략 게임', what: '앞으로 몇 수를 내다보며 계획을 세우는 게임이에요. 자원을 모으고 바꾸고 점수를 쌓는 방식이 많고, 해 볼수록 더 재미있어져요.', pick: (g) => g.group === 'strategy' },
+  { id: 'deduction', name: '추리·정체 숨기기 게임', what: '누가 거짓말을 하는지, 상대가 가진 패가 무엇인지 알아내는 게임이에요. 마피아처럼 몰래 정한 역할을 숨기고 말로 상대를 속이거나 찾아내요.', pick: (g) => anyTag(g, ['추리', '정체 숨기기', '블러핑', '심리전']) },
+  { id: 'coop', name: '협력 게임', what: '서로 이기려고 다투지 않고 모두가 한 편이 되어 게임과 겨루는 방식이에요. 지면 다 같이 지고 이기면 다 같이 이겨서 분위기가 부드러워요.', pick: (g) => anyTag(g, ['협력']) },
+  { id: 'speed', name: '순발력 게임', what: '누가 먼저 보고, 먼저 치고, 먼저 외치는지 겨루는 게임이에요. 설명이 1분이면 끝나서 아이와 어른이 같이 하기 좋아요.', pick: (g) => anyTag(g, ['순발력', '반사신경']) },
+  { id: 'cards', name: '카드 게임', what: '카드 한 벌로 하는 게임이에요. 들고 다니기 쉽고 자리를 적게 차지해서 카페나 여행지에서도 꺼내기 좋아요.', pick: (g) => anyTag(g, ['카드', '트릭 테이킹', '카드 고르기', '카드 드래프트', '덱 빌딩', '세트 모으기']) && g.kind !== 'traditional' },
+  { id: 'dice', name: '주사위 게임', what: '주사위를 굴려서 나온 눈으로 하는 게임이에요. 운이 크게 작용하지만, 언제 멈추고 무엇을 고를지에서 실력이 갈려요.', pick: (g) => anyTag(g, ['주사위']) },
+  { id: 'tiles', name: '타일·퍼즐 게임', what: '타일이나 조각을 판에 놓아 모양과 점수를 만드는 게임이에요. 다른 사람과 직접 싸우지 않아서 차분하게 즐기기 좋아요.', pick: (g) => anyTag(g, ['타일 놓기', '타일', '퍼즐', '공간', '땅 넓히기', '패턴 찾기']) },
+  { id: 'words', name: '말·그림 게임', what: '단어를 설명하고, 그림을 그리고, 이야기를 지어내며 답을 맞히는 게임이에요. 사람마다 떠올리는 게 달라서 웃음이 많이 나요.', pick: (g) => anyTag(g, ['말로 하는', '대화', '그림', '스무고개', '질문']) },
+  { id: 'dexterity', name: '손재주·액션 게임', what: '블록을 빼고, 원숭이를 걸고, 컵을 쌓는 것처럼 손을 써서 하는 게임이에요. 무너지고 쓰러지는 순간에 다 같이 소리를 지르게 돼요.', pick: (g) => anyTag(g, ['손재주', '쌓기', '컵 쌓기', '조준', '액션']) && g.kind !== 'traditional' },
+  { id: 'traditional', name: '전통놀이', what: '윷놀이, 공기놀이, 제기차기처럼 우리나라에서 오래 해 온 놀이예요. 지역과 집안마다 규칙이 조금씩 달라서 시작 전에 규칙을 맞추는 게 좋아요.', pick: (g) => g.kind === 'traditional', more: '/traditional/' },
+];
+function typesPage() {
+  const sorted = (arr) => [...arr].sort((a, b) => popRank(a.slug) - popRank(b.slug) || collator.compare(a.name, b.name));
+  const rows = TYPES.map((t) => ({ ...t, list: sorted(games.filter(t.pick)) }));
+  const body = `<section class="page-head">
+<div class="wrap page-head-grid">
+<div>
+<nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><span>보드게임 종류</span></nav>
+<h1 class="page-title">보드게임 종류 ${rows.length}가지</h1>
+<p class="page-lead">보드게임은 하는 방식에 따라 파티 게임, 전략 게임, 추리 게임, 협력 게임처럼 나눌 수 있어요. 종류마다 어떤 게임인지, 누구와 하면 좋은지, 대표 게임은 무엇인지 정리했어요. 한 게임이 여러 종류에 들어가기도 해요.</p>
+<nav class="rec-jump" aria-label="종류로 이동">${rows.map((t) => `<a class="pill" href="#t-${t.id}">${esc(t.name)}</a>`).join('')}</nav>
+</div>
+${pic('scene-variety', '', 'page-art', true)}
+</div>
+</section>
+<section class="wrap types-page">
+${rows.map((t) => `<section class="type-sec" id="t-${t.id}" aria-labelledby="th-${t.id}">
+<h2 class="h2" id="th-${t.id}">${esc(t.name)}</h2>
+<p>${esc(t.what)} 대표 게임은 ${t.list.slice(0, 3).map((g) => bare(g.name)).join(', ')}이고, ${cfg.siteName}에는 ${t.list.length}가지가 있어요.</p>
+<div class="gcards">${t.list.slice(0, 8).map((g) => gameCard(g)).join('')}</div>
+${t.list.length > 8 ? `<p class="more-line">${t.list.slice(8).map((g) => `<a href="/games/${g.slug}/">${esc(g.name)}</a>`).join(' · ')}</p>` : ''}
+${t.more ? `<p><a class="more-link" href="${t.more}">${esc(t.name)} 전체 보기</a></p>` : ''}
+</section>`).join('\n')}
+<div class="tip-box">
+<h2 class="h2">종류보다 상황으로 고르고 싶다면</h2>
+<p><a href="/recommend/">보드게임 추천 모음</a>에서 2인, 4인, 가족, 초등, 연말 모임처럼 상황에 맞는 게임을 골라 보세요.</p>
+</div>
+</section>`;
+  return layout({
+    title: `보드게임 종류 ${rows.length}가지 총정리 | 파티·전략·추리·협력·카드 게임 - ${cfg.siteName}`,
+    description: `보드게임 종류를 파티 게임, 가족 게임, 전략 게임, 추리 게임, 협력 게임, 순발력 게임, 카드 게임, 주사위 게임, 타일 게임, 전통놀이로 나눠 대표 게임과 함께 정리했어요.`,
+    keywords: ['보드게임 종류', '보드게임 종류 추천', '파티 게임 종류', '추리 보드게임', '협력 보드게임', '카드 게임 종류', '전략 보드게임'],
+    path: '/types/',
+    body,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'Article', headline: `보드게임 종류 ${rows.length}가지 총정리`, inLanguage: 'ko', author: { '@type': 'Organization', name: cfg.siteName, url: abs('/') }, publisher: { '@type': 'Organization', name: cfg.siteName, logo: { '@type': 'ImageObject', url: abs('/assets/img/icon-512.png') } }, mainEntityOfPage: abs('/types/') },
+      { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '보드게임 종류', item: abs('/types/') }] },
+    ],
   });
 }
 
@@ -1014,15 +1189,19 @@ ${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', `page-art${COL_ART[c.slug].startsWi
 function traditionalPage() {
   const trad = games.filter((g) => g.kind === 'traditional');
   const groupsT = [
-    ['판에서 두는 놀이', ['yutnori', 'janggi', 'baduk', 'omok', 'umul-gonu']],
-    ['손으로 하는 놀이', ['gonggi', 'chilgyo']],
-    ['몸으로 하는 놀이', ['tuho', 'jegichagi', 'ttakji', 'sabangchigi', 'biseokchigi', 'paengichigi', 'ttangttameokgi']],
+    ['판에서 하는 놀이', ['yutnori', 'janggi', 'baduk', 'omok', 'umul-gonu', 'seunggyeongdo', 'go-stop']],
+    ['손으로 하는 놀이', ['gonggi', 'chilgyo', 'siltteugi', 'guseulchigi']],
+    ['몸으로 하는 놀이', ['tuho', 'jegichagi', 'ttakji', 'sabangchigi', 'biseokchigi', 'paengichigi', 'ttangttameokgi', 'jachigi']],
+    ['여럿이 뛰어노는 놀이', ['mugunghwa', 'eoreumttaeng', 'sugeondolligi']],
   ];
+  const placed = new Set(groupsT.flatMap((x) => x[1]));
+  const restT = trad.filter((g) => !placed.has(g.slug)).map((g) => g.slug);
+  if (restT.length) groupsT.push(['그 밖의 놀이', restT]);
   const body = `<section class="page-head">
 <div class="wrap page-head-grid">
 <div>
-<h1 class="page-title">전통놀이 하는 법</h1>
-<p class="page-lead">설과 추석에 3대가 함께 하기 좋은 전통놀이 ${trad.length}가지예요. 지역과 집안마다 규칙이 조금씩 달라서, 널리 쓰이는 공통 규칙을 먼저 쓰고 다른 방법은 ‘하우스룰’로 따로 표시했어요.</p>
+<h1 class="page-title">전통놀이 종류와 방법 ${trad.length}가지</h1>
+<p class="page-lead">설날과 추석에 3대가 함께 하기 좋은 우리나라 전통놀이(민속놀이) ${trad.length}가지예요. 지역과 집안마다 규칙이 조금씩 달라서, 널리 쓰이는 공통 규칙을 먼저 쓰고 다른 방법은 ‘하우스룰’로 따로 표시했어요.</p>
 </div>
 ${pic('scene-generations', '여러 세대가 한 테이블에서 놀이를 하는 모습', 'page-art', true)}
 </div>
@@ -1047,9 +1226,9 @@ ${groupsT.map(([title, list]) => `<h2 class="h2">${title}</h2><div class="gcards
 </div>
 </section>`;
   return layout({
-    title: `전통놀이 하는법·규칙 ${trad.length}가지 - 윷놀이 규칙, 장기 두는법, 공기놀이, 사방치기 | ${cfg.siteName}`,
-    description: `${trad.map((g) => g.name).join(', ')} 하는법과 규칙을 그림으로 쉽게 알려 드려요. 명절에 쓰는 우리 집 윷놀이 규칙 카드도 만들 수 있어요.`,
-    keywords: ['전통놀이 종류', '전통놀이 방법', '민속놀이', '윷놀이 규칙', '장기 두는법', '공기놀이 방법', '사방치기 방법', '비석치기 방법', '제기차기 방법'],
+    title: `전통놀이 종류와 방법 ${trad.length}가지 | 설날·추석 민속놀이, 윷놀이 규칙 - ${cfg.siteName}`,
+    description: `우리나라 전통놀이 종류 ${trad.length}가지의 놀이 방법과 규칙을 그림으로 알려 드려요. ${trad.slice(0, 10).map((g) => g.name).join(', ')} 등 설날·추석 전통놀이와 어린이집·학교에서 하기 좋은 민속놀이를 모았어요.`,
+    keywords: ['전통놀이 종류', '우리나라 전통놀이 종류', '전통놀이 방법', '민속놀이', '설날 전통놀이', '추석 전통놀이', '윷놀이 규칙', '공기놀이 방법', '사방치기 놀이방법', '비석치기 놀이방법'],
     path: '/traditional/',
     body,
   });
@@ -1654,6 +1833,8 @@ write('index.html', homePage());
 write('games/index.html', gamesPage());
 for (const g of games) write(`games/${g.slug}/index.html`, gamePage(g));
 for (const c of content.collections) write(`collections/${c.slug}/index.html`, collectionPage(c));
+write('recommend/index.html', recommendPage());
+write('types/index.html', typesPage());
 write('traditional/index.html', traditionalPage());
 write('learn/index.html', learnPage());
 write('space/index.html', spacePage());
@@ -1709,23 +1890,28 @@ write('manifest.webmanifest', JSON.stringify({
 write('sw.js', fs.readFileSync(path.join(STATIC, 'sw.js'), 'utf8').replace(/__BUILD__/g, BUILD));
 write('_headers', fs.readFileSync(path.join(STATIC, '_headers'), 'utf8'));
 
-const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
-const gameDay = (g) => (g.checked && g.checked.date) || (g.reviewed && g.reviewed.date) || today;
+const today = TODAY;
+// 게임 페이지 날짜: 원고를 마지막으로 고친 날 (content/dates.json)
+const gameDay = (g) => datesOf(`content/games/${g._file}`).mod;
+const latest = (arr) => arr.reduce((a, b) => (b > a ? b : a), '2026-11-15');
+const allGameDay = latest(games.map(gameDay));
+const ogOf = (g) => (fs.existsSync(path.join(STATIC, 'img', 'og', `${g.slug}.png`)) ? abs(`/assets/img/og/${g.slug}.png`) : '');
 const urls = [
-  ['/', 'daily', '1.0'], ['/games/', 'weekly', '0.9'], ['/rules/', 'weekly', '0.9'], ['/traditional/', 'weekly', '0.8'], ['/shop/', 'weekly', '0.7'],
+  ['/', 'daily', '1.0', today], ['/games/', 'weekly', '0.9', allGameDay], ['/rules/', 'weekly', '0.9', allGameDay], ['/recommend/', 'weekly', '0.9', today], ['/types/', 'monthly', '0.8', today], ['/traditional/', 'weekly', '0.8', allGameDay], ['/shop/', 'weekly', '0.7'],
   ['/community/', 'daily', '0.6'], ['/community/events/', 'daily', '0.5'], ['/community/clubs/', 'daily', '0.5'], ['/community/board/', 'daily', '0.5'], ['/community/rank/', 'daily', '0.4'], ['/community/levels/', 'monthly', '0.4'],
   ['/learn/', 'monthly', '0.6'], ['/space/', 'monthly', '0.5'], ['/about/', 'monthly', '0.4'], ['/contact/', 'yearly', '0.4'],
   ['/terms/', 'yearly', '0.2'], ['/privacy/', 'yearly', '0.2'], ['/community/rules/', 'yearly', '0.2'],
-  ...games.map((g) => [`/games/${g.slug}/`, 'weekly', '0.9', gameDay(g)]),
-  ...content.collections.map((c) => [`/collections/${c.slug}/`, 'weekly', '0.7']),
+  ...games.map((g) => [`/games/${g.slug}/`, 'weekly', '0.9', gameDay(g), ogOf(g)]),
+  ...content.collections.map((c) => [`/collections/${c.slug}/`, 'weekly', '0.8', today]),
   ...FUN.urls,
 ];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(([u, f, pr, d]) => `<url><loc>${abs(u)}</loc><lastmod>${d || today}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority></url>`).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.map(([u, f, pr, d, img]) => `<url><loc>${abs(u)}</loc><lastmod>${d || today}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority>${img ? `<image:image><image:loc>${img}</image:loc></image:image>` : ''}</url>`).join('\n')}
 </urlset>
 `);
-write('robots.txt', `User-agent: *
+// 검색 로봇 안내. 네이버(Yeti), 구글, 다음, 빙과 AI 검색 로봇 모두 허용해요.
+write('robots.txt', `${cfg.daumWebmasterPin ? `#DaumWebMasterTool:${cfg.daumWebmasterPin}\n\n` : ''}User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
@@ -1746,6 +1932,52 @@ Disallow: /community/write/
 Sitemap: ${abs('/sitemap.xml')}
 Sitemap: ${abs('/rss.xml')}
 `);
+// IndexNow 열쇠 파일 (네이버·빙 등에 새 페이지를 바로 알릴 때 씀)
+if (cfg.indexNowKey) write(`${cfg.indexNowKey}.txt`, cfg.indexNowKey);
+write('data/site.json', JSON.stringify({ build: BUILD, siteUrl: SITE, indexNowKey: cfg.indexNowKey || '' }));
+
+// AI 검색용 안내 (llms.txt): 사이트 소개와 주요 페이지, 게임별 룰 페이지
+const llmsGame = (g) => { const so = seoOf(g); return `- [${so.n} ${so.sub}](${abs(`/games/${g.slug}/`)}): ${playersText(g.players)}, ${minutesText(g.minutes)}, ${ageText(g.age)}, 난이도 ${LEVELS[g.level]}. ${plain(g.oneLine)}`; };
+write('llms.txt', `# ${cfg.siteName} (${SITE.replace(/^https?:\/\//, '')})
+
+> ${cfg.description}
+
+${cfg.siteName}은 보드게임과 전통놀이의 규칙을 우리 말로 다시 써서, 그림 설명 → 1분 요약 → 따라하기 → 자세한 규칙과 자주 묻는 질문 순서로 정리한 한국어 사이트예요. 각 게임 페이지에는 인원, 시간, 나이, 난이도와 검수 상태(검수 중, 자료 대조 완료, 검수 완료)가 적혀 있어요. 설명은 상자 속 공식 룰북을 대신하지 않으며, 판(에디션)에 따라 숫자가 다른 규칙은 룰북을 따르도록 안내해요.
+
+## 주요 페이지
+- [보드게임 룰·하는법 모음 (가나다순)](${abs('/rules/')}): 게임 ${games.length}가지 전체 목록
+- [보드게임 추천](${abs('/recommend/')}): 2인·3인·4인·5인·6인 이상, 가족, 초등, 입문, 파티, 연말 모임 등 상황별 추천
+- [보드게임 종류](${abs('/types/')}): 파티·가족·전략·추리·협력·순발력·카드·주사위·타일·말 게임 분류
+- [전통놀이 종류와 방법](${abs('/traditional/')}): 윷놀이, 장기, 공기놀이 등 ${games.filter((g) => g.kind === 'traditional').length}가지
+- [보드게임 이야기](${abs('/stories/')}): 게임별 유래와 역사
+- [보드게임이 처음이라면](${abs('/learn/')}): 시작하는 순서와 용어 풀이
+- [모임 게임 짜기](${abs('/plan/')}): 인원·시간에 맞춘 게임 순서
+
+## 상황별 추천
+${content.collections.map((c) => `- [${colH1(c)} ${c.games.length}가지](${abs(`/collections/${c.slug}/`)}): ${c.lead}`).join('\n')}
+
+## 게임별 룰과 하는법
+${sortedGames.map(llmsGame).join('\n')}
+
+## 인용 안내
+- 내용을 인용할 때는 ${cfg.siteName}과 해당 페이지 주소를 함께 밝혀 주세요.
+- 전체 요약본: ${abs('/llms-full.txt')}
+`);
+write('llms-full.txt', `# ${cfg.siteName} 게임별 1분 요약
+
+> ${cfg.description}
+> 각 항목은 ${cfg.siteName} 게임 페이지의 ‘1분 요약’이에요. 자세한 규칙과 예외는 페이지에서 확인하세요.
+
+${sortedGames.map((g) => { const so = seoOf(g); return `## ${g.name}${g.original ? ` (${g.original})` : ''}
+- 주소: ${abs(`/games/${g.slug}/`)}
+- 종류: ${GROUPS[g.group]} · ${playersText(g.players)}${g.best ? ` (추천 ${g.best})` : ''} · ${minutesText(g.minutes)} · ${ageText(g.age)} · 난이도 ${LEVELS[g.level]}
+- 한 줄: ${plain(g.oneLine)}
+- 이기는 법: ${plain(g.summary.goal)}
+- 내 차례: ${g.summary.turn.map(plain).join(' ')}
+- 끝나는 때: ${plain(g.summary.end)}
+- 많이 묻는 것: ${so.hooks.join(', ')}
+`; }).join('\n')}`);
+
 // 네이버 서치어드바이저에 제출하는 RSS (게임 페이지 전체)
 const rfc822 = (d) => new Date(`${d}T09:00:00+09:00`).toUTCString();
 const xesc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -1759,13 +1991,21 @@ write('rss.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 <atom:link href="${abs('/rss.xml')}" rel="self" type="application/rss+xml"/>
 ${[...games].sort((a, b) => gameDay(b).localeCompare(gameDay(a)) || collator.compare(a.name, b.name)).map((g) => { const so = seoOf(g); return `<item>
-<title>${xesc(`${so.n} 하는법·룰 총정리 | ${so.hooks.join('·')}`)}</title>
+<title>${xesc(`${so.n} ${so.sub} 총정리 | ${so.hooks.join('·')}`)}</title>
 <link>${abs(`/games/${g.slug}/`)}</link>
 <guid isPermaLink="true">${abs(`/games/${g.slug}/`)}</guid>
 <category>${xesc(GROUPS[g.group])}</category>
 <description>${xesc(`${so.n} 하는법과 룰. ${plain(g.oneLine)} ${playersText(g.players)}, ${minutesText(g.minutes)}. 이기는 법: ${plain(g.summary.goal)}`)}</description>
 <pubDate>${rfc822(gameDay(g))}</pubDate>
 </item>`; }).join('\n')}
+${content.collections.map((c) => `<item>
+<title>${xesc(`${c.seo || colH1(c)} ${c.games.length}가지`)}</title>
+<link>${abs(`/collections/${c.slug}/`)}</link>
+<guid isPermaLink="true">${abs(`/collections/${c.slug}/`)}</guid>
+<category>보드게임 추천</category>
+<description>${xesc(`${c.lead} ${c.games.slice(0, 6).map((s2) => bare(bySlug[s2].name)).join(', ')} 등`)}</description>
+<pubDate>${rfc822('2026-11-23')}</pubDate>
+</item>`).join('\n')}
 ${FUN.rss.map((r) => `<item>
 <title>${xesc(r.title)}</title>
 <link>${abs(r.link)}</link>

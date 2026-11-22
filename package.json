@@ -5,7 +5,9 @@
   "description": "룰룰 | 보드게임 룰 하는법 설명서",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "dates": "node scripts/dates.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "engines": {
     "node": ">=18"

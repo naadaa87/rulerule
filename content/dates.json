@@ -1,0 +1,802 @@
+{
+ "content/games/6-nimmt.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/avalon.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/azul.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/backgammon.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/baduk.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/bang.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/biseokchigi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/blokus.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/bohnanza.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/burumabul.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/carcassonne.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/catan.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/checkers.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/chess.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/chicken-chacha.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/chilgyo.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/chinese-checkers.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/citadels.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/clue.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/cockroach-poker.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/codenames.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/coup.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/dalmuti.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/davinci-code.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/dixit.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/dobble.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/dominion.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/eoreumttaeng.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/game-of-life.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/go-stop.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/gonggi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/guseulchigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/halli-galli.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/hanabi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/incan-gold.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/indian-poker.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/insider.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/jachigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/janggi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/jegichagi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/jenga.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/jungle-speed.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/just-one.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/king-of-tokyo.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/kingdomino.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/las-vegas.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/lexio.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/liar-game.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/looping-louie.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/lost-cities.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/love-letter.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/mafia.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/mancala.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/marrakech.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/monopoly.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/mugunghwa.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/no-thanks.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/old-maid.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/omok.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/one-card.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/one-night-werewolf.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/othello.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/paengichigi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/pandemic.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/patchwork.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/penguin-party.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/pop-up-pirate.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/quoridor.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/qwirkle.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/rummikub.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/sabangchigi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/saboteur.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/set.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/seunggyeongdo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/seven-wonders-duel.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/seven-wonders.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/siltteugi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/skull-king.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/skull.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/sleeping-queens.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/speed-cups.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/splendor.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/spyfall.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/sugeondolligi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/sushi-go.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/telestrations.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/the-crew.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/the-mind.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/tichu.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/ticket-to-ride.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/ttakji.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/ttangttameokgi.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/tuho.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/tumbling-monkey.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/ubongo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/umul-gonu.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/uno.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/games/wingspan.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/yacht.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/games/yutnori.json": {
+  "pub": "2026-11-15",
+  "mod": "2026-11-15"
+ },
+ "content/stories/6-nimmt.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/avalon.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/azul.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/backgammon.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/baduk.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/bang.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/biseokchigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/blokus.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/bohnanza.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/burumabul.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/carcassonne.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/catan.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/checkers.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/chess.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/chicken-chacha.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/chilgyo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/chinese-checkers.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/citadels.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/clue.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/cockroach-poker.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/codenames.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/coup.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/dalmuti.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/davinci-code.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/dixit.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/dobble.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/dominion.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/eoreumttaeng.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/game-of-life.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/go-stop.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/gonggi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/guseulchigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/halli-galli.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/hanabi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/incan-gold.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/indian-poker.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/insider.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/jachigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/janggi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/jegichagi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/jenga.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/jungle-speed.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/just-one.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/king-of-tokyo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/kingdomino.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/las-vegas.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/lexio.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/liar-game.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/looping-louie.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/lost-cities.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/love-letter.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/mafia.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/mancala.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/marrakech.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/monopoly.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/mugunghwa.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/no-thanks.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/old-maid.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/omok.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/one-card.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/one-night-werewolf.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/othello.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/paengichigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/pandemic.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/patchwork.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/penguin-party.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/pop-up-pirate.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/quoridor.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/qwirkle.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/rummikub.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/sabangchigi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/saboteur.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/set.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/seunggyeongdo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/seven-wonders-duel.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/seven-wonders.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/siltteugi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/skull-king.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/skull.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/sleeping-queens.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/speed-cups.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/splendor.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/spyfall.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/sugeondolligi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/sushi-go.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/telestrations.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/the-crew.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/the-mind.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/tichu.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/ticket-to-ride.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/ttakji.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/ttangttameokgi.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/tuho.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/tumbling-monkey.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/ubongo.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/umul-gonu.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/uno.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/wingspan.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/yacht.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ },
+ "content/stories/yutnori.json": {
+  "pub": "2026-11-20",
+  "mod": "2026-11-20"
+ }
+}

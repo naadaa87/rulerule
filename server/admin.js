@@ -1,6 +1,7 @@
 // 운영 관리 (로그인 확인은 server/adminauth.js)
 import { json, fail, readBody, kstDay, oneLine, clip, nowIso, systemUserId } from './util.js';
 import { adminShop } from './shop.js';
+import { indexNow } from './indexnow.js';
 import { deleteClub, deleteEvent, deletePost, deleteUser, hashPassword } from './auth.js';
 import { removeComment, removeReview } from './community.js';
 import { kpi, coupangResults } from './kpi.js';
@@ -75,6 +76,9 @@ export async function admin(request, env, parts) {
 
   // 보드게임몰 링크
   if (section === 'shop') return adminShop(request, env, parts.slice(1));
+
+  // 검색엔진에 새 페이지 알리기 (IndexNow: 네이버, 빙 등)
+  if (section === 'indexnow') return indexNow(request, env);
 
   // 지표(KPI)와 쿠팡 파트너스 실적
   if (section === 'kpi' && m === 'GET') return kpi(request, env, parts.slice(1));

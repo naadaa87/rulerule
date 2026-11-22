@@ -2001,3 +2001,50 @@ button.poll-opt:hover { border-color: var(--navy); }
 .chart-bar-track { height: 12px; border-radius: 999px; background: var(--mist); overflow: hidden; }
 .chart-bar-track span { display: block; height: 100%; border-radius: 999px; }
 .chart-empty { margin-top: 10px; padding: 14px; border-radius: 12px; background: var(--mist); color: var(--ink-2); font-size: 15px; }
+
+/* ---------- 보드게임 추천·종류 (2026-11-23) ---------- */
+.rec-jump { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.rec-jump .pill { min-height: 34px; padding: 4px 12px; font-size: 14px; }
+.pill-ghost { background: transparent; border-style: dashed; }
+.rec-page, .rec-hub, .types-page { padding-bottom: 64px; }
+.rec-how { margin: 8px 0 26px; padding: 20px 22px; border-radius: var(--r-l); background: var(--cream); }
+.rec-how .h3 { margin: 0 0 8px; }
+.rec-how .list { margin: 0; }
+.rec-sec { margin-top: 40px; }
+.rec-list { display: grid; gap: 12px; margin: 16px 0 8px; padding: 0; list-style: none; }
+.rec-item { padding: 18px 20px; border: 1.5px solid var(--line); border-radius: var(--r); background: #fff; }
+.rec-item:target { border-color: var(--coral); }
+.rec-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rec-no { flex: none; display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+.rec-name { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+.rec-name a { color: var(--ink); text-decoration: none; }
+.rec-name a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.rec-kind { padding: 2px 9px; border-radius: 999px; background: var(--butter-2); font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+.rec-meta { margin: 8px 0 0; color: var(--muted); font-size: 14px; font-weight: 600; }
+.rec-one { margin: 8px 0 0; line-height: 1.6; }
+.rec-why { margin: 6px 0 0; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.rec-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.rec-tbl th[scope="row"] { font-size: 15px; color: var(--ink); }
+.rec-tbl th[scope="row"] a { color: var(--ink); }
+.rec-tbl td { white-space: nowrap; }
+.rec-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 12px; margin: 14px 0 30px; }
+.rec-card { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: center; padding: 14px; border: 1.5px solid var(--line); border-radius: var(--r); text-decoration: none; color: var(--ink); background: #fff; }
+.rec-card:hover { border-color: var(--navy); }
+.rec-card-pic { width: 84px; height: 84px; object-fit: cover; border-radius: 14px; background: var(--cream); }
+.rec-card-body { display: grid; gap: 4px; min-width: 0; }
+.rec-card-body b { font-size: 17px; }
+.rec-card-body small { color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
+.rec-card-games { color: var(--coral-dark); font-size: 13px; font-weight: 700; }
+.rec-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.type-sec { padding-top: 18px; }
+.type-sec > p { max-width: 46em; line-height: 1.7; }
+.more-line { margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.more-line a { color: var(--ink-2); }
+@media (max-width: 599px) {
+  .rec-item { padding: 14px 16px; }
+  .rec-name { font-size: 17.5px; }
+  .rec-card { grid-template-columns: 64px minmax(0, 1fr); }
+  .rec-card-pic { width: 64px; height: 64px; }
+}
+.type-sec .gcards { margin-top: 14px; }
+@media (min-width: 900px) { .rec-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
