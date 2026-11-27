@@ -6,7 +6,8 @@ import path from 'node:path';
 export const STORY_DATE = '2026-11-20';
 
 export function makeFun(x) {
-  const { ROOT, layout, esc, pic, tile, gameCard, bySlug, games, sortedGames, icon, buyBox, abs, cfg, GROUPS, LEVELS, playersText, minutesText, VISUALS, frameSVG, bare, josa, GROW_RULES, popular, BRAND_IMG } = x;
+  const { ROOT, layout, esc, pic, tile, gameCard, bySlug, games, sortedGames, icon, buyBox, abs, cfg, GROUPS, LEVELS, playersText, minutesText, VISUALS, frameSVG, bare, josa, GROW_RULES, popular, BRAND_IMG, SEO = {}, datesOf = null } = x;
+  const sDates = (g) => (datesOf ? datesOf(`content/stories/${g.slug}.json`) : null) || { pub: STORY_DATE, mod: STORY_DATE };
   const read = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
   const problems = [];
 
@@ -111,18 +112,41 @@ ${funBand('stories')}`;
   }
 
   // ---------- 페이지: 이야기 한 편 ----------
+  // 이야기 페이지의 질문과 답: 기본 사실(처음 나온 해, 만든 사람, 받은 상, 다른 이름)과 이름 뜻
+  function storyFaq(g) {
+    const s = stories[g.slug];
+    const n = gname(g);
+    const f = Object.fromEntries(s.facts.map((x) => [x.k, x.v]));
+    // 괄호 붙은 값: 조사는 괄호 앞 낱말에 맞추고 괄호는 그대로 둬요
+    const part = (v) => { const m = String(v).match(/^(.*?)\s*(\([^)]*\))\s*$/); return m ? [m[1], m[2]] : [String(v), '']; };
+    const withJosa = (v, a, b) => { const [w, p2] = part(v); return `${w}${p2}${josa(w, a, b).slice(w.length)}`; };
+    const out = [];
+    const when = f['처음 나온 해'] || f['처음 나온 때'] || f['상품으로 나온 해'];
+    if (when) out.push({ q: `${josa(n, '은', '는')} 언제 처음 나왔나요?`, a: `${when}에 처음 나왔어요.${f['처음 나온 곳'] ? ` 처음 나온 곳은 ${withJosa(f['처음 나온 곳'], '이에요', '예요')}.` : ''}` });
+    else if (f['처음 나온 곳']) out.push({ q: `${josa(n, '은', '는')} 어디에서 처음 나왔나요?`, a: `처음 나온 곳은 ${withJosa(f['처음 나온 곳'], '이에요', '예요')}.` });
+    if (f['만든 사람']) out.push({ q: `${josa(n, '은', '는')} 누가 만들었나요?`, a: /요$/.test(f['만든 사람']) ? `${f['만든 사람']}.` : `${withJosa(f['만든 사람'], '이', '가')} 만들었어요.` });
+    if (f['받은 상']) out.push({ q: `${josa(n, '은', '는')} 어떤 상을 받았나요?`, a: `${f['받은 상']} 상을 받았어요.` });
+    if (f['뿌리']) out.push({ q: `${n}의 뿌리는 어디인가요?`, a: `${withJosa(f['뿌리'], '이에요', '예요')}.` });
+    if (f['갈래']) out.push({ q: `${josa(n, '은', '는')} 어떤 놀이인가요?`, a: `${withJosa(f['갈래'], '이에요', '예요')}.` });
+    const other = f['다른 이름'] || f['다른 나라 이름'];
+    if (other) { const [w, p2] = part(other); out.push({ q: `${n}의 다른 이름은 무엇인가요?`, a: `${w}${josa(w, '이라고도', '라고도').slice(w.length)} 불러요.${p2 ? ` ${p2.replace(/^\(|\)$/g, '')}.` : ''}` }); }
+    if ((SEO[g.slug] || {}).meaning) out.push({ q: `${n} 이름은 무슨 뜻인가요?`, a: SEO[g.slug].meaning });
+    return out.map((x) => ({ q: x.q, a: x.a.replace(/요\.\./g, '요.').replace(/\.\.$/, '.') }));
+  }
   function storyPage(g) {
     const s = stories[g.slug];
     const n = gname(g);
+    const sfaq = storyFaq(g);
     const fig = VISUALS[g.slug] ? `<figure class="story-fig">${frameSVG(VISUALS[g.slug][0].art, `${g.name} 그림: ${VISUALS[g.slug][0].t}`)}<figcaption>${esc(VISUALS[g.slug][0].t)}</figcaption></figure>` : '';
     const rel = (g.related || []).map((r) => bySlug[r]).filter((r) => r && stories[r.slug]).slice(0, 3);
     const body = `<article class="story" data-story="${g.slug}">
 <header class="story-head">
 <div class="wrap-narrow">
 ${crumbs([['/stories/', '보드게임 이야기'], ['', g.name]])}
-<div class="story-game">${tile(g, 'tile-sm')}<span>${esc(g.name)} 이야기</span><span class="tag">${GROUPS[g.group]}</span></div>
-<h1 class="story-title">${esc(s.title)}</h1>
+<div class="story-game">${tile(g, 'tile-sm')}<span>${esc(g.name)}</span><span class="tag">${GROUPS[g.group]}</span></div>
+<h1 class="story-title"><span class="story-kicker">${esc(n)} 유래와 역사</span>${esc(s.title)}</h1>
 <p class="story-lead">${esc(s.lead)}</p>
+<p class="game-dates">처음 올린 날 <time datetime="${sDates(g).pub}">${sDates(g).pub.replace(/-/g, '.')}</time> · 마지막으로 고친 날 <time datetime="${sDates(g).mod}">${sDates(g).mod.replace(/-/g, '.')}</time></p>
 ${s.facts.length ? `<dl class="story-facts">${s.facts.map((f) => `<div><dt>${esc(f.k)}</dt><dd>${esc(f.v)}</dd></div>`).join('')}</dl>` : ''}
 </div>
 </header>
@@ -139,6 +163,7 @@ ${s.sections.map((x2) => `<h2 class="story-h">${esc(x2.h)}</h2>\n<p>${esc(x2.p)}
 <ol class="sq-list">${s.quiz.map((q) => `<li class="sq" data-a="${q.a}"><p class="sq-q">${esc(q.q)}</p><div class="sq-opts">${q.o.map((o, j) => `<button type="button" class="sq-opt" data-i="${j}">${esc(o)}</button>`).join('')}</div><p class="sq-why" hidden>${esc(q.why)}</p></li>`).join('')}</ol>
 <div class="sq-result" data-sq-result hidden></div>
 </section>
+${sfaq.length ? `<section class="story-faq" aria-labelledby="sf-title"><h2 class="story-h" id="sf-title">${esc(n)} 유래, 한눈에 묻고 답하기</h2><div class="qa">${sfaq.map((x) => `<div class="qa-item"><p class="qa-q">${esc(x.q)}</p><p class="qa-a">${esc(x.a)}</p></div>`).join('')}</div></section>` : ''}
 <div class="story-cta">
 <a class="btn btn-main" href="/games/${g.slug}/">${esc(n)} 하는법 보기</a>
 <button type="button" class="btn btn-sub" data-story-share>${icon('i-share')}이야기 보내기</button>
@@ -153,11 +178,12 @@ ${funBand('stories')}
     return layout({
       title,
       description: `${s.teaser} ${s.lead}`.slice(0, 155),
-      keywords: [`${n} 유래`, `${n} 역사`, `${n} 만든 사람`, `${n} 이야기`, `${n} 상식`, `${n} 하는법`],
-      path: `/stories/${g.slug}/`, body, scripts: ['fun.js'], ogType: 'article',
+      keywords: [`${n} 유래`, `${n} 역사`, `${n} 뜻`, `${n} 이름 뜻`, `${n} 만든 사람`, `${n} 이야기`, `${n} 상식`, `${n} 하는법`],
+      path: `/stories/${g.slug}/`, body, scripts: ['fun.js'], ogType: 'article', published: sDates(g).pub, modified: sDates(g).mod,
       ogImage: fs.existsSync(path.join(ROOT, 'src', 'static', 'img', 'og', `${g.slug}.png`)) ? `/assets/img/og/${g.slug}.png` : '',
       jsonld: [
-        { '@context': 'https://schema.org', '@type': 'Article', headline: s.title, description: s.teaser, inLanguage: 'ko', datePublished: STORY_DATE, dateModified: STORY_DATE, mainEntityOfPage: abs(`/stories/${g.slug}/`), image: abs(`/assets/img/og/${g.slug}.png`), about: { '@type': 'Game', name: g.name, url: abs(`/games/${g.slug}/`) }, author: { '@type': 'Organization', name: cfg.siteName, url: abs('/') }, publisher: { '@type': 'Organization', name: cfg.siteName, logo: { '@type': 'ImageObject', url: abs('/assets/img/icon-512.png') } } },
+        ...(sfaq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: sfaq.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })) }] : []),
+        { '@context': 'https://schema.org', '@type': 'Article', headline: `${n} 유래와 역사: ${s.title}`, description: s.teaser, inLanguage: 'ko', datePublished: sDates(g).pub, dateModified: sDates(g).mod, mainEntityOfPage: abs(`/stories/${g.slug}/`), image: abs(`/assets/img/og/${g.slug}.png`), about: { '@type': 'Game', name: g.name, url: abs(`/games/${g.slug}/`) }, author: { '@type': 'Organization', name: cfg.siteName, url: abs('/') }, publisher: { '@type': 'Organization', name: cfg.siteName, logo: { '@type': 'ImageObject', url: abs('/assets/img/icon-512.png') } } },
         { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '보드게임 이야기', item: abs('/stories/') }, { '@type': 'ListItem', position: 3, name: g.name, item: abs(`/stories/${g.slug}/`) }] },
       ],
     });
@@ -499,13 +525,13 @@ ${dyk('dyk-home')}
     ['chart/index.html', chartPage()],
   ];
   const urls = [
-    ['/stories/', 'weekly', '0.7'], ...list.map((g) => [`/stories/${g.slug}/`, 'monthly', '0.6', STORY_DATE]),
+    ['/stories/', 'weekly', '0.7'], ...list.map((g) => [`/stories/${g.slug}/`, 'monthly', '0.6', sDates(g).mod]),
     ['/test/', 'monthly', '0.7'], ...TYPES.map((t) => [`/test/${t}/`, 'monthly', '0.5']),
     ['/worldcup/', 'weekly', '0.6'], ['/quiz/', 'monthly', '0.5'],
     ['/plan/', 'monthly', '0.7'], ['/chart/', 'daily', '0.6'],
   ];
   const storiesData = list.map((g) => ({ s: g.slug, n: g.name, t: stories[g.slug].title, tz: stories[g.slug].teaser }));
-  const rss = list.map((g) => ({ title: `${gname(g)} 유래와 역사 | ${stories[g.slug].title}`, link: `/stories/${g.slug}/`, desc: `${stories[g.slug].teaser} ${stories[g.slug].lead}`, day: STORY_DATE, cat: '보드게임 이야기' }));
+  const rss = list.map((g) => ({ title: `${gname(g)} 유래와 역사 | ${stories[g.slug].title}`, link: `/stories/${g.slug}/`, desc: `${stories[g.slug].teaser} ${stories[g.slug].lead}`, day: sDates(g).pub, cat: '보드게임 이야기' }));
   const ogTypes = TYPES.map((t) => ({ t, ...TEST.types[t] }));
   return { problems, stories, pages, urls, frames, storiesData, rss, homeBand, gameStoryBox, ogTypes, josa };
 }

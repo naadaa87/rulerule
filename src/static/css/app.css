@@ -2048,3 +2048,47 @@ button.poll-opt:hover { border-color: var(--navy); }
 }
 .type-sec .gcards { margin-top: 14px; }
 @media (min-width: 900px) { .rec-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+
+/* 검색에 잘 읽히는 한 줄 정의, 고친 날, 게임 방식 링크 */
+.game-def { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--coral); border-radius: 0 var(--r-s) var(--r-s) 0; background: var(--cream); font-size: 15.5px; line-height: 1.7; color: var(--ink); }
+.game-def b { font-weight: 800; }
+.game-dates { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.game-terms { margin-top: 18px; font-size: 14.5px; line-height: 1.8; color: var(--ink-2); }
+.game-terms b { display: block; font-weight: 800; color: var(--ink); }
+.game-terms a { display: inline-block; margin: 4px 6px 0 0; padding: 2px 10px; border: 1px solid var(--line-2); border-radius: 99px; background: var(--paper); color: var(--navy); font-weight: 700; font-size: 13.5px; text-decoration: none; }
+.game-terms a:hover { border-color: var(--coral); color: var(--coral-dark); }
+
+/* 보드게임 용어 사전 */
+.gloss-page { padding-bottom: 40px; }
+.gloss-index { margin: 22px 0 8px; padding: 12px 16px; border: 1px solid var(--line); border-radius: var(--r-s); background: var(--paper); }
+.gloss-index summary { cursor: pointer; font-weight: 800; }
+.gloss-index p { margin-top: 10px; font-size: 14px; line-height: 2; color: var(--muted); }
+.gloss-index a { color: var(--navy); font-weight: 700; text-decoration: none; }
+.gloss-index a:hover { color: var(--coral-dark); text-decoration: underline; }
+.gloss-page .h2 { margin-top: 34px; }
+.gloss-list { margin: 10px 0 0; border-top: 1px solid var(--line); }
+.gloss-item { padding: 16px 0; border-bottom: 1px solid var(--line); scroll-margin-top: calc(var(--head-h) + 16px); }
+.gloss-item:target { background: var(--butter-2); box-shadow: -12px 0 0 var(--butter-2), 12px 0 0 var(--butter-2); }
+.gloss-item dt { font-weight: 900; font-size: 17px; letter-spacing: -0.02em; }
+.gloss-en { margin-left: 4px; font-weight: 600; font-size: 13.5px; color: var(--muted); }
+.gloss-item dd { margin: 6px 0 0; color: var(--ink-2); line-height: 1.75; }
+.gloss-also, .gloss-games { margin-top: 6px; font-size: 14px; color: var(--muted); }
+.gloss-games a { font-weight: 700; }
+
+/* 이야기 페이지 제목 위 작은 줄 */
+.story-kicker { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; color: var(--coral-dark); }
+.story-faq .qa { margin-top: 10px; }
+
+/* 추천 허브: 인기 보드게임, 자주 묻는 질문 */
+.rec-sub { margin-top: 6px; color: var(--muted); font-size: 15px; }
+.rec-top { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 10px; margin: 14px 0 30px; padding: 0; list-style: none; }
+.rec-top a { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: start; height: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--r); background: #fff; color: var(--ink); text-decoration: none; }
+.rec-top a:hover { border-color: var(--coral); }
+.rec-top .tile { width: 52px; height: 52px; }
+.rec-top-b { display: grid; gap: 2px; min-width: 0; }
+.rec-top-b b { font-weight: 900; font-size: 16.5px; letter-spacing: -0.02em; }
+.rec-top-b small { color: var(--coral-dark); font-weight: 700; font-size: 13px; }
+.rec-top-b > span { color: var(--ink-2); font-size: 14px; line-height: 1.55; }
+.rec-hub .qa { margin: 12px 0 30px; }
+.rec-hub .qa-a a { font-weight: 700; white-space: nowrap; }
+.game-terms a.game-terms-all { border: 0; background: none; padding: 2px 4px; color: var(--muted); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }

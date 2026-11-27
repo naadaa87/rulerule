@@ -218,6 +218,7 @@ const CREW = [
 const COL_ART = {
   'two-players': 'scene-two', 'first-meeting': 'scene-first-meet', 'with-kids': 'scene-family', holiday: 'scene-generations', 'big-group': 'scene-friends', 'party-room': 'scene-workshop', quick: 'ico-quick', 'strategy-night': 'scene-strategy',
   'three-players': 'scene-variety', 'four-players': 'scene-coop', 'five-players': 'scene-friends', family: 'scene-generations', elementary: 'scene-picnic', beginner: 'ico-first', 'year-end': 'scene-workshop',
+  senior: 'scene-generations', classroom: 'scene-workshop', math: 'pawn-book', mystery: 'scene-strategy', 'team-coop': 'scene-coop', 'card-games': 'scene-variety', christmas: 'scene-friends', gift: 'scene-shelf', travel: 'scene-picnic',
 };
 const guide = (name, who, text) => `<div class="guide">${pic(name, '', 'guide-pic')}<p><b>${who}</b> ${text}</p></div>`;
 
@@ -328,6 +329,7 @@ function footer() {
 <a href="/rules/">보드게임 룰 모음</a>
 <a href="/recommend/">보드게임 추천</a>
 <a href="/types/">보드게임 종류</a>
+<a href="/glossary/">보드게임 용어 사전</a>
 <a href="/traditional/">전통놀이</a>
 <a href="/stories/">보드게임 이야기</a>
 <a href="/test/">취향 테스트</a>
@@ -382,7 +384,7 @@ function reportDialog() {
 </dialog>`;
 }
 
-function layout({ title, description, path: p, body, scripts = [], noindex = false, jsonld = null, bodyClass = '', keywords = [], ogImage = '', ogType = 'website' }) {
+function layout({ title, description, path: p, body, scripts = [], noindex = false, jsonld = null, bodyClass = '', keywords = [], ogImage = '', ogType = 'website', published = '', modified = '' }) {
   const url = abs(p);
   const ld = jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld).replace(/</g, '\\u003c')}</script>` : '';
   return `<!doctype html>
@@ -394,8 +396,10 @@ function layout({ title, description, path: p, body, scripts = [], noindex = fal
 <meta name="description" content="${esc(description)}">
 ${keywords.length ? `<meta name="keywords" content="${esc(keywords.join(', '))}">` : ''}
 <link rel="canonical" href="${url}">
-${noindex ? '<meta name="robots" content="noindex, nofollow">' : ''}
+${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
 <meta property="og:type" content="${ogType}">
+${published ? `<meta property="article:published_time" content="${published}">` : ''}
+${modified ? `<meta property="article:modified_time" content="${modified}">\n<meta property="og:updated_time" content="${modified}">` : ''}
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="${esc(cfg.siteName)}">
 <meta property="og:title" content="${esc(title)}">
@@ -499,17 +503,34 @@ const seoOf = (g) => {
   return { hooks: s.hooks, kw, alt, n, sub, how };
 };
 
+// 게임 페이지 자주 묻는 질문: 사람들이 검색창에 치는 물음(몇 명, 준비, 차례, 점수, 2인, 이름 뜻)에 원고 내용으로 바로 답해요
+const gameDates = (g) => datesOf(`content/games/${g._file}`);
 function gameFaq(g) {
   const n = bare(g.name);
+  const so = SEO[g.slug] || {};
+  const board = g.kind !== 'traditional';
+  const twoVar = (g.variants || []).find((v) => /2인|2명|둘/.test(v.title));
+  const twoPicks = (content.collections.find((c) => c.slug === 'two-players') || { games: [] }).games.filter((x) => x !== g.slug).slice(0, 3).map((x) => bare(bySlug[x].name));
+  const comps = (g.components || []).map(plain);
+  const rel = (g.related || []).filter((x) => bySlug[x]).map((x) => bare(bySlug[x].name));
   const list = [
     { q: `${josa(n, '은', '는')} 몇 명이서 하나요?`, a: `${josa(playersText(g.players), '이', '가')} 할 수 있어요.${g.best ? ` 가장 재미있는 인원은 ${josa(g.best, '이에요', '예요')}.` : ''}` },
-    { q: `${n} 한 판은 얼마나 걸리나요?`, a: `한 판에 ${minutesText(g.minutes)}쯤 걸려요. 처음 하는 사람이 있으면 설명까지 10분쯤 더 잡아 두세요.` },
-    { q: `${josa(n, '은', '는')} 몇 살부터 할 수 있나요?`, a: `${ageText(g.age)}면 할 수 있어요. 난이도는 ${josa(LEVELS[g.level], '이에요', '예요')}.` },
     { q: `${josa(n, '은', '는')} 어떻게 하면 이기나요?`, a: plain(g.summary.goal) },
+    (g.setup || []).length ? { q: `${n} 처음 준비는 어떻게 하나요?`, a: g.setup.slice(0, 4).map(plain).join(' ') } : null,
+    { q: `${n} 내 차례에는 무엇을 하나요?`, a: g.summary.turn.map(plain).join(' ') },
     { q: `${josa(n, '은', '는')} 언제 끝나나요?`, a: plain(g.summary.end) },
+    (g.scoring || []).length ? { q: `${n} 점수는 어떻게 계산하나요?`, a: g.scoring.map(plain).join(' ') } : null,
+    g.players[1] >= 2 && g.players[0] <= 4 && !(g.players[0] === 2 && g.players[1] === 2) && (board || g.players[0] <= 2)
+      ? { q: `${n} 2명이서도 할 수 있나요?`, a: g.players[0] <= 2 ? (twoVar ? `네. ${plain(twoVar.text)}` : `네, 2명부터 할 수 있어요.${g.best && !/^2/.test(g.best) ? ` 다만 가장 재미있는 인원은 ${josa(g.best, '이에요', '예요')}.` : ''}`) : `기본 규칙은 ${g.players[0]}명부터라 둘이서는 하기 어려워요. 둘이라면 ${twoPicks.join(', ')} 같은 2인 게임을 추천해요.` }
+      : null,
+    { q: `${n} 한 판은 얼마나 걸리나요?`, a: `한 판에 ${minutesText(g.minutes)}쯤 걸려요. 처음 하는 사람이 있으면 설명까지 10분쯤 더 잡아 두세요.` },
+    { q: `${josa(n, '은', '는')} 몇 살부터 할 수 있나요?`, a: `${josa(ageText(g.age), '이면', '면')} 할 수 있어요. 난이도는 ${josa(LEVELS[g.level], '이에요', '예요')}.` },
+    comps.length ? { q: `${n}에는 무엇이 들어 있나요?`, a: `${comps.join(', ')}. 판(에디션)에 따라 구성물이 조금 다를 수 있어요.` } : null,
+    so.meaning ? { q: `${n} 이름은 무슨 뜻인가요?`, a: so.meaning } : null,
+    rel.length ? { q: `${josa(n, '과', '와')} 비슷한 게임은 무엇이 있나요?`, a: `${rel.join(', ')}${josa(rel[rel.length - 1], '을', '를').slice(rel[rel.length - 1].length)} 함께 보세요.${g.compare ? ` ${plain(g.compare)}` : ''}` } : null,
     ...(g.faq || []).map((x) => ({ q: plain(x.q), a: plain(x.a) })),
   ];
-  return list;
+  return list.filter(Boolean);
 }
 
 const SHOP_KIND = { game: '본판', edition: '다른 판', expansion: '확장', goods: '용품', set: '세트' };
@@ -545,7 +566,7 @@ ${ids.map((id) => { const it = SHOP.items[id]; return `<li class="buy-item${it.i
 }
 
 // ---------- 재미로 알아보기 (scripts/fun.mjs) ----------
-const FUN = makeFun({ ROOT, layout, esc, pic, tile, gameCard, bySlug, games, sortedGames, icon, buyBox, abs, cfg, GROUPS, LEVELS, playersText, minutesText, VISUALS, frameSVG, bare, josa, GROW_RULES, popular: content.popular, BRAND_IMG });
+const FUN = makeFun({ ROOT, layout, esc, pic, tile, gameCard, bySlug, games, sortedGames, icon, buyBox, abs, cfg, GROUPS, LEVELS, playersText, minutesText, VISUALS, frameSVG, bare, josa, GROW_RULES, popular: content.popular, BRAND_IMG, SEO, datesOf });
 if (FUN.problems.length) {
   console.error('\n이야기·테스트 원고에서 고칠 곳이 있어요:\n- ' + FUN.problems.join('\n- '));
   process.exit(1);
@@ -644,9 +665,11 @@ ${g.original || seo.alt.length ? `<p class="game-orig">${[g.original, ...seo.alt
 <div class="wrap game-body">
 <div class="game-main">
 <nav class="jump" aria-label="이 페이지 바로가기"><a href="#reviews">${icon('i-star')}후기·별점</a><a href="#faq">자주 묻는 질문</a>${hasBuy ? `<a href="#buy">${icon('i-cart')}구매하기</a>` : ''}<a href="/community/board/?game=${g.slug}">${icon('i-chat')}이야기 나누기</a></nav>
+<p class="game-def"><b>${esc(name)}</b>${g.original && g.original !== name ? `(${esc(g.original)})` : ''}${josa(name, '은', '는').slice(name.length)} ${g.kind === 'traditional' ? '우리나라에서 즐겨 온 전통놀이예요' : `${GROUPS[g.group].replace(/ 게임$/, '')} 보드게임이에요`}. ${josa(playersText(g.players), '이', '가')} 한 판에 ${minutesText(g.minutes)}쯤 하고, ${josa(ageText(g.age), '이면', '면')} 할 수 있어요. ${fmt(g.summary.goal)}</p>
 ${g.intro ? `<p class="game-intro">${fmt(g.intro)}</p>` : ''}
 ${g.compare ? `<p class="compare">${fmt(g.compare)}</p>` : ''}
 ${statusNote}
+<p class="game-dates">처음 올린 날 <time datetime="${gameDates(g).pub}">${gameDates(g).pub.replace(/-/g, '.')}</time> · 마지막으로 고친 날 <time datetime="${gameDates(g).mod}">${gameDates(g).mod.replace(/-/g, '.')}</time></p>
 <div class="tabs" role="tablist" aria-label="설명 단계">
 ${vis.length ? '<button role="tab" id="tab-visual" aria-controls="visual" aria-selected="true">그림으로</button>' : ''}
 <button role="tab" id="tab-summary" aria-controls="summary" aria-selected="${vis.length ? 'false' : 'true'}">1분 요약</button>
@@ -688,6 +711,7 @@ ${guide('book-warn', '북', '하다가 막히면 여기서 찾아보세요.')}
 ${(g.rules || []).length > 1 ? `<label class="rule-find"><span class="sr">규칙에서 찾기</span>${icon('i-search')}<input type="search" placeholder="규칙에서 찾기 (예: 동점, 2명)" data-rule-find></label>` : ''}
 <div class="rules">${rules}</div>
 ${(g.tricky || []).length ? `<h3 class="h3">헷갈리는 상황</h3>${qaList(g.tricky)}` : ''}
+${termsOf(g.slug).length ? `<p class="game-terms"><b>${esc(josa(seo.n, "과", "와"))} 관련된 보드게임 용어</b> ${termsOf(g.slug).map((x) => `<a href="/glossary/#${termId(x.term)}">${esc(x.term)}</a>`).join('')} <a class="game-terms-all" href="/glossary/">용어 사전 전체 보기</a></p>` : ''}
 ${variants}
 ${house}
 </section>
@@ -748,6 +772,8 @@ ${related}
     keywords: seo.kw.slice(0, 14),
     ogImage: fs.existsSync(path.join(STATIC, 'img', 'og', `${g.slug}.png`)) ? `/assets/img/og/${g.slug}.png` : '',
     ogType: 'article',
+    published: gd.pub,
+    modified: gd.mod,
     jsonld: [
       {
         '@context': 'https://schema.org', '@type': 'HowTo', name: `${seo.n} 하는법`, description: plain(g.oneLine), inLanguage: 'ko',
@@ -756,7 +782,7 @@ ${related}
       },
       {
         '@context': 'https://schema.org', '@type': 'FAQPage',
-        mainEntity: faqItems.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })),
+        mainEntity: [...faqItems, ...(g.tricky || []).map((x) => ({ q: `${seo.n}: ${plain(x.q)}`, a: plain(x.a) }))].map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })),
       },
       {
         '@context': 'https://schema.org', '@type': 'Game', name, alternateName: g.original || undefined,
@@ -845,7 +871,7 @@ ${sel('l', '난이도', [['', '난이도'], ['1', '쉬움'], ['2', '보통'], ['
 <div class="cats">
 ${CATS.map(([im, href, t, d, tone, col]) => `<a class="cat ${tone}" href="${href}">${pic(im, '', '')}<span class="cat-t">${t}</span><span class="cat-d">${d}</span><span class="cat-c">${col && colBy[col] ? `게임 ${colBy[col].games.length}개` : `${games.length}개 게임`}</span></a>`).join('\n')}
 </div>
-<div class="cat-more">${['two-players', 'four-players', 'family', 'elementary', 'beginner', 'year-end', 'first-meeting', 'holiday', 'big-group'].filter((c) => colBy[c]).map((c) => `<a class="pill" href="/collections/${c}/">${esc(colH1(colBy[c]))}</a>`).join('')}<a class="pill" href="/traditional/">전통놀이 ${trad.length}가지</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/recommend/">추천 모음 전체</a></div>
+<div class="cat-more">${['two-players', 'four-players', 'big-group', 'family', 'elementary', 'senior', 'beginner', 'first-meeting', 'year-end', 'holiday', 'christmas', 'gift'].filter((c) => colBy[c]).map((c) => `<a class="pill" href="/collections/${c}/">${esc(colH1(colBy[c]))}</a>`).join('')}<a class="pill" href="/traditional/">전통놀이 ${trad.length}가지</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/glossary/">보드게임 용어 사전</a><a class="pill" href="/recommend/">추천 모음 전체</a></div>
 </div>
 </section>
 
@@ -1018,8 +1044,9 @@ const popRank = (s) => { const i = content.popular.indexOf(s); return i < 0 ? 99
 const colsOf = (slug) => content.collections.filter((c) => c.games.includes(slug));
 const COL_GROUPS = [
   ['인원별 보드게임 추천', ['two-players', 'three-players', 'four-players', 'five-players', 'big-group']],
-  ['누구와 함께하나요', ['family', 'with-kids', 'elementary', 'first-meeting', 'year-end', 'holiday']],
-  ['어떤 게임을 찾나요', ['beginner', 'party-room', 'quick', 'strategy-night']],
+  ['누구와 함께하나요', ['family', 'with-kids', 'elementary', 'senior', 'first-meeting', 'year-end', 'holiday', 'classroom']],
+  ['어떤 게임을 찾나요', ['beginner', 'party-room', 'quick', 'strategy-night', 'mystery', 'team-coop', 'card-games', 'math']],
+  ['언제, 어디서 하나요', ['christmas', 'gift', 'travel']],
 ];
 const colH1 = (c) => c.h1 || `${c.title} 보드게임 추천`;
 function recItem(g, i, from) {
@@ -1096,8 +1123,25 @@ ${qaList(faq)}
     ],
   });
 }
+// 추천 허브의 질문과 답: 묶음 앞쪽 게임으로 답을 만들어요 (검색 결과의 바로 답, AI 답변용)
+function recommendFaq(by) {
+  const names = (slug, n = 3) => (by[slug] ? by[slug].games.slice(0, n).map((x) => bare(bySlug[x].name)) : []);
+  const q = (question, slug, tail) => (by[slug] ? { q: question, a: `${names(slug).join(', ')}부터 보세요. ${tail} 더 많은 게임은 ${colH1(by[slug])} 묶음에 모아 두었어요.`, slug } : null);
+  return [
+    q('보드게임을 처음 산다면 무엇이 좋을까요?', 'beginner', '규칙 설명이 3분 안팎이고 한 판이 짧아서 처음 하는 사람이 섞여도 바로 시작할 수 있어요.'),
+    q('2명이서 할 만한 보드게임은 무엇인가요?', 'two-players', '둘이서 해도 긴장감이 살아 있는 게임들이에요.'),
+    q('가족끼리 할 만한 보드게임은 무엇인가요?', 'family', '아이와 어른이 함께 해도 규칙이 어렵지 않아요.'),
+    q('유치원생, 어린 아이와 할 보드게임은 무엇인가요?', 'with-kids', '글자를 몰라도 그림과 손으로 할 수 있어요.'),
+    q('10명이 넘는 단체 모임에서는 어떤 게임을 하나요?', 'big-group', '사람이 많아도 기다리는 시간이 길지 않은 게임들이에요.'),
+    q('30분 안에 끝나는 보드게임은 무엇인가요?', 'quick', '한 판이 짧아서 여러 판을 돌리기 좋아요.'),
+    q('선물하기 좋은 보드게임은 무엇인가요?', 'gift', '상자가 작고 규칙이 쉬워서 받는 사람이 바로 꺼내 할 수 있어요.'),
+    q('파티룸이나 모임 장소에서 할 게임은 무엇인가요?', 'party-room', '여럿이 크게 웃을 수 있는 게임들이에요.'),
+  ].filter(Boolean);
+}
 function recommendPage() {
   const by = Object.fromEntries(content.collections.map((c) => [c.slug, c]));
+  const top = content.popular.slice(0, 10).map((x) => bySlug[x]).filter(Boolean);
+  const rfaq = recommendFaq(by);
   const card = (c) => `<a class="rec-card" href="/collections/${c.slug}/">${COL_ART[c.slug] ? pic(COL_ART[c.slug], '', 'rec-card-pic') : ''}<span class="rec-card-body"><b>${esc(colH1(c))}</b><small>${esc(c.lead)}</small><span class="rec-card-games">${c.games.slice(0, 4).map((s) => esc(bare(bySlug[s].name))).join(' · ')} 외 ${Math.max(0, c.games.length - 4)}가지</span></span></a>`;
   const body = `<section class="page-head">
 <div class="wrap page-head-grid">
@@ -1110,21 +1154,71 @@ ${pic('card-recommend', '', 'page-art page-art-sq', true)}
 </div>
 </section>
 <section class="wrap rec-hub">
+<h2 class="h2" id="popular">많이 알려진 인기 보드게임 10가지</h2>
+<p class="rec-sub">처음 모임에 들고 가도 대부분 한 번쯤 들어 본 게임들이에요. 이름을 누르면 룰과 하는법을 볼 수 있어요.</p>
+<ul class="rec-top">${top.map((g) => `<li><a href="/games/${g.slug}/">${tile(g, 'tile-sm')}<span class="rec-top-b"><b>${esc(bare(g.name))}</b><small>${esc(playersText(g.players))} · ${esc(minutesText(g.minutes))} · ${esc(ageText(g.age))}</small><span>${fmt(g.oneLine)}</span></span></a></li>`).join('')}</ul>
 ${COL_GROUPS.map(([title, slugsIn]) => `<h2 class="h2">${title}</h2><div class="rec-cards">${slugsIn.filter((x) => by[x]).map((x) => card(by[x])).join('')}</div>`).join('\n')}
+<h2 class="h2" id="faq">보드게임 추천, 자주 묻는 질문</h2>
+<div class="qa">${rfaq.map((x) => `<div class="qa-item"><p class="qa-q">${esc(x.q)}</p><p class="qa-a">${esc(x.a.replace(/ 더 많은 게임은 .*$/, ''))} <a href="/collections/${x.slug}/">${esc(colH1(by[x.slug]))} 전체 보기</a></p></div>`).join('')}</div>
 <h2 class="h2">직접 골라 보기</h2>
 <div class="rec-tools">
-<a class="pill" href="/games/">인원·시간으로 게임 찾기</a><a class="pill" href="/plan/">모임 게임 순서 짜기</a><a class="pill" href="/test/">보드게임 취향 테스트</a><a class="pill" href="/worldcup/">보드게임 월드컵</a><a class="pill" href="/chart/">이번 주 인기 순위</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/traditional/">전통놀이 종류</a>
+<a class="pill" href="/games/">인원·시간으로 게임 찾기</a><a class="pill" href="/plan/">모임 게임 순서 짜기</a><a class="pill" href="/test/">보드게임 취향 테스트</a><a class="pill" href="/worldcup/">보드게임 월드컵</a><a class="pill" href="/chart/">이번 주 인기 순위</a><a class="pill" href="/types/">보드게임 종류</a><a class="pill" href="/glossary/">보드게임 용어 사전</a><a class="pill" href="/traditional/">전통놀이 종류</a>
 </div>
 </section>`;
   return layout({
-    title: `보드게임 추천 ${YEAR} | 2인·3인·4인·가족·초등·파티 상황별 추천 - ${cfg.siteName}`,
-    description: `2인 보드게임, 3인·4인·5인 보드게임, 가족 보드게임, 초등 보드게임, 보드게임 입문, 파티·연말 모임 게임까지 상황별 보드게임 추천을 모았어요. 고른 게임의 룰과 하는법도 바로 볼 수 있어요.`,
-    keywords: ['보드게임 추천', `보드게임 추천 ${YEAR}`, '2인 보드게임 추천', '4인 보드게임 추천', '가족 보드게임 추천', '초등 보드게임 추천', '보드게임 입문 추천', '파티 보드게임 추천'],
+    title: `보드게임 추천 ${YEAR} | 인기 보드게임, 2인·4인·가족·단체 상황별 추천 - ${cfg.siteName}`,
+    description: `많이 알려진 인기 보드게임 10가지와 2인·3인·4인·5인, 10명 넘는 단체, 가족, 아이, 초등, 어르신, 입문, 파티, 크리스마스, 선물까지 상황별 보드게임 추천을 모았어요. 고른 게임의 룰과 하는법도 바로 볼 수 있어요.`,
+    keywords: ['보드게임 추천', `보드게임 추천 ${YEAR}`, '인기 보드게임', '재밌는 보드게임', '보드게임 순위', '2인 보드게임 추천', '4인 보드게임 추천', '가족 보드게임 추천', '단체 보드게임', '초등 보드게임 추천', '보드게임 입문 추천', '파티 보드게임 추천', '선물 보드게임'],
     path: '/recommend/',
     body,
     jsonld: [
-      { '@context': 'https://schema.org', '@type': 'ItemList', name: `보드게임 추천 ${YEAR}`, itemListElement: content.collections.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/collections/${c.slug}/`), name: colH1(c) })) },
+      { '@context': 'https://schema.org', '@type': 'ItemList', name: '많이 알려진 인기 보드게임 10가지', itemListOrder: 'https://schema.org/ItemListUnordered', itemListElement: top.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/games/${g.slug}/`), name: bare(g.name) })) },
+      { '@context': 'https://schema.org', '@type': 'ItemList', name: `상황별 보드게임 추천 ${YEAR}`, itemListElement: content.collections.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/collections/${c.slug}/`), name: colH1(c) })) },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: rfaq.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a } })) },
       { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '보드게임 추천', item: abs('/recommend/') }] },
+    ],
+  });
+}
+
+// ---------- 페이지: 보드게임 용어 사전 (/glossary/) ----------
+const GLOSS_CATS = ['진행할 때 쓰는 말', '게임 방식 (메커니즘)', '게임 종류', '모임에서 자주 하는 말'];
+const termId = (t) => `w-${t.replace(/\s*\(.*?\)/g, '').replace(/[^0-9A-Za-z가-힣]+/g, '-').replace(/^-|-$/g, '')}`;
+const termsOf = (slug) => glossary.filter((x) => (x.games || []).includes(slug) && x.cat !== GLOSS_CATS[0]);
+function glossaryPage() {
+  const byCat = GLOSS_CATS.map((c) => [c, glossary.filter((x) => x.cat === c)]);
+  const sorted = [...glossary].sort((a, b) => collator.compare(a.term, b.term));
+  const body = `<section class="page-head">
+<div class="wrap page-head-grid">
+<div>
+<nav class="crumbs" aria-label="현재 위치"><a href="/">홈</a><span aria-hidden="true">/</span><a href="/learn/">처음이라면</a><span aria-hidden="true">/</span><span>용어 사전</span></nav>
+<h1 class="page-title">보드게임 용어 사전 ${glossary.length}가지</h1>
+<p class="page-lead">룰북과 보드게임 모임에서 자주 나오는 말을 쉬운 말로 풀었어요. 차례, 라운드 같은 기본 용어부터 트릭 테이킹, 덱 빌딩, 드래프트 같은 게임 방식과 무게감, 다운타임 같은 모임 용어까지, 그 말이 나오는 게임과 함께 정리했어요.</p>
+<nav class="rec-jump" aria-label="분류로 이동">${byCat.map(([c, l], i) => `<a class="pill" href="#c-${i + 1}">${esc(c)} ${l.length}</a>`).join('')}</nav>
+</div>
+${pic('book-open', '', 'page-art page-art-sq', true)}
+</div>
+</section>
+<section class="wrap-narrow gloss-page">
+<details class="gloss-index"><summary>가나다순으로 찾기</summary><p>${sorted.map((x) => `<a href="#${termId(x.term)}">${esc(x.term)}</a>`).join(' · ')}</p></details>
+${byCat.map(([c, list], i) => `<h2 class="h2" id="c-${i + 1}">${esc(c)}</h2>
+<dl class="gloss-list">${list.map((x) => `<div class="gloss-item" id="${termId(x.term)}">
+<dt>${esc(x.term)}${x.en ? ` <span class="gloss-en" lang="en">${esc(x.en)}</span>` : ''}</dt>
+<dd><p>${fmt(x.desc)}</p>${(x.also || []).length ? `<p class="gloss-also">다른 말: ${x.also.map(esc).join(', ')}</p>` : ''}${(x.games || []).length ? `<p class="gloss-games">이 말이 나오는 게임: ${x.games.filter((s2) => bySlug[s2]).map((s2) => `<a href="/games/${s2}/">${esc(bySlug[s2].name)}</a>`).join(', ')}</p>` : ''}</dd>
+</div>`).join('\n')}</dl>`).join('\n')}
+<div class="tip-box">
+<h2 class="h2">처음 모임을 이끈다면</h2>
+<p><a href="/learn/">보드게임이 처음이라면</a>에서 시작하는 순서를 보고, <a href="/collections/beginner/">보드게임 입문 추천</a>에서 첫 게임을 골라 보세요. 게임 방식으로 고르고 싶다면 <a href="/types/">보드게임 종류</a>를 보세요.</p>
+</div>
+</section>`;
+  return layout({
+    title: `보드게임 용어 사전 ${glossary.length}가지 | 트릭 테이킹·덱 빌딩·드래프트 뜻 - ${cfg.siteName}`,
+    description: `보드게임 용어 ${glossary.length}가지를 쉬운 말로 풀었어요. 차례, 라운드, 선 플레이어부터 트릭 테이킹, 클라이밍, 덱 빌딩, 드래프트, 엔진 빌딩, 정체 숨기기, 무게감, 다운타임까지 뜻과 예시 게임을 함께 볼 수 있어요.`,
+    keywords: ['보드게임 용어', '보드게임 용어 정리', '트릭 테이킹 뜻', '덱 빌딩 뜻', '드래프트 뜻', '선 플레이어 뜻', '보드게임 무게감', '하우스룰 뜻'],
+    path: '/glossary/',
+    body,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'DefinedTermSet', name: '보드게임 용어 사전', url: abs('/glossary/'), inLanguage: 'ko', hasDefinedTerm: glossary.map((x) => ({ '@type': 'DefinedTerm', name: x.term, ...(x.en || (x.also || []).length ? { alternateName: [x.en, ...(x.also || [])].filter(Boolean) } : {}), description: plain(x.desc), url: abs(`/glossary/#${termId(x.term)}`), inDefinedTermSet: abs('/glossary/') })) },
+      { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: abs('/') }, { '@type': 'ListItem', position: 2, name: '처음이라면', item: abs('/learn/') }, { '@type': 'ListItem', position: 3, name: '보드게임 용어 사전', item: abs('/glossary/') }] },
     ],
   });
 }
@@ -1261,7 +1355,8 @@ ${guide('domi-order', '도미', '순서대로만 하면 돼요. 여섯 가지예
 <div class="gcards">${['halli-galli', 'dobble', 'just-one', 'rummikub', 'yutnori', 'the-mind'].filter((s) => bySlug[s]).map((s) => gameCard(bySlug[s])).join('')}</div>
 <h2 class="h2" id="words">자주 나오는 말</h2>
 ${guide('book-open', '북', '설명에 자주 나오는 말을 쉬운 말로 풀었어요.')}
-<dl class="glossary">${glossary.map((x) => `<div><dt>${esc(x.term)}</dt><dd>${fmt(x.desc)}</dd></div>`).join('')}</dl>
+<dl class="glossary">${glossary.filter((x) => x.cat === GLOSS_CATS[0]).slice(0, 14).map((x) => `<div><dt><a href="/glossary/#${termId(x.term)}">${esc(x.term)}</a></dt><dd>${fmt(x.desc)}</dd></div>`).join('')}</dl>
+<p class="more-line"><a class="more-link" href="/glossary/">보드게임 용어 사전 ${glossary.length}가지 전체 보기</a> · 트릭 테이킹, 덱 빌딩, 드래프트, 정체 숨기기 같은 게임 방식도 풀어 두었어요.</p>
 </section>`;
   return layout({
     title: `보드게임이 처음이라면 - 시작하는 순서와 용어 풀이 | ${cfg.siteName}`,
@@ -1835,6 +1930,7 @@ for (const g of games) write(`games/${g.slug}/index.html`, gamePage(g));
 for (const c of content.collections) write(`collections/${c.slug}/index.html`, collectionPage(c));
 write('recommend/index.html', recommendPage());
 write('types/index.html', typesPage());
+write('glossary/index.html', glossaryPage());
 write('traditional/index.html', traditionalPage());
 write('learn/index.html', learnPage());
 write('space/index.html', spacePage());
@@ -1897,7 +1993,7 @@ const latest = (arr) => arr.reduce((a, b) => (b > a ? b : a), '2026-11-15');
 const allGameDay = latest(games.map(gameDay));
 const ogOf = (g) => (fs.existsSync(path.join(STATIC, 'img', 'og', `${g.slug}.png`)) ? abs(`/assets/img/og/${g.slug}.png`) : '');
 const urls = [
-  ['/', 'daily', '1.0', today], ['/games/', 'weekly', '0.9', allGameDay], ['/rules/', 'weekly', '0.9', allGameDay], ['/recommend/', 'weekly', '0.9', today], ['/types/', 'monthly', '0.8', today], ['/traditional/', 'weekly', '0.8', allGameDay], ['/shop/', 'weekly', '0.7'],
+  ['/', 'daily', '1.0', today], ['/games/', 'weekly', '0.9', allGameDay], ['/rules/', 'weekly', '0.9', allGameDay], ['/recommend/', 'weekly', '0.9', today], ['/types/', 'monthly', '0.8', today], ['/glossary/', 'monthly', '0.7', today], ['/traditional/', 'weekly', '0.8', allGameDay], ['/shop/', 'weekly', '0.7'],
   ['/community/', 'daily', '0.6'], ['/community/events/', 'daily', '0.5'], ['/community/clubs/', 'daily', '0.5'], ['/community/board/', 'daily', '0.5'], ['/community/rank/', 'daily', '0.4'], ['/community/levels/', 'monthly', '0.4'],
   ['/learn/', 'monthly', '0.6'], ['/space/', 'monthly', '0.5'], ['/about/', 'monthly', '0.4'], ['/contact/', 'yearly', '0.4'],
   ['/terms/', 'yearly', '0.2'], ['/privacy/', 'yearly', '0.2'], ['/community/rules/', 'yearly', '0.2'],
@@ -1950,7 +2046,8 @@ ${cfg.siteName}은 보드게임과 전통놀이의 규칙을 우리 말로 다�
 - [보드게임 종류](${abs('/types/')}): 파티·가족·전략·추리·협력·순발력·카드·주사위·타일·말 게임 분류
 - [전통놀이 종류와 방법](${abs('/traditional/')}): 윷놀이, 장기, 공기놀이 등 ${games.filter((g) => g.kind === 'traditional').length}가지
 - [보드게임 이야기](${abs('/stories/')}): 게임별 유래와 역사
-- [보드게임이 처음이라면](${abs('/learn/')}): 시작하는 순서와 용어 풀이
+- [보드게임이 처음이라면](${abs('/learn/')}): 시작하는 순서와 기본 용어
+- [보드게임 용어 사전](${abs('/glossary/')}): 트릭 테이킹, 덱 빌딩, 드래프트, 무게감 등 ${glossary.length}가지 용어의 뜻과 예시 게임
 - [모임 게임 짜기](${abs('/plan/')}): 인원·시간에 맞춘 게임 순서
 
 ## 상황별 추천
@@ -1976,7 +2073,14 @@ ${sortedGames.map((g) => { const so = seoOf(g); return `## ${g.name}${g.original
 - 내 차례: ${g.summary.turn.map(plain).join(' ')}
 - 끝나는 때: ${plain(g.summary.end)}
 - 많이 묻는 것: ${so.hooks.join(', ')}
-`; }).join('\n')}`);
+${(SEO[g.slug] || {}).meaning ? `- 이름 뜻: ${SEO[g.slug].meaning}\n` : ''}${FUN.stories[g.slug] ? `- 유래: ${FUN.stories[g.slug].facts.slice(0, 4).map((f) => `${f.k} ${f.v}`).join(', ')} (${abs(`/stories/${g.slug}/`)})\n` : ''}${termsOf(g.slug).length ? `- 관련 용어: ${termsOf(g.slug).map((x) => x.term).join(', ')}\n` : ''}`; }).join('\n')}
+
+# 보드게임 용어 사전
+> 주소: ${abs('/glossary/')}
+
+${GLOSS_CATS.map((c) => `## ${c}
+${glossary.filter((x) => x.cat === c).map((x) => `- ${x.term}${x.en ? ` (${x.en})` : ''}: ${plain(x.desc)}`).join('\n')}`).join('\n\n')}
+`);
 
 // 네이버 서치어드바이저에 제출하는 RSS (게임 페이지 전체)
 const rfc822 = (d) => new Date(`${d}T09:00:00+09:00`).toUTCString();

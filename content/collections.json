@@ -188,43 +188,88 @@
    "title": "6명 넘게 모였을 때",
    "lead": "사람이 많을수록 더 재미있어지는 게임이에요.",
    "games": [
-    "mafia",
-    "avalon",
-    "liar-game",
-    "telestrations",
-    "codenames",
-    "6-nimmt",
-    "dalmuti",
-    "dixit",
     "just-one",
-    "dobble",
-    "saboteur",
-    "one-night-werewolf",
+    "dixit",
+    "codenames",
+    "telestrations",
+    "dalmuti",
     "bang",
     "incan-gold",
-    "jungle-speed",
-    "indian-poker",
-    "no-thanks",
-    "spyfall",
     "insider",
+    "spyfall",
+    "no-thanks",
+    "jungle-speed",
+    "dobble",
+    "indian-poker",
+    "seven-wonders",
+    "6-nimmt",
+    "avalon",
+    "one-night-werewolf",
+    "saboteur",
+    "uno",
+    "mafia",
+    "liar-game",
     "mugunghwa",
-    "sugeondolligi",
     "eoreumttaeng",
-    "seven-wonders"
+    "sugeondolligi"
    ],
    "h1": "6인 이상 보드게임 추천",
-   "seo": "6인 이상 보드게임 추천 | 단체 게임·여럿이 하는 게임",
+   "seo": "6인 이상 보드게임 추천 | 6인·8인·10인 단체 게임",
    "kw": [
     "6인 보드게임",
+    "6인용 보드게임",
+    "7인 보드게임",
+    "8인 보드게임",
+    "10인 보드게임",
+    "12인 보드게임",
     "단체 보드게임",
-    "여럿이 하는 보드게임",
-    "단체 게임",
-    "대규모 보드게임"
+    "단체 게임"
    ],
    "how": [
     "여섯 명이 넘으면 차례를 기다리는 시간이 길어져요. 모두가 동시에 하는 게임(젝스님트, 저스트 원)이 좋아요.",
-    "팀을 나누는 게임(코드네임, 아발론)은 사람이 많을수록 더 재미있어요.",
-    "사람이 계속 들고 나는 자리라면 한 판이 15분 안팎인 게임을 고르세요."
+    "8명부터는 편을 나누거나 역할을 숨기는 게임(아발론, 한밤의 늑대인간)이 제맛이에요. 사람이 많을수록 더 재미있어져요.",
+    "10명이 넘는 단체라면 마피아, 라이어 게임처럼 구성물이 거의 없는 게임이나 몸으로 하는 놀이를 고르세요."
+   ],
+   "sections": [
+    {
+     "title": "6~7명",
+     "games": [
+      "just-one",
+      "dixit",
+      "codenames",
+      "telestrations",
+      "dalmuti",
+      "bang",
+      "incan-gold",
+      "insider",
+      "spyfall",
+      "no-thanks",
+      "jungle-speed",
+      "dobble",
+      "indian-poker",
+      "seven-wonders"
+     ]
+    },
+    {
+     "title": "8~10명",
+     "games": [
+      "6-nimmt",
+      "avalon",
+      "one-night-werewolf",
+      "saboteur",
+      "uno"
+     ]
+    },
+    {
+     "title": "10명이 넘는 단체",
+     "games": [
+      "mafia",
+      "liar-game",
+      "mugunghwa",
+      "eoreumttaeng",
+      "sugeondolligi"
+     ]
+    }
    ]
   },
   {
@@ -395,71 +440,41 @@
    ]
   },
   {
-   "slug": "beginner",
-   "title": "보드게임이 처음이라면",
-   "h1": "보드게임 입문 추천",
-   "seo": "보드게임 입문 추천 | 초보도 쉬운 보드게임",
-   "lead": "보드게임을 처음 하는 사람도 5분 안에 규칙을 익힐 수 있는 게임이에요. 가볍게 시작해서 한 단계씩 올라가 보세요.",
+   "slug": "senior",
+   "title": "어르신과 함께",
+   "h1": "어르신과 하는 보드게임 추천",
+   "seo": "어르신과 하는 보드게임 추천 | 3대가 함께하는 쉬운 게임",
+   "lead": "할머니, 할아버지와 손주가 함께 할 수 있는 게임이에요. 이미 아시는 전통놀이와, 규칙이 단순하고 글자가 적은 보드게임을 골랐어요.",
    "kw": [
-    "보드게임 입문",
-    "보드게임 입문 추천",
-    "초보 보드게임",
-    "쉬운 보드게임",
-    "입문용 보드게임",
-    "보드게임 입문 순서"
+    "어르신 보드게임",
+    "노인 보드게임",
+    "어르신 게임",
+    "어르신 레크리에이션 게임",
+    "부모님과 할 보드게임",
+    "3대 가족 게임"
    ],
    "how": [
-    "처음에는 한 판이 20분 안쪽인 게임으로 시작하세요. 규칙을 다 몰라도 한 판 해 보면 알게 돼요.",
-    "익숙해지면 스플렌더, 킹도미노처럼 점수를 모으는 게임으로 넘어가 보세요. 전략 게임의 맛을 처음 느끼게 돼요.",
-    "그다음은 카탄, 티켓 투 라이드 같은 대표 전략 게임이에요. 여기까지 오면 보드게임카페의 대부분을 즐길 수 있어요."
-   ],
-   "sections": [
-    {
-     "title": "처음 한 판",
-     "games": [
-      "halli-galli",
-      "davinci-code",
-      "uno",
-      "jenga",
-      "dobble",
-      "just-one",
-      "sushi-go",
-      "love-letter",
-      "yacht",
-      "the-mind"
-     ]
-    },
-    {
-     "title": "다음 단계",
-     "games": [
-      "rummikub",
-      "splendor",
-      "kingdomino",
-      "carcassonne",
-      "azul",
-      "ticket-to-ride",
-      "catan"
-     ]
-    }
+    "어르신이 이미 아시는 놀이(윷놀이, 화투, 장기, 오목)로 시작하면 어르신이 규칙을 가르쳐 주는 쪽이 되어 더 즐거워하세요.",
+    "새 보드게임은 숫자와 색만으로 하는 게임(루미큐브, 야추, 쿼클)이 좋아요. 카드에 글이 많은 게임은 피하세요.",
+    "손으로 집고 옮기는 게임은 손을 쓰고 대화를 나누는 시간이 돼요. 다만 어떤 게임도 치료 효과를 약속하지는 않아요."
    ],
    "games": [
-    "halli-galli",
-    "davinci-code",
-    "uno",
-    "jenga",
-    "dobble",
-    "just-one",
-    "sushi-go",
-    "love-letter",
-    "yacht",
-    "the-mind",
+    "yutnori",
+    "go-stop",
+    "janggi",
+    "omok",
     "rummikub",
-    "splendor",
-    "kingdomino",
-    "carcassonne",
-    "azul",
-    "ticket-to-ride",
-    "catan"
+    "yacht",
+    "qwirkle",
+    "halli-galli",
+    "dobble",
+    "jenga",
+    "othello",
+    "davinci-code",
+    "chilgyo",
+    "tuho",
+    "burumabul",
+    "mancala"
    ]
   },
   {
@@ -499,51 +514,6 @@
     "규칙 설명이 3분 안에 끝나는 게임을 고르세요. 설명이 길면 어색함도 길어져요.",
     "편을 나누는 게임은 서로 말을 걸게 만들어요. 저스트 원, 코드네임처럼 함께 답을 맞히는 게임이 좋아요.",
     "이기고 지는 게 크게 갈리지 않는 게임이 첫 만남에 편해요."
-   ]
-  },
-  {
-   "slug": "party-room",
-   "title": "파티룸에서 분위기 띄울 때",
-   "lead": "설명은 짧고 웃음은 큰 게임이에요. 생일, 모임, 뒤풀이 자리에 잘 맞아요.",
-   "tip": "벌칙을 정할 때는 모두가 웃을 수 있는 가벼운 것으로 해요.",
-   "games": [
-    "halli-galli",
-    "jenga",
-    "liar-game",
-    "mafia",
-    "pop-up-pirate",
-    "telestrations",
-    "coup",
-    "the-mind",
-    "dalmuti",
-    "uno",
-    "cockroach-poker",
-    "one-night-werewolf",
-    "bang",
-    "skull-king",
-    "las-vegas",
-    "jungle-speed",
-    "skull",
-    "indian-poker",
-    "penguin-party",
-    "spyfall",
-    "insider",
-    "bohnanza",
-    "speed-cups"
-   ],
-   "h1": "파티 보드게임 추천",
-   "seo": "파티 보드게임 추천 | 파티룸·생일 모임 게임",
-   "kw": [
-    "파티 보드게임",
-    "파티 보드게임 추천",
-    "파티룸 게임",
-    "생일 파티 게임",
-    "홈파티 게임"
-   ],
-   "how": [
-    "파티에서는 설명이 짧고 웃음이 큰 게임이 최고예요. 규칙을 1분 안에 말할 수 있는지 먼저 보세요.",
-    "소리를 내도 되는 공간이면 할리갈리, 정글 스피드처럼 손이 빠른 게임이 분위기를 띄워요.",
-    "술자리를 곁들인다면 바퀴벌레 포커, 인디언 포커처럼 표정 싸움을 하는 게임이 잘 맞아요."
    ]
   },
   {
@@ -635,6 +605,161 @@
    ]
   },
   {
+   "slug": "classroom",
+   "title": "교실·수업에서",
+   "h1": "교실 보드게임 추천",
+   "seo": "교실 보드게임 추천 | 수업·방과후·학급 활동 게임",
+   "lead": "선생님이 교실에서 학급 전체나 모둠으로 하기 좋은 게임이에요. 설명이 짧고, 한 판이 수업 시간 안에 끝나고, 서로 말을 주고받게 되는 게임을 골랐어요.",
+   "kw": [
+    "교실 보드게임",
+    "수업 보드게임",
+    "학급 보드게임",
+    "방과후 보드게임",
+    "교실 게임",
+    "레크리에이션 게임",
+    "모둠 활동 게임"
+   ],
+   "how": [
+    "학급 전체로 할 때는 두 편으로 나누는 게임(코드네임, 몸으로 하는 전통놀이)이 좋아요. 모둠으로 할 때는 4~6명이 같은 게임을 여러 벌 펼치세요.",
+    "규칙은 칠판에 세 줄로 먼저 적어 두세요. 룰룰 게임 페이지의 ‘1분 요약’을 그대로 써도 돼요.",
+    "이기고 지는 게 부담스러운 반이라면 다 같이 이기는 협력 게임(저스트 원, 더 마인드)부터 해 보세요."
+   ],
+   "games": [
+    "just-one",
+    "codenames",
+    "dobble",
+    "halli-galli",
+    "the-mind",
+    "telestrations",
+    "set",
+    "rummikub",
+    "yacht",
+    "davinci-code",
+    "ubongo",
+    "quoridor",
+    "chilgyo",
+    "uno",
+    "yutnori",
+    "tuho",
+    "gonggi",
+    "mugunghwa",
+    "sugeondolligi"
+   ]
+  },
+  {
+   "slug": "beginner",
+   "title": "보드게임이 처음이라면",
+   "h1": "보드게임 입문 추천",
+   "seo": "보드게임 입문 추천 | 초보도 쉬운 보드게임",
+   "lead": "보드게임을 처음 하는 사람도 5분 안에 규칙을 익힐 수 있는 게임이에요. 가볍게 시작해서 한 단계씩 올라가 보세요.",
+   "kw": [
+    "보드게임 입문",
+    "보드게임 입문 추천",
+    "초보 보드게임",
+    "쉬운 보드게임",
+    "입문용 보드게임",
+    "보드게임 입문 순서"
+   ],
+   "how": [
+    "처음에는 한 판이 20분 안쪽인 게임으로 시작하세요. 규칙을 다 몰라도 한 판 해 보면 알게 돼요.",
+    "익숙해지면 스플렌더, 킹도미노처럼 점수를 모으는 게임으로 넘어가 보세요. 전략 게임의 맛을 처음 느끼게 돼요.",
+    "그다음은 카탄, 티켓 투 라이드 같은 대표 전략 게임이에요. 여기까지 오면 보드게임카페의 대부분을 즐길 수 있어요."
+   ],
+   "sections": [
+    {
+     "title": "처음 한 판",
+     "games": [
+      "halli-galli",
+      "davinci-code",
+      "uno",
+      "jenga",
+      "dobble",
+      "just-one",
+      "sushi-go",
+      "love-letter",
+      "yacht",
+      "the-mind"
+     ]
+    },
+    {
+     "title": "다음 단계",
+     "games": [
+      "rummikub",
+      "splendor",
+      "kingdomino",
+      "carcassonne",
+      "azul",
+      "ticket-to-ride",
+      "catan"
+     ]
+    }
+   ],
+   "games": [
+    "halli-galli",
+    "davinci-code",
+    "uno",
+    "jenga",
+    "dobble",
+    "just-one",
+    "sushi-go",
+    "love-letter",
+    "yacht",
+    "the-mind",
+    "rummikub",
+    "splendor",
+    "kingdomino",
+    "carcassonne",
+    "azul",
+    "ticket-to-ride",
+    "catan"
+   ]
+  },
+  {
+   "slug": "party-room",
+   "title": "파티룸에서 분위기 띄울 때",
+   "lead": "설명은 짧고 웃음은 큰 게임이에요. 생일, 모임, 뒤풀이 자리에 잘 맞아요.",
+   "tip": "벌칙을 정할 때는 모두가 웃을 수 있는 가벼운 것으로 해요.",
+   "games": [
+    "halli-galli",
+    "jenga",
+    "liar-game",
+    "mafia",
+    "pop-up-pirate",
+    "telestrations",
+    "coup",
+    "the-mind",
+    "dalmuti",
+    "uno",
+    "cockroach-poker",
+    "one-night-werewolf",
+    "bang",
+    "skull-king",
+    "las-vegas",
+    "jungle-speed",
+    "skull",
+    "indian-poker",
+    "penguin-party",
+    "spyfall",
+    "insider",
+    "bohnanza",
+    "speed-cups"
+   ],
+   "h1": "파티 보드게임 추천",
+   "seo": "파티 보드게임 추천 | 파티룸·생일 모임 게임",
+   "kw": [
+    "파티 보드게임",
+    "파티 보드게임 추천",
+    "파티룸 게임",
+    "생일 파티 게임",
+    "홈파티 게임"
+   ],
+   "how": [
+    "파티에서는 설명이 짧고 웃음이 큰 게임이 최고예요. 규칙을 1분 안에 말할 수 있는지 먼저 보세요.",
+    "소리를 내도 되는 공간이면 할리갈리, 정글 스피드처럼 손이 빠른 게임이 분위기를 띄워요.",
+    "술자리를 곁들인다면 바퀴벌레 포커, 인디언 포커처럼 표정 싸움을 하는 게임이 잘 맞아요."
+   ]
+  },
+  {
    "slug": "quick",
    "title": "15분이면 한 판",
    "lead": "남는 시간에 가볍게, 여러 판 해도 부담 없는 게임이에요.",
@@ -723,6 +848,470 @@
     "전략 게임이 처음이면 스플렌더, 카르카손, 티켓 투 라이드처럼 규칙이 짧은 게임부터 해 보세요.",
     "첫 판은 규칙을 익히는 판이라고 생각하세요. 두 번째 판부터 전략이 보이기 시작해요.",
     "한 시간 넘는 게임은 시작 전에 끝나는 조건을 다 같이 한 번 읽고 시작하세요."
+   ]
+  },
+  {
+   "slug": "mystery",
+   "title": "추리가 좋다면",
+   "h1": "추리 보드게임 추천",
+   "seo": "추리 보드게임 추천 | 범인 찾기·정체 숨기기 게임",
+   "lead": "단서를 모아 답을 맞히는 추리 게임과, 거짓말하는 사람을 찾아내는 정체 숨기기 게임이에요. 머리도 쓰고 표정도 읽어야 해요.",
+   "kw": [
+    "추리 보드게임",
+    "추리 보드게임 추천",
+    "2인 추리 보드게임",
+    "범인 찾기 게임",
+    "정체 숨기기 게임",
+    "마피아 게임 종류"
+   ],
+   "how": [
+    "단서를 하나씩 지워 나가는 추리를 좋아하면 클루, 다빈치 코드처럼 정보가 쌓이는 게임을 고르세요.",
+    "사람 사이의 거짓말을 찾는 재미를 좋아하면 마피아, 아발론, 한밤의 늑대인간처럼 역할을 숨기는 게임이 맞아요.",
+    "다섯 명보다 적다면 정체 숨기기 게임보다 러브레터, 쿠 같은 작은 블러핑 게임이 잘 돌아가요."
+   ],
+   "sections": [
+    {
+     "title": "단서로 답을 맞히는 추리",
+     "games": [
+      "clue",
+      "davinci-code",
+      "love-letter",
+      "hanabi",
+      "codenames"
+     ]
+    },
+    {
+     "title": "거짓말하는 사람을 찾는 추리",
+     "games": [
+      "mafia",
+      "avalon",
+      "one-night-werewolf",
+      "spyfall",
+      "insider",
+      "liar-game",
+      "coup",
+      "bang",
+      "cockroach-poker",
+      "skull"
+     ]
+    }
+   ],
+   "games": [
+    "clue",
+    "davinci-code",
+    "love-letter",
+    "hanabi",
+    "codenames",
+    "mafia",
+    "avalon",
+    "one-night-werewolf",
+    "spyfall",
+    "insider",
+    "liar-game",
+    "coup",
+    "bang",
+    "cockroach-poker",
+    "skull"
+   ]
+  },
+  {
+   "slug": "team-coop",
+   "title": "편 먹고 할 때",
+   "h1": "팀전·협력 보드게임 추천",
+   "seo": "팀전·협력 보드게임 추천 | 편 먹고 하는 게임",
+   "lead": "모두가 한 편이 되어 게임과 겨루는 협력 게임과, 편을 나눠 겨루는 팀전 게임이에요. 혼자 이기고 지는 게임보다 대화가 많아져요.",
+   "kw": [
+    "협력 보드게임",
+    "협력 보드게임 추천",
+    "팀전 보드게임",
+    "팀 보드게임",
+    "편 나누기 게임",
+    "팀 게임 추천"
+   ],
+   "how": [
+    "처음 만난 사이나 승부를 부담스러워하는 자리라면 다 같이 이기고 지는 협력 게임이 좋아요.",
+    "팀전은 편을 짤 때 잘하는 사람을 고르게 나눠야 재미있어요. 한 판이 끝나면 편을 바꿔 다시 해 보세요.",
+    "협력 게임에서는 한 사람이 모든 걸 지시하지 않게 해 주세요. 각자 자기 차례는 자기가 정해야 모두가 즐거워요."
+   ],
+   "sections": [
+    {
+     "title": "다 같이 한 편이 되는 협력 게임",
+     "games": [
+      "just-one",
+      "the-mind",
+      "hanabi",
+      "the-crew",
+      "pandemic"
+     ]
+    },
+    {
+     "title": "편을 나눠 겨루는 팀전 게임",
+     "games": [
+      "codenames",
+      "tichu",
+      "avalon",
+      "mafia",
+      "saboteur",
+      "yutnori",
+      "tuho",
+      "biseokchigi"
+     ]
+    }
+   ],
+   "games": [
+    "just-one",
+    "the-mind",
+    "hanabi",
+    "the-crew",
+    "pandemic",
+    "codenames",
+    "tichu",
+    "avalon",
+    "mafia",
+    "saboteur",
+    "yutnori",
+    "tuho",
+    "biseokchigi"
+   ]
+  },
+  {
+   "slug": "card-games",
+   "title": "카드 한 벌로",
+   "h1": "카드게임 추천",
+   "seo": "카드게임 추천 | 트럼프·우노·화투부터 카드 보드게임까지",
+   "lead": "카드만 있으면 하는 게임이에요. 집에 있는 트럼프 카드와 화투로 하는 게임부터, 상자 하나에 카드만 든 보드게임까지 모았어요.",
+   "kw": [
+    "카드게임 추천",
+    "카드게임 종류",
+    "트럼프 카드 게임",
+    "트럼프 카드 게임 종류",
+    "화투 게임",
+    "카드 보드게임"
+   ],
+   "how": [
+    "집에 트럼프 카드가 있다면 원카드, 도둑잡기, 인디언 포커부터 해 보세요. 따로 살 게 없어요.",
+    "여럿이 왁자지껄하게 하려면 우노, 젝스님트, 달무티처럼 한 번에 많은 사람이 하는 카드 게임이 좋아요.",
+    "둘이라면 로스트 시티, 셋 이상이라면 스컬킹, 티츄처럼 카드를 내는 순서와 때를 고민하는 게임도 있어요."
+   ],
+   "sections": [
+    {
+     "title": "트럼프 카드·화투로 하는 게임",
+     "games": [
+      "one-card",
+      "old-maid",
+      "indian-poker",
+      "go-stop"
+     ]
+    },
+    {
+     "title": "카드 보드게임",
+     "games": [
+      "uno",
+      "6-nimmt",
+      "dalmuti",
+      "love-letter",
+      "sushi-go",
+      "no-thanks",
+      "skull-king",
+      "tichu",
+      "the-crew",
+      "coup",
+      "sleeping-queens",
+      "lost-cities",
+      "bohnanza",
+      "hanabi",
+      "the-mind",
+      "cockroach-poker"
+     ]
+    }
+   ],
+   "games": [
+    "one-card",
+    "old-maid",
+    "indian-poker",
+    "go-stop",
+    "uno",
+    "6-nimmt",
+    "dalmuti",
+    "love-letter",
+    "sushi-go",
+    "no-thanks",
+    "skull-king",
+    "tichu",
+    "the-crew",
+    "coup",
+    "sleeping-queens",
+    "lost-cities",
+    "bohnanza",
+    "hanabi",
+    "the-mind",
+    "cockroach-poker"
+   ]
+  },
+  {
+   "slug": "math",
+   "title": "숫자와 친해지는",
+   "h1": "수학 보드게임 추천",
+   "seo": "수학 보드게임 추천 | 숫자·계산·도형과 친해지는 게임",
+   "lead": "숫자를 더하고, 크기를 견주고, 모양을 맞추는 일이 자연스럽게 들어 있는 게임이에요. 공부처럼 느껴지지 않게 놀면서 숫자를 자주 만나게 돼요.",
+   "kw": [
+    "수학 보드게임",
+    "수학 보드게임 추천",
+    "초등 수학 보드게임",
+    "숫자 보드게임",
+    "계산 보드게임",
+    "도형 보드게임"
+   ],
+   "how": [
+    "덧셈과 숫자 감각은 루미큐브(합 30), 야추(점수 계산), 노 땡스(연속된 숫자)처럼 계속 수를 세는 게임에서 자라요.",
+    "도형과 공간 감각은 우봉고, 블로커스, 칠교놀이처럼 조각을 맞추는 게임이 좋아요.",
+    "논리와 추론은 다빈치 코드, 쿼리도처럼 상대의 수를 읽어야 하는 게임에서 길러져요. 다만 게임마다 효과는 아이마다 달라요."
+   ],
+   "sections": [
+    {
+     "title": "수 세기·계산",
+     "games": [
+      "rummikub",
+      "yacht",
+      "no-thanks",
+      "6-nimmt",
+      "dalmuti",
+      "las-vegas",
+      "mancala",
+      "kingdomino",
+      "splendor"
+     ]
+    },
+    {
+     "title": "도형·공간",
+     "games": [
+      "ubongo",
+      "blokus",
+      "chilgyo",
+      "qwirkle",
+      "azul",
+      "patchwork"
+     ]
+    },
+    {
+     "title": "논리·추론",
+     "games": [
+      "davinci-code",
+      "quoridor",
+      "set",
+      "othello"
+     ]
+    }
+   ],
+   "games": [
+    "rummikub",
+    "yacht",
+    "no-thanks",
+    "6-nimmt",
+    "dalmuti",
+    "las-vegas",
+    "mancala",
+    "kingdomino",
+    "splendor",
+    "ubongo",
+    "blokus",
+    "chilgyo",
+    "qwirkle",
+    "azul",
+    "patchwork",
+    "davinci-code",
+    "quoridor",
+    "set",
+    "othello"
+   ]
+  },
+  {
+   "slug": "christmas",
+   "title": "크리스마스에",
+   "h1": "크리스마스 보드게임 추천",
+   "seo": "크리스마스 보드게임 추천 | 홈파티·가족 모임·선물",
+   "lead": "크리스마스 홈파티와 가족 모임에서 함께 하기 좋은 게임이에요. 트리 아래에 두기 좋은 선물용 게임도 함께 골랐어요.",
+   "kw": [
+    "크리스마스 보드게임",
+    "크리스마스 보드게임 추천",
+    "크리스마스 파티 게임",
+    "크리스마스 가족 게임",
+    "크리스마스 선물 보드게임",
+    "홈파티 게임"
+   ],
+   "how": [
+    "친구들과 홈파티라면 여럿이 동시에 웃는 게임(저스트 원, 텔레스트레이션, 딕싯)이 분위기를 살려요.",
+    "아이가 있는 가족 모임이라면 할리갈리, 도블처럼 설명이 1분이면 끝나는 게임부터 꺼내세요.",
+    "선물할 게임은 상자가 예쁘고 오래 꺼내 쓸 게임이 좋아요. 아줄, 킹도미노, 티켓 투 라이드는 받는 사람이 처음이어도 금방 배워요."
+   ],
+   "games": [
+    "just-one",
+    "telestrations",
+    "dixit",
+    "codenames",
+    "halli-galli",
+    "dobble",
+    "jenga",
+    "uno",
+    "sushi-go",
+    "sleeping-queens",
+    "rummikub",
+    "kingdomino",
+    "azul",
+    "ticket-to-ride",
+    "splendor",
+    "the-mind"
+   ]
+  },
+  {
+   "slug": "gift",
+   "title": "선물한다면",
+   "h1": "보드게임 선물 추천",
+   "seo": "보드게임 선물 추천 | 아이·연인·친구·부모님 선물",
+   "lead": "받는 사람이 상자를 열자마자 바로 함께 할 수 있는 게임을 골랐어요. 규칙이 짧고, 구성물이 튼튼하고, 여러 번 꺼내 하게 되는 게임이에요.",
+   "kw": [
+    "보드게임 선물",
+    "보드게임 선물 추천",
+    "아이 선물 보드게임",
+    "커플 선물 보드게임",
+    "부모님 선물 보드게임",
+    "집들이 선물 보드게임"
+   ],
+   "how": [
+    "받는 사람이 주로 몇 명과 놀지 먼저 떠올려 보세요. 둘이 사는 집이면 2인 게임, 아이가 있으면 가족 게임이 좋아요.",
+    "처음 선물하는 보드게임은 규칙이 짧은 게임이 좋아요. 설명서를 읽다 지치면 상자를 다시 열지 않게 돼요.",
+    "이 페이지의 게임은 모두 룰룰에 하는법이 있어요. 선물과 함께 하는법 링크를 보내면 받는 사람이 바로 시작할 수 있어요."
+   ],
+   "sections": [
+    {
+     "title": "아이에게",
+     "games": [
+      "halli-galli",
+      "dobble",
+      "blokus",
+      "ubongo",
+      "sleeping-queens",
+      "kingdomino",
+      "speed-cups"
+     ]
+    },
+    {
+     "title": "연인·친구에게",
+     "games": [
+      "patchwork",
+      "lost-cities",
+      "seven-wonders-duel",
+      "azul",
+      "dixit",
+      "codenames",
+      "splendor"
+     ]
+    },
+    {
+     "title": "부모님·가족에게",
+     "games": [
+      "rummikub",
+      "yacht",
+      "davinci-code",
+      "qwirkle",
+      "burumabul",
+      "yutnori"
+     ]
+    }
+   ],
+   "games": [
+    "halli-galli",
+    "dobble",
+    "blokus",
+    "ubongo",
+    "sleeping-queens",
+    "kingdomino",
+    "speed-cups",
+    "patchwork",
+    "lost-cities",
+    "seven-wonders-duel",
+    "azul",
+    "dixit",
+    "codenames",
+    "splendor",
+    "rummikub",
+    "yacht",
+    "davinci-code",
+    "qwirkle",
+    "burumabul",
+    "yutnori"
+   ]
+  },
+  {
+   "slug": "travel",
+   "title": "여행·캠핑 갈 때",
+   "h1": "여행·캠핑 보드게임 추천",
+   "seo": "여행·캠핑 보드게임 추천 | 작고 가벼운 휴대용 게임",
+   "lead": "가방 한쪽에 넣어 가기 좋은 작은 게임과, 캠핑장 바닥이나 마당에서 함께하기 좋은 놀이예요. 기차, 숙소, 텐트 안에서도 할 수 있어요.",
+   "kw": [
+    "여행 보드게임",
+    "캠핑 보드게임",
+    "휴대용 보드게임",
+    "캠핑 게임",
+    "여행 카드게임",
+    "펜션 게임"
+   ],
+   "how": [
+    "여행 가방에는 카드만 있는 작은 게임이 좋아요. 러브레터, 스시고, 더 마인드는 손바닥만 한 상자에 들어 있어요.",
+    "바람이 부는 바깥에서는 카드보다 주사위나 무거운 구성물이 있는 게임이 편해요. 야추는 주사위 다섯 개만 있으면 돼요.",
+    "캠핑장처럼 넓은 곳이라면 윷놀이, 투호, 제기차기처럼 몸을 쓰는 놀이도 함께 챙기세요."
+   ],
+   "sections": [
+    {
+     "title": "가방에 쏙 들어가는 게임",
+     "games": [
+      "love-letter",
+      "sushi-go",
+      "the-mind",
+      "skull",
+      "coup",
+      "no-thanks",
+      "6-nimmt",
+      "dobble",
+      "insider",
+      "yacht",
+      "uno",
+      "one-card",
+      "indian-poker",
+      "liar-game"
+     ]
+    },
+    {
+     "title": "캠핑장에서 함께하는 놀이",
+     "games": [
+      "yutnori",
+      "jenga",
+      "tuho",
+      "jegichagi",
+      "mugunghwa"
+     ]
+    }
+   ],
+   "games": [
+    "love-letter",
+    "sushi-go",
+    "the-mind",
+    "skull",
+    "coup",
+    "no-thanks",
+    "6-nimmt",
+    "dobble",
+    "insider",
+    "yacht",
+    "uno",
+    "one-card",
+    "indian-poker",
+    "liar-game",
+    "yutnori",
+    "jenga",
+    "tuho",
+    "jegichagi",
+    "mugunghwa"
    ]
   }
  ]
